@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "930937927575",
+    "project_id": "pichat-247",
+    "storage_bucket": "pichat-247.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930937927575:android:c8f1731de1ec8389fa76d2",
+        "android_client_info": {
+          "package_name": "com.example.pichat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "930937927575-8gepnevci2fh0sechd24qgd67vb23jm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHyqu5DHOpHnS3WHLiBny7o3R97zZ3dJU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "930937927575-8gepnevci2fh0sechd24qgd67vb23jm9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
