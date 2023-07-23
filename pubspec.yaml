@@ -38,7 +38,7 @@ dependencies:
   #back-end component
   cupertino_icons: ^1.0.2
   internet_connection_checker: ^1.0.0+1
-  data_connection_checker: ^0.3.4
+  #data_connection_checker: ^0.3.4
   url_launcher: ^6.1.10
   http: ^0.13.5
   firebase_auth: ^4.1.4
