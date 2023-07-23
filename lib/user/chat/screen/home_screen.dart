@@ -4,19 +4,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/widget/friends_list.dart';
-import 'package:pichat/user/chat/widget/recent_chats.dart';
+import 'package:pichat/user/chat/widget/recent_chats_list.dart';
+import 'package:pichat/user/chat/widget/search_recent_charts.dart';
 import 'package:pichat/user/notifications/screen/notifications_sceen.dart';
+import 'package:provider/provider.dart';
+
+
 
 
 
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
-
+  ChatScreen({super.key});
+  final TextEditingController textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    var controller = Provider.of<AuthController>(context);
+    //String? name = controller.gUser!.displayName!.substring(0, 6);
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppTheme().whiteColor,
@@ -25,8 +32,8 @@ class ChatScreen extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: 20.h,
-                vertical: 20.w
+                horizontal: 20.w, //25.W
+                vertical: 20.h
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,25 +71,32 @@ class ChatScreen extends StatelessWidget {
                       ),
                       IconButton(
                         icon: Icon(
-                          CupertinoIcons.bell_fill,
-                          color: AppTheme().mainColor,
+                          CupertinoIcons.bell,
+                          color: AppTheme().blackColor,
                           size: 30.r,
                         ),
                         onPressed: () {
                           Get.to(() => NotificationScreen());
                         },
-
+          
                       ),
                     ],
                   )
                 ],
               ),
             ),
-            SizedBox(height: 10.h,),
+            SizedBox(height: 5.h,),
             //list of friends
             FriendsList(),
             Divider(color: AppTheme().darkGreyColor, thickness: 1,),
-            SizedBox(height: 10.h,), //30.h
+            SizedBox(height: 20.h,), //30.h
+            //search for recent chats
+            SearchRecentChatTextField(
+              textController: textController,
+              onChanged: (value) {},
+            ),
+            SizedBox(height: 20.h,), //30.h
+            //recent chats
             RecentChats(),
             SizedBox(height: 10.h,),
           ]

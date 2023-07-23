@@ -3,7 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:pichat/main_page/widget/bottom_nav_bar.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:hidable/hidable.dart';
-import 'package:pichat/user/chat/screen/chat_screen.dart';
+import 'package:pichat/user/calls/screen/calls.dart';
+import 'package:pichat/user/chat/screen/home_screen.dart';
+import 'package:pichat/user/feeds/screen/feeds_screen.dart';
+import 'package:pichat/user/settings/screen/profile_screen.dart';
 
 
 
@@ -28,15 +31,9 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> widgetOptions = <Widget>[
     ChatScreen(),
-    Container(
-      color: AppTheme().greenColor,
-    ),
-    Container(
-      color: AppTheme().greenColor,
-    ),
-    Container(
-      color: AppTheme().greenColor,
-    )
+    FeedScreen(),
+    CallScreen(),
+    ProfileScreen()
   ];
 
   void _onItemTapped(int index) {

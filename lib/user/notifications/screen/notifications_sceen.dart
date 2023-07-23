@@ -62,7 +62,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget buildBody(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: 20.w,
+        horizontal: 25.w,
         vertical: 20.h,
       ),
       child: Column(
@@ -155,7 +155,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         Text(
                           'Notification Title',
                           style: GoogleFonts.poppins(
-                            fontSize: 16.sp,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
                             color: AppTheme().blackColor
                           ),
@@ -165,7 +165,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         Text(
                           'This is a notification body',
                           style: TextStyle(
-                            fontSize: 13.sp,
+                            fontSize: 12.sp,
                             //fontWeight: FontWeight.w500,
                             color: AppTheme().blackColor
                           ),

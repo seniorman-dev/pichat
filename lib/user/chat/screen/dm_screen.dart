@@ -5,23 +5,29 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/user/chat/widget/bottom_engine.dart';
+import 'package:pichat/user/chat/widget/chat_list.dart';
+
+
 
 
 
 
 class DMScreen extends StatelessWidget {
-  const DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline});
+  const DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName});
   final String receiverProfilePic;
   final String receiverName;
   final String receiverID;
+  final String senderName;
   final bool isOnline;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppTheme().whiteColor,
+        backgroundColor: AppTheme().lightGreyColor,
         appBar: AppBar(
+          toolbarHeight: 110.h,
           backgroundColor: AppTheme().whiteColor,
           centerTitle: false,
           elevation: 0,
@@ -40,8 +46,12 @@ class DMScreen extends StatelessWidget {
             children: [
               //profilePic
               CircleAvatar(
-                radius: 28.r, 
-                backgroundColor: AppTheme().darkGreyColor,
+                radius: 30.r,
+                backgroundColor: AppTheme().opacityBlue,
+                child: CircleAvatar(
+                  radius: 28.r, 
+                  backgroundColor: AppTheme().darkGreyColor,
+                ),
               ),
               SizedBox(width: 10.w,),
               //details
@@ -80,7 +90,7 @@ class DMScreen extends StatelessWidget {
               icon: Icon(
                 CupertinoIcons.videocam,
                 color: AppTheme().blackColor,
-                size: 30.r,
+                size: 32.r,
               ),
               onPressed: () {},
             ),
@@ -88,13 +98,27 @@ class DMScreen extends StatelessWidget {
               icon: Icon(
                 CupertinoIcons.phone_down,
                 color: AppTheme().blackColor,
-                size: 30.r,
+                size: 32.r,
               ),
               onPressed: () {},
             )  
           ],
         ),
-        //body: ,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ChatList(
+                senderName: senderName, 
+                receiverName: receiverName
+              ),
+            ),
+            BottomEngine(
+              receiverName: receiverName
+            ),
+            SizedBox(height: 20.h,)         
+          ]        
+        ),
       ),
     );
   }

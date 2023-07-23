@@ -52,8 +52,8 @@ List<BottomNavigationBarItem> _navBarsItems() {
       label: 'Home',
     ),
     BottomNavigationBarItem(
-      activeIcon: Icon(CupertinoIcons.app_fill),
-      icon: Icon(CupertinoIcons.app),
+      activeIcon: Icon(CupertinoIcons.chart_pie_fill),
+      icon: Icon(CupertinoIcons.chart_pie),
       label: 'Feeds',
     ),
     BottomNavigationBarItem(

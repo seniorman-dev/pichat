@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/screen/dm_screen.dart';
+import 'dart:math';
+
 
 
 
@@ -30,8 +32,12 @@ class RecentChats extends StatelessWidget {
                 isOnline: true, 
                 receiverName: 'Mike Angelo',
                 receiverProfilePic: 'https/fjfjfnvkdnkkvf',
-                receiverID: '170313027',
+                receiverID: '170313027', 
+                senderName: 'Japhet',  //currentUserName
               ));
+
+              var randomInt = (Random().nextInt(10000)).toString();
+              debugPrint(randomInt);
             },
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -39,7 +45,7 @@ class RecentChats extends StatelessWidget {
                 vertical: 8.w
               ),
               child: Container(
-                height: 100.h,
+                //height: 100.h,
                 //width: 200.w,
                 padding: EdgeInsets.symmetric(
                   vertical: 20.h, //30.h
@@ -61,8 +67,12 @@ class RecentChats extends StatelessWidget {
                   children: [
                     //profilePic
                     CircleAvatar(
-                      radius: 30.r,
-                      backgroundColor: AppTheme().darkGreyColor,
+                      radius: 32.r,
+                      backgroundColor: AppTheme().opacityBlue,
+                      child: CircleAvatar(
+                        radius: 30.r,
+                        backgroundColor: AppTheme().darkGreyColor,
+                      ),
                     ),
                     SizedBox(width: 10.w,),
                     //details
@@ -98,7 +108,7 @@ class RecentChats extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Hey big man, what are you doing?',
+                                'New Chat',
                                 style: GoogleFonts.poppins(
                                   color: AppTheme().darkGreyColor,
                                   fontSize: 12.sp,
@@ -110,8 +120,8 @@ class RecentChats extends StatelessWidget {
                               ),
                               CircleAvatar(
                                 backgroundColor: AppTheme().mainColor,
-                                radius: 10.r,
-                                child: Text(
+                                radius: 7.r,
+                                /*child: Text(
                                   '2',
                                   style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
@@ -120,7 +130,7 @@ class RecentChats extends StatelessWidget {
                                       //fontWeight: FontWeight.w500
                                     )
                                   ),
-                                ),
+                                ),*/
                               )
                             ],
                           )

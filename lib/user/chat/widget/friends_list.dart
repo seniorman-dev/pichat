@@ -6,7 +6,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/api/api.dart';
 import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/settings/widget/all_users_list.dart';
+import 'package:pichat/user/chat/screen/dm_screen.dart';
+import 'package:pichat/user/chat/widget/all_users_list.dart';
 
 
 
@@ -24,7 +25,7 @@ class FriendsList extends StatelessWidget {
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal, //Axis.vertical,
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
         separatorBuilder: (context, index) => SizedBox(width: 20.w),
         itemCount: 10,
         itemBuilder: (context, index) {
@@ -65,16 +66,27 @@ class FriendsList extends StatelessWidget {
           else {
             return Column(
               children: [
-                CircleAvatar(
-                  radius: 40.r,
-                  backgroundColor: AppTheme().opacityBlue,
+                InkWell(
+                  onTap: () {
+                    Get.to(() => DMScreen(
+                      isOnline: false,
+                      receiverProfilePic: '',
+                      receiverID: '1233344',
+                      receiverName: 'Mike Angelo', 
+                      senderName: 'Japhet',  //currentUserName
+                    ));
+                  },
                   child: CircleAvatar(
-                    radius: 38.r,
-                    backgroundColor: AppTheme().lightGreyColor,
-                    child: Icon(
-                      CupertinoIcons.person,
-                      color: AppTheme().blackColor,
-                      size: 40.r,
+                    radius: 40.r,
+                    backgroundColor: AppTheme().opacityBlue,
+                    child: CircleAvatar(
+                      radius: 38.r,
+                      backgroundColor: AppTheme().lightGreyColor,
+                      child: Icon(
+                        CupertinoIcons.person,
+                        color: AppTheme().blackColor,
+                        size: 40.r,
+                      ),
                     ),
                   ),
                 ),
