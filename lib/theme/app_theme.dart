@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class AppTheme {
-
+  Color lightestOpacityBlue = Colors.blueAccent.shade100.withOpacity(0.1);
   Color mainColor = Colors.blueAccent.shade700;
   Color opacityBlue = Colors.blueAccent.shade400.withOpacity(0.3);
   Color greenColor = Colors.tealAccent.shade400;
@@ -12,6 +12,7 @@ class AppTheme {
   Color whiteColor = Colors.white;
   Color lightGreyColor = Color.fromARGB(255, 247, 246, 246);
   Color darkGreyColor = Color.fromARGB(255, 201, 199, 199);
+  Color greyColor = Colors.grey;
   Color backgroundColor = Color.fromARGB(255, 235, 235, 235);
   //static const navBarColor = Color();
   

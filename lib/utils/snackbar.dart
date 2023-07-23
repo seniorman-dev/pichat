@@ -5,5 +5,5 @@ import 'package:pichat/theme/app_theme.dart';
 
 
 Future<void> customGetXSnackBar({required String title, required String subtitle}) async{
-  Get.snackbar(title, subtitle, duration: const Duration(seconds: 3), isDismissible: true, colorText: Colors.black, borderRadius: 20.r, backgroundColor: AppTheme().opacityBlue, snackPosition: SnackPosition.BOTTOM, dismissDirection: DismissDirection.down);
+  Get.snackbar(title, subtitle, duration: const Duration(seconds: 3), isDismissible: true, colorText: AppTheme().blackColor, borderRadius: 20.r, backgroundColor: AppTheme().lightestOpacityBlue/*opacityBlue*/, snackPosition: SnackPosition.BOTTOM, dismissDirection: DismissDirection.down);
 }

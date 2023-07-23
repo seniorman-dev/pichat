@@ -23,14 +23,14 @@ class CustomElevatedButton extends StatelessWidget {
           backgroundColor: AppTheme().mainColor,
           minimumSize: Size.copy(Size(100.w, 50.h)),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.r),
+            borderRadius: BorderRadius.circular(20.r),
           )
         ), 
         child: Text(
           text,
           style: TextStyle(
             color: AppTheme().whiteColor,
-            fontSize: 15.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w500
           ),
         ),

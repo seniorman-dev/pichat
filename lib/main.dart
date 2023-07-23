@@ -5,14 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pichat/api/api.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
-import 'package:pichat/auth/screen/google_sign_in_screen.dart';
+import 'package:pichat/auth/screen/register_screen.dart';
 import 'package:pichat/auth/screen/splash_screen.dart';
 import 'package:pichat/auth/screen/splash_screen_2.dart';
 import 'package:pichat/main_page/controller/main_page_controller.dart';
-import 'package:pichat/main_page/screen/main_page.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/settings/controller/profile_controller.dart';
@@ -20,6 +18,8 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'utils/error_loader.dart';
 import 'utils/loader.dart';
+
+
 
 
 
@@ -87,7 +87,7 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         transitionDuration: Duration(milliseconds: 100),
         debugShowCheckedModeBanner: false,
-        home: FirebaseCheck() //SplashPage1()
+        home: FirebaseCheck()
       ),
     );
   }
@@ -111,10 +111,10 @@ class FirebaseCheck extends StatelessWidget {
             }
             else if(snapshot.connectionState == ConnectionState.active) {
               if(snapshot.data == null) {
-                return GoogleSignInScreen(); //MainPage();
+                return SplashePage1();
               }
               else {
-                return MainPage();
+                return SplashePage2();
               }
             }
             else {

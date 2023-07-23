@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/auth/screen/google_sign_in_screen.dart';
+import 'package:pichat/auth/screen/onboarding_screen.dart';
 import 'package:pichat/theme/app_theme.dart';
 
 
@@ -29,7 +29,7 @@ class SplashePage1 extends StatelessWidget {
             ),
             SizedBox(width: 10.w,),
             Text(
-              'J U N O',
+              'P I C H A T',
               style: GoogleFonts.comfortaa(
                 textStyle: TextStyle(
                   color: AppTheme().blackColor,
@@ -41,7 +41,7 @@ class SplashePage1 extends StatelessWidget {
           ],
         ),
       ), 
-      nextScreen: GoogleSignInScreen(), 
+      nextScreen: OnboardingScreen(), 
       duration: 2000, //4000
       backgroundColor: AppTheme().whiteColor, //real image color
       centered: true,

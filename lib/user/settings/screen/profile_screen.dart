@@ -45,7 +45,7 @@ class ProfileScreen extends StatelessWidget {
           Center(
             child: IconButton(
               onPressed: () {
-                controller.handleSignOut();
+                controller.signOut();
               }, 
               icon: Icon(Icons.logout_rounded),
               color: AppTheme().mainColor,

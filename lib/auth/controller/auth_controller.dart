@@ -6,7 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:pichat/auth/screen/google_sign_in_screen.dart';
+import 'package:pichat/auth/screen/login_screen.dart';
+import 'package:pichat/auth/screen/onboarding_screen.dart';
+import 'package:pichat/auth/screen/successful_registration_screen.dart';
 import 'package:pichat/main_page/screen/main_page.dart';
 import 'package:pichat/utils/snackbar.dart';
 
@@ -19,10 +21,164 @@ class AuthController extends ChangeNotifier{
 
   final FirebaseAuth firebase = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final whenACurrentUserSwitchesAccountOrChanges = GoogleSignIn().onCurrentUserChanged;
-  final GoogleSignInAccount? googleUser = GoogleSignIn().currentUser;  //use this to fetch current user details
+  User? get user => firebase.currentUser;
+  String get userID => firebase.currentUser!.uid;
+  String? get userDisplayName => firebase.currentUser!.displayName;
+  String? get userEmail => firebase.currentUser!.email;
+  bool isLoading = false;
+  //final whenACurrentUserSwitchesAccountOrChanges = GoogleSignIn().onCurrentUserChanged;
+  //final GoogleSignInAccount? googleUser = GoogleSignIn().currentUser;  //use this to fetch current user details
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   
+
+  ///FOR REGISTERATION SCREEN
+  final TextEditingController registerNameController = TextEditingController();
+  final TextEditingController registerEmailController = TextEditingController();
+  final TextEditingController registerPasswordController = TextEditingController();
+  final TextEditingController registerConfirmPasswordController = TextEditingController();
+  String? validateEmail(String? value) {
+    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+      r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+      r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+      r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+      r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+      r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+      r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+    final regex = RegExp(pattern);
+
+    return value!.isNotEmpty && !regex.hasMatch(value)
+    ? 'Enter a valid email address'
+    : null;
+  }
+
+  bool isChecked = false;
+  bool blindText1 = false;
+  bool blindText2 = false;
+  ////////////////////////////////////
+  
+
+
+  ///FOR LOGIN SCREEN
+  final TextEditingController loginEmailController = TextEditingController();
+  final TextEditingController loginPasswordController = TextEditingController();
+
+  String? validateEmailForLogin(String? value) {
+    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+      r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+      r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+      r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+      r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+      r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+      r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+    final regex = RegExp(pattern);
+
+    return value!.isNotEmpty && !regex.hasMatch(value)
+    ? 'Enter a valid email address'
+    : null;
+  }
+  bool blindText3 = false;
+
+  ///FOR RESET PASSWORD SCREEN
+  final TextEditingController resetPasswordController = TextEditingController();
+
+
+
+
+  //SIGN UP / REGISTER METHOD
+  Future signUp() async {
+    try {
+      //get fcm token
+      String? token = await messaging.getToken();
+      User appUser = (await firebase.createUserWithEmailAndPassword(
+        email: registerEmailController.text,
+        password: registerConfirmPasswordController.text,
+      )).user!;
+      if(appUser != null && registerPasswordController.text == registerConfirmPasswordController.text && isChecked == true) {
+        //call firestore to add the new user
+        await firestore.collection('users')
+        .doc(appUser.uid)
+        .set({
+          'name': registerNameController.text,
+          'email': appUser.email,
+          'password': registerConfirmPasswordController.text,
+          //'photo': 'photoURL',
+          'id': appUser.uid,
+          'isOnline': true,
+          'isVerified': false,
+          'location': 'location', //get from geolocator,
+          'agreddToT&C': isChecked,
+          'timestamp': Timestamp
+        })
+        .whenComplete(() async => await firestore.collection('users').doc(appUser.uid).update({'FCMToken': token}))
+        .whenComplete(() => Get.offAll(() => SuccessfulRegistrationScreen()));
+        registerNameController.clear();
+        registerEmailController.clear();
+        registerPasswordController.clear();
+        registerConfirmPasswordController.clear();
+        return true;
+      }
+      else {
+        customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
+      }
+    } on FirebaseAuthException catch (e) {
+      customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
+    }
+  }
+  
+  //SIGN IN OR LOGIN METHOD
+  Future signIn() async {
+    try {
+      //get fcm token
+      String? token = await messaging.getToken();
+      //sign in user credentials
+      User appUser = (await firebase.signInWithEmailAndPassword(
+        email: loginEmailController.text,
+        password: loginPasswordController.text,
+      )).user!;
+      if(appUser != null) {
+        //always update fcm_token
+        await firestore.collection('users').doc(appUser.uid).update({'FCMToken': token})
+        .whenComplete(() => Get.offAll(() => MainPage()));
+        loginEmailController.clear();
+        loginPasswordController.clear();
+        return true;
+      }
+      else {
+        return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
+      }
+    } on FirebaseAuthException catch (e) {
+      customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
+    }
+  }
+
+
+  //SIGN OUT METHOD
+  Future<void> signOut() async {
+    try {
+      await firebase.signOut().whenComplete(() => Get.offAll(() => LoginScreen()));
+    } on FirebaseAuthException catch (e) {
+      customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
+    }
+  }
+
+  //ResetPassword Method
+  Future resetPassword () async {
+    try {
+      await firebase.sendPasswordResetEmail(email: resetPasswordController.text);
+      customGetXSnackBar(title: 'Request Successful', subtitle: "we sent a link to you mail to reset your password");
+    } on FirebaseAuthException catch (e) {
+      customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
+    }
+  }
+
+  
+
+
+
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////////
   Future<void> signInWithGoogle() async{
     try {
       //begin interactive sign in process
@@ -69,32 +225,6 @@ class AuthController extends ChangeNotifier{
     }
     catch(e) {
       debugPrint('Sign In Error: $e');
-    }
-  }
-
-
-  /////////////////
-  Future<void> handleSignIn() async {
-    try {
-      GoogleSignInAccount? account = await GoogleSignIn(serverClientId: '930937927575-ih02cie0tgno7in6ge9vapaeppj7dui6.apps.googleusercontent.com').signIn();
-      if (account != null) {
-        // The user signed in successfully, you can now use the account information.
-        print('User signed in: ${account.displayName}');
-      }
-    } catch (error) {
-      print('Error signing in: $error');
-    }
-  }
-
-  //////////////
-   Future<void> handleSignOut() async {
-    try {
-      await GoogleSignIn(serverClientId: '930937927575-ih02cie0tgno7in6ge9vapaeppj7dui6.apps.googleusercontent.com').signOut();
-      await firebase.signOut();
-      Get.offAll(() => GoogleSignInScreen());
-      print('User signed out');
-    } catch (error) {
-      print('Error signing out: $error');
     }
   }
 

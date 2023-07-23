@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
+import 'package:pichat/auth/screen/login_screen.dart';
 import 'package:pichat/main_page/screen/main_page.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/utils/loader.dart';
@@ -15,9 +16,11 @@ import 'package:provider/provider.dart';
 
 
 
-class GoogleSignInScreen extends StatelessWidget {
-  GoogleSignInScreen({super.key});
-  bool isLoading = false;
+
+
+class OnboardingScreen extends StatelessWidget {
+  const OnboardingScreen({super.key});
+  final bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +99,7 @@ class GoogleSignInScreen extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton( 
                   onPressed: () {
-                    controller.signInWithGoogle();
+                    Get.offAll(() => LoginScreen());
                   },
                   style: ElevatedButton.styleFrom(
                     elevation: 3,
@@ -119,7 +122,7 @@ class GoogleSignInScreen extends StatelessWidget {
                     'Get Started',
                     style: TextStyle(
                       color: AppTheme().whiteColor,
-                      fontSize: 15.sp,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w500
                     ),
                   ),

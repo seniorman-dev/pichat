@@ -12,6 +12,7 @@ import 'package:pichat/theme/app_theme.dart';
 
 
 
+
 class SplashePage2 extends StatelessWidget {
   const SplashePage2({super.key});
 
@@ -29,7 +30,7 @@ class SplashePage2 extends StatelessWidget {
             ),
             SizedBox(width: 10.w,),
             Text(
-              'J U N O',
+              'P I C H A T',
               style: GoogleFonts.comfortaa(
                 textStyle: TextStyle(
                   color: AppTheme().blackColor,

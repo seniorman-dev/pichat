@@ -10,6 +10,7 @@ import 'package:pichat/user/chat/widget/friends_list.dart';
 import 'package:pichat/user/chat/widget/recent_chats_list.dart';
 import 'package:pichat/user/chat/widget/search_recent_charts.dart';
 import 'package:pichat/user/notifications/screen/notifications_sceen.dart';
+import 'package:pichat/utils/extract_firstname.dart';
 import 'package:provider/provider.dart';
 
 
@@ -38,15 +39,70 @@ class ChatScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Hello Japhet,',
-                    style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                        color: AppTheme().darkGreyColor,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500
-                      )
-                    ),
+                  StreamBuilder(
+                    stream: controller.firestore.collection('users').doc(controller.userID).snapshots(),
+                    builder: (context, snapshot) {
+                      //var data = snapshot.data!.data();  //how to call document snapshots
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // Show a loading indicator while waiting for data
+                        return Text(
+                          '...',
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              color: AppTheme().darkGreyColor,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500
+                            )
+                          ),
+                        );
+                      } 
+                      else if (snapshot.hasError) {
+                        // Handle error if any
+                        return Text(
+                          'Error: ${snapshot.error}',
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              color: AppTheme().darkGreyColor,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500
+                            )
+                          ),
+                        );
+                      } 
+                      else if (snapshot.hasData) {
+                        // Check if the snapshot has data before accessing it
+                        var data = snapshot.data!.data(); // Use null check operator (!) on data
+                        if (data != null) {
+                          // Access the data safely
+                          var firstName = getFirstName(fullName: data['name']);   // Replace 'firstName' with your key
+                          return Text(
+                            'Hello $firstName',
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                color: AppTheme().darkGreyColor,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500
+                              )
+                            ),
+                          );
+                        } 
+                        else {
+                          return Text(
+                            'Data not found',
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                color: AppTheme().darkGreyColor,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500
+                              )
+                            ),
+                          );
+                        }
+                      } 
+                      else {
+                        return SizedBox();
+                      }
+                    }
                   ),
                   //SizedBox(height: 5.h,),
                   Row(
@@ -77,8 +133,7 @@ class ChatScreen extends StatelessWidget {
                         ),
                         onPressed: () {
                           Get.to(() => NotificationScreen());
-                        },
-          
+                        },          
                       ),
                     ],
                   )
@@ -100,7 +155,7 @@ class ChatScreen extends StatelessWidget {
             RecentChats(),
             SizedBox(height: 10.h,),
           ]
-        ),
+        )      
       ),
     );
   }
