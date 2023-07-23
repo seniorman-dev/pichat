@@ -182,6 +182,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 controller.isLoading = true;
               });
               controller.signUp();
+              controller.registerNameController.clear();
+              controller.registerEmailController.clear();
+              controller.registerPasswordController.clear();
+              controller.registerConfirmPasswordController.clear();
               setState(() {
                 controller.isLoading = false;
               });
