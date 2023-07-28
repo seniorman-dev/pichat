@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pichat/auth/screen/login_screen.dart';
 import 'package:pichat/auth/screen/onboarding_screen.dart';
@@ -17,7 +18,10 @@ import 'package:pichat/utils/snackbar.dart';
 
 
 
+
+
 class AuthController extends ChangeNotifier{
+
 
   final FirebaseAuth firebase = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -80,7 +84,20 @@ class AuthController extends ChangeNotifier{
 
   ///FOR RESET PASSWORD SCREEN
   final TextEditingController resetPasswordController = TextEditingController();
-
+  
+  ///dispose all
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    registerNameController.dispose();
+    registerEmailController.dispose();
+    registerPasswordController.dispose();
+    registerConfirmPasswordController.dispose();
+    loginEmailController.dispose();
+    loginPasswordController.dispose();
+    resetPasswordController.dispose();
+    super.dispose();
+  }
 
 
 
@@ -89,33 +106,43 @@ class AuthController extends ChangeNotifier{
     try {
       //get fcm token
       String? token = await messaging.getToken();
-      User appUser = (await firebase.createUserWithEmailAndPassword(
-        email: registerEmailController.text,
-        password: registerConfirmPasswordController.text,
-      )).user!;
-      if(appUser != null && registerPasswordController.text == registerConfirmPasswordController.text && isChecked == true) {
-        //call firestore to add the new user
-        await firestore.collection('users')
-        .doc(appUser.uid)
-        .set({
-          'name': registerNameController.text,
-          'email': appUser.email,
-          'password': registerConfirmPasswordController.text,
-          //'photo': 'photoURL',
-          'id': appUser.uid,
-          'isOnline': true,
-          'isVerified': false,
-          'location': 'location', //get from geolocator,
-          'agreddToT&C': isChecked,
-          'timestamp': Timestamp
-        })
-        .whenComplete(() async => await firestore.collection('users').doc(appUser.uid).update({'FCMToken': token}))
-        .whenComplete(() => Get.offAll(() => SuccessfulRegistrationScreen()));
-        registerNameController.clear();
-        registerEmailController.clear();
-        registerPasswordController.clear();
-        registerConfirmPasswordController.clear();
-        return true;
+      if(registerNameController.text.isNotEmpty && registerEmailController.text.isNotEmpty && registerPasswordController.text == registerConfirmPasswordController.text && isChecked == true) {
+        UserCredential userCredential = await firebase.createUserWithEmailAndPassword(email: registerEmailController.text, password: registerPasswordController.text);
+        if(userCredential.user != null) {
+          //save these data of the current user so that you can persist data with get storage
+          final box = GetStorage();
+          box.write('name', registerNameController.text);
+          box.write('id', userCredential.user!.uid);
+          debugPrint("My Name: ${box.read('name')}");
+
+          //call firestore to add the new user
+          await firestore.collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+            'name': registerNameController.text,
+            'email': registerEmailController.text,
+            'password': registerConfirmPasswordController.text,
+            //'photo': 'photoURL', //upload photo from profile
+            'id': userCredential.user!.uid,
+            'isOnline': true,
+            'isVerified': false,
+            'location': 'location', //get from geolocator,
+            'agreedToT&C': isChecked,
+            'timestamp': Timestamp.now()
+          })
+          .then((val) async => await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token}))
+          .then((val) {
+            Get.offAll(() => const SuccessfulRegistrationScreen());
+            registerNameController.clear();
+            registerEmailController.clear();
+            registerPasswordController.clear();
+            registerConfirmPasswordController.clear();
+          });
+        }
+
+        else {
+          return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
+        }
       }
       else {
         customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
@@ -130,21 +157,25 @@ class AuthController extends ChangeNotifier{
     try {
       //get fcm token
       String? token = await messaging.getToken();
-      //sign in user credentials
-      User appUser = (await firebase.signInWithEmailAndPassword(
-        email: loginEmailController.text,
-        password: loginPasswordController.text,
-      )).user!;
-      if(appUser != null) {
-        //always update fcm_token
-        await firestore.collection('users').doc(appUser.uid).update({'FCMToken': token})
-        .whenComplete(() => Get.offAll(() => MainPage()));
-        loginEmailController.clear();
-        loginPasswordController.clear();
-        return true;
+
+      if(loginEmailController.text.isNotEmpty && loginPasswordController.text.isNotEmpty) {
+        //sign in user credentials
+        UserCredential userCredential = await firebase.signInWithEmailAndPassword(email: loginEmailController.text, password: loginPasswordController.text);
+        if(userCredential.user != null) {
+          //always update fcm_token
+          await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token})
+          .whenComplete(() {
+            Get.offAll(() => MainPage());
+            loginEmailController.clear();
+            loginPasswordController.clear();
+          });
+        }
+        else {
+          return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
+        }
       }
       else {
-        return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
+        customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
       }
     } on FirebaseAuthException catch (e) {
       customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
@@ -164,8 +195,8 @@ class AuthController extends ChangeNotifier{
   //ResetPassword Method
   Future resetPassword () async {
     try {
-      await firebase.sendPasswordResetEmail(email: resetPasswordController.text);
-      customGetXSnackBar(title: 'Request Successful', subtitle: "we sent a link to you mail to reset your password");
+      await firebase.sendPasswordResetEmail(email: resetPasswordController.text)
+      .whenComplete(() => customGetXSnackBar(title: 'Request Successful', subtitle: "we've sent a link to your mail to reset your password"));
     } on FirebaseAuthException catch (e) {
       customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }
@@ -179,7 +210,7 @@ class AuthController extends ChangeNotifier{
 
 
   ////////////////////////////////////////////////////////////////////////////////////
-  Future<void> signInWithGoogle() async{
+  /*Future<void> signInWithGoogle() async{
     try {
       //begin interactive sign in process
       final GoogleSignInAccount? gUser = await GoogleSignIn(
@@ -226,7 +257,7 @@ class AuthController extends ChangeNotifier{
     catch(e) {
       debugPrint('Sign In Error: $e');
     }
-  }
+  }*/
 
 
 }

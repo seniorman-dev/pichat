@@ -189,7 +189,7 @@ class FeedScreen extends StatelessWidget {
                             color: AppTheme().mainColor,  //.darkGreyColor,
                             onPressed: () {}, 
                           ),
-                          SizedBox(width: 5.w,),
+                          /*SizedBox(width: 5.w,),
                           IconButton(
                             icon: Icon(
                               CupertinoIcons.chat_bubble,
@@ -198,10 +198,10 @@ class FeedScreen extends StatelessWidget {
                             //isSelected: true,
                             color: AppTheme().darkGreyColor,
                             onPressed: () {}, 
-                          ),
+                          ),*/
                           SizedBox(width: 5.w,),
                           IconButton(
-                            icon: Icon(CupertinoIcons.chart_pie),
+                            icon: Icon(CupertinoIcons.smallcircle_circle),  //smallcircle_circle_fill
                             iconSize: 30.r,
                             //isSelected: true,
                             color: AppTheme().darkGreyColor,
@@ -219,9 +219,9 @@ class FeedScreen extends StatelessWidget {
                             children: [
                               SizedBox(width: 10.w,),
                               Text(
-                                '200',
+                                '2000',
                                 style: GoogleFonts.poppins(
-                                  color: AppTheme().darkGreyColor,
+                                  color: AppTheme().greyColor,
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w500,
                                   textStyle: TextStyle(
@@ -244,7 +244,7 @@ class FeedScreen extends StatelessWidget {
                             ],
                           ),
                           //#2
-                          Row(
+                          /*Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(width: 10.w,),
@@ -262,6 +262,36 @@ class FeedScreen extends StatelessWidget {
                               SizedBox(width: 5.w,),
                               Text(
                                 'comments',
+                                style: GoogleFonts.poppins(
+                                  color: AppTheme().blackColor,
+                                  fontSize: 12.sp,
+                                  //fontWeight: FontWeight.w500,
+                                  textStyle: TextStyle(
+                                    overflow: TextOverflow.ellipsis
+                                  )
+                                ),
+                              ),
+                            ],
+                          ),*/
+                          //#3
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(width: 10.w,),
+                              Text(
+                                '2000',
+                                style: GoogleFonts.poppins(
+                                  color: AppTheme().greyColor,
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  textStyle: TextStyle(
+                                    overflow: TextOverflow.ellipsis
+                                  )
+                                ),
+                              ),
+                              SizedBox(width: 5.w,),
+                              Text(
+                                're-post',
                                 style: GoogleFonts.poppins(
                                   color: AppTheme().blackColor,
                                   fontSize: 12.sp,

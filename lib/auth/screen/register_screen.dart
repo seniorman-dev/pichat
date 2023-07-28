@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/auth/screen/login_screen.dart';
+import 'package:pichat/auth/screen/successful_registration_screen.dart';
 import 'package:pichat/auth/widget/textfield.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/utils/elevated_button.dart';
@@ -181,11 +182,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               setState(() {
                 controller.isLoading = true;
               });
-              controller.signUp();
-              controller.registerNameController.clear();
-              controller.registerEmailController.clear();
-              controller.registerPasswordController.clear();
-              controller.registerConfirmPasswordController.clear();
+              controller.signUp();  //.whenComplete(() => Get.offAll(SuccessfulRegistrationScreen()));
               setState(() {
                 controller.isLoading = false;
               });

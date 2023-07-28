@@ -5,12 +5,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:pichat/api/api.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/auth/screen/register_screen.dart';
 import 'package:pichat/auth/screen/splash_screen.dart';
 import 'package:pichat/auth/screen/splash_screen_2.dart';
 import 'package:pichat/main_page/controller/main_page_controller.dart';
+import 'package:pichat/main_page/screen/main_page.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/settings/controller/profile_controller.dart';
@@ -44,12 +46,14 @@ void main() async{
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
-  //initial firebase
+
+  //initialize get_storage
+  await GetStorage.init();
+  //initialize firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
 
   //initialize firebase cloud messaging
   API().initFCM(backgroundHandler: backgroundHandler);
-
 
   //run multi provider here to add all your providers
   runApp(
@@ -87,7 +91,7 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         transitionDuration: Duration(milliseconds: 100),
         debugShowCheckedModeBanner: false,
-        home: FirebaseCheck()
+        home: FirebaseCheck()  //MainPage()
       ),
     );
   }

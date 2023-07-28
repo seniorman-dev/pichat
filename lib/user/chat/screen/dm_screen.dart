@@ -50,7 +50,7 @@ class DMScreen extends StatelessWidget {
                 backgroundColor: AppTheme().opacityBlue,
                 child: CircleAvatar(
                   radius: 28.r, 
-                  backgroundColor: AppTheme().darkGreyColor,
+                  backgroundColor: AppTheme().darkGreyColor,  //receiverProfilePic
                 ),
               ),
               SizedBox(width: 10.w,),
@@ -61,7 +61,7 @@ class DMScreen extends StatelessWidget {
                   //mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Mike Angelo',
+                      receiverName,
                       style: GoogleFonts.poppins(
                         color: AppTheme().blackColor,
                         fontSize: 14.sp,

@@ -51,7 +51,9 @@ dependencies:
   google_sign_in: ^6.1.4
   cached_network_image: ^3.2.3
   image_picker: ^0.8.6
-
+  
+  #local storage
+  shared_preferences: ^2.2.0
 
   #statemanagement and routing
   provider: ^6.0.5

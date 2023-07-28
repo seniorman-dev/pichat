@@ -8,11 +8,23 @@ import 'package:pichat/theme/app_theme.dart';
 
 
 
-class SearchRecentChatTextField extends StatelessWidget {
+class SearchRecentChatTextField extends StatefulWidget {
   const SearchRecentChatTextField({super.key, required this.textController, this.onChanged});
   final TextEditingController textController;
   final void Function(String)? onChanged;
 
+  @override
+  State<SearchRecentChatTextField> createState() => _SearchRecentChatTextFieldState();
+}
+
+class _SearchRecentChatTextFieldState extends State<SearchRecentChatTextField> {
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    widget.textController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -31,7 +43,7 @@ class SearchRecentChatTextField extends StatelessWidget {
           scrollController: ScrollController(),
           textInputAction: TextInputAction.done,
           enabled: true,
-          controller: textController,
+          controller: widget.textController,
           keyboardType: TextInputType.name,
           autocorrect: true,
           enableSuggestions: true,
@@ -49,7 +61,7 @@ class SearchRecentChatTextField extends StatelessWidget {
             fillColor: AppTheme().lightGreyColor,
             prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
           ),
-          onChanged: onChanged,
+          onChanged: widget.onChanged,
         ),
       ),
     );

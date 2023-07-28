@@ -58,7 +58,7 @@ class SuccessfulRegistrationScreen extends StatelessWidget {
             backgroundColor: AppTheme().lightGreyColor, //.lightestOpacityBlue,
             child: Icon(
               CupertinoIcons.checkmark_seal_fill,
-              size: 140,
+              size: 140.r,
               color: AppTheme().greenColor,
             )                   
           ),

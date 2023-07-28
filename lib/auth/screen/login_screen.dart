@@ -111,9 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
               setState(() {
                 controller.isLoading = true;
               });
-              controller.signIn();
-              controller.loginEmailController.clear();
-              controller.loginPasswordController.clear();
+              controller.signIn(); //.whenComplete(() => Get.to(() => MainPage()));
               setState(() {
                 controller.isLoading = false;
               });
