@@ -88,120 +88,137 @@ class RecentChats extends StatelessWidget {
                   final box = GetStorage();
                   return box.read('name');
                 }
-                return InkWell(
-                  onTap: () {
-                    Get.to(() => DMScreen(
-                      isOnline: true, 
-                      receiverName: data['name'],
-                      receiverProfilePic: 'photoURL', //data['photo']
-                      receiverID: data['id'], 
-                      senderName: getLoggedInUserName(),  //currentUserName
-                    ));
-                    var randomInt = (Random().nextInt(10000)).toString();
-                    debugPrint(randomInt);
+                return Dismissible(
+                  key: UniqueKey(),
+                  direction: DismissDirection.horizontal,
+                  background: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(
+                        CupertinoIcons.delete_simple,
+                        color: AppTheme().redColor                     
+                      )
+                    ]
+                  ),
+                  onDismissed: (direction) {
+                    chatServiceontroller.deleteRecentChats(friendId: data['id']);
                   },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.h,
-                      vertical: 8.w
-                    ),
-                    child: Container(
-                      //height: 100.h,
-                      //width: 200.w,
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => DMScreen(
+                        isOnline: true, 
+                        receiverName: data['name'],
+                        receiverProfilePic: 'photoURL', //data['photo']
+                        receiverID: data['id'], 
+                        senderName: getLoggedInUserName(),  //currentUserName
+                      ));
+                      
+                      var randomInt = (Random().nextInt(10000)).toString();
+                      debugPrint(randomInt);
+                    },
+                    child: Padding(
                       padding: EdgeInsets.symmetric(
-                        vertical: 20.h, //30.h
-                        horizontal: 15.w  //20.h
+                        horizontal: 20.h,
+                        vertical: 8.w
                       ),
-                      decoration: BoxDecoration(
-                        color: AppTheme().whiteColor,
-                        borderRadius: BorderRadius.circular(20.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 0.1.r,
-                            blurRadius: 8.0.r,
-                          )
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          //profilePic
-                          CircleAvatar(
-                            radius: 32.r,
-                            backgroundColor: AppTheme().opacityBlue,
-                            child: CircleAvatar(
-                              radius: 30.r,
-                              backgroundColor: AppTheme().darkGreyColor,
+                      child: Container(
+                        //height: 100.h,
+                        //width: 200.w,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 20.h, //30.h
+                          horizontal: 15.w  //20.h
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppTheme().whiteColor,
+                          borderRadius: BorderRadius.circular(20.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: 0.1.r,
+                              blurRadius: 8.0.r,
+                            )
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            //profilePic
+                            CircleAvatar(
+                              radius: 32.r,
+                              backgroundColor: AppTheme().opacityBlue,
+                              child: CircleAvatar(
+                                radius: 30.r,
+                                backgroundColor: AppTheme().darkGreyColor,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 10.w,),
-                          //details
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                //Row 1
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      data['name'],
-                                      style: GoogleFonts.poppins(
-                                        color: AppTheme().blackColor,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500
-                                      ),
-                                    ),
-                                    Text(
-                                      formatTime(timestamp: data['timestamp']),
-                                      style: GoogleFonts.poppins(
-                                        color: AppTheme().darkGreyColor,
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 4.h,),
-                                //Row 2
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    //figure this out
-                                    //show when a receiver sends a new message then disappear when the current user taps on it
-                                    Text(
-                                      'New Chat',
-                                      style: GoogleFonts.poppins(
-                                        color: AppTheme().darkGreyColor,
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
-                                        textStyle: TextStyle(
-                                          overflow: TextOverflow.ellipsis
-                                        )
-                                      ),
-                                    ),
-                                    //show when a receiver sends a new message then disappear when the current user taps on it
-                                    CircleAvatar(
-                                      backgroundColor: AppTheme().mainColor,
-                                      radius: 7.r,
-                                      /*child: Text(
-                                        '2',
+                            SizedBox(width: 10.w,),
+                            //details
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //Row 1
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        data['name'],
                                         style: GoogleFonts.poppins(
+                                          color: AppTheme().blackColor,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500
+                                        ),
+                                      ),
+                                      Text(
+                                        formatTime(timestamp: data['timestamp']),
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().darkGreyColor,
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w500
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 4.h,),
+                                  //Row 2
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      //figure this out
+                                      //show when a receiver sends a new message then disappear when the current user taps on it
+                                      Text(
+                                        'New Chat',
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().darkGreyColor,
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w500,
                                           textStyle: TextStyle(
-                                            color: AppTheme().whiteColor,
-                                            fontSize: 9.sp,
-                                            //fontWeight: FontWeight.w500
+                                            overflow: TextOverflow.ellipsis
                                           )
                                         ),
-                                      ),*/
-                                    )
-                                  ],
-                                )
-                              ]
+                                      ),
+                                      //show when a receiver sends a new message then disappear when the current user taps on it
+                                      CircleAvatar(
+                                        backgroundColor: AppTheme().mainColor,
+                                        radius: 7.r,
+                                        /*child: Text(
+                                          '2',
+                                          style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                              color: AppTheme().whiteColor,
+                                              fontSize: 9.sp,
+                                              //fontWeight: FontWeight.w500
+                                            )
+                                          ),
+                                        ),*/
+                                      )
+                                    ],
+                                  )
+                                ]
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

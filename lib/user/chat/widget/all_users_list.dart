@@ -5,17 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/user/chat/widget/friend_request_button.dart';
+import 'package:pichat/user/chat/widget/buttons.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
 import 'package:date_time_format/date_time_format.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'search_textfield.dart';
 
 
 
@@ -32,12 +35,27 @@ class AllUsersList extends StatefulWidget {
 }
 
 class _AllUsersListState extends State<AllUsersList> {
-
+  
+  //get name of current users
+  String getCurrentUserName() {
+    final box = GetStorage();
+    return box.read('name');
+  }
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     var controller = Provider.of<AuthController>(context);
     var chatServiceController = Provider.of<ChatServiceController>(context);
+    //when a recent chat message is searched for
+    void onSearch() async{
+      setState(() {
+        isLoading = true;
+        chatServiceController.isSearching = true;
+      });
+      await controller.firestore.collection('users').where("name", isEqualTo: chatServiceController.allUsersTextEditingController.text).get().then((value) => setState(() => isLoading = false));
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppTheme().whiteColor,
@@ -72,7 +90,7 @@ class _AllUsersListState extends State<AllUsersList> {
           ),
         ),
         body: StreamBuilder(
-          stream: controller.firestore.collection('users').snapshots(),
+          stream: chatServiceController.isSearching ? controller.firestore.collection('users').where("name", isEqualTo: chatServiceController.allUsersTextEditingController.text).snapshots() : controller.firestore.collection('users').where("id", isNotEqualTo: controller.userID).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               // Show a loading indicator while waiting for data
@@ -83,39 +101,39 @@ class _AllUsersListState extends State<AllUsersList> {
               return ErrorLoader();
             }
           else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 25.w,
-                  vertical: 20.h,
-                ),
-                child: Center(
-                  child: Column(
-                    //mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 200.h,),
-                      CircleAvatar(
-                        radius: 100.r,
-                        backgroundColor: AppTheme().lightestOpacityBlue,
-                          child: Icon(
-                          CupertinoIcons.person_crop_circle_badge_xmark,
-                          color: AppTheme().mainColor,
-                          size: 70.r,
-                        ),
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 25.w,
+                vertical: 20.h,
+              ),
+              child: Center(
+                child: Column(
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 200.h,),
+                    CircleAvatar(
+                      radius: 100.r,
+                      backgroundColor: AppTheme().lightestOpacityBlue,
+                        child: Icon(
+                        CupertinoIcons.person_crop_circle_badge_xmark,
+                        color: AppTheme().mainColor,
+                        size: 70.r,
                       ),
-                      SizedBox(height: 50.h),
-                      Text(
-                        'No connects found',
-                        style: GoogleFonts.poppins(
-                          color: AppTheme().greyColor,
-                          fontSize: 14.sp,
-                          //fontWeight: FontWeight.w500
-                        ),
-                      )
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 50.h),
+                    Text(
+                      'No connects found',
+                      style: GoogleFonts.poppins(
+                        color: AppTheme().greyColor,
+                        fontSize: 14.sp,
+                        //fontWeight: FontWeight.w500
+                      ),
+                    )
+                  ],
                 ),
-              );
+              ),
+            );
             }
             else {
     
@@ -140,8 +158,15 @@ class _AllUsersListState extends State<AllUsersList> {
                       child: Column(
                         children: [
                           SizedBox(height: 30.h,),
+                          //search users
+                          SearchTextField(
+                            textController: chatServiceController.allUsersTextEditingController,
+                            onChanged: (value) => onSearch(), 
+                            hintText: 'Search users by name...',
+                          ),
+                          SizedBox(height: 30.h,),
                           Container(
-                            height: 100.h,
+                            //height: 100.h,
                             padding: EdgeInsets.symmetric(
                               vertical: 15.h, //20.h
                               horizontal: 15.w  //20.h
@@ -231,12 +256,12 @@ class _AllUsersListState extends State<AllUsersList> {
       
                                             ),
                                           )*/
-                                          FriendRequestButton(
-                                            currentUserId: chatServiceController.auth.currentUser!.uid, 
+                                          SendOrCancelRequestButton(                                       
                                             receiverID: data['id'], 
-                                            receiverName: data['name'], 
-                                            receiverProfilePic: 'photo', //data['photo'],
-                                            isSelected: isSelected,
+                                            isSelected: isSelected, 
+                                            FCMToken: data['FCMToken'], 
+                                            currentUserName: getCurrentUserName(), 
+                                            receiverName: data['name'],
                                           )                            
                                         ]
                                       )

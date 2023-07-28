@@ -12,13 +12,35 @@ import 'package:pichat/user/model/message.dart';
 
 class ChatServiceController extends ChangeNotifier {
 
+  //////////////TextEditingControllers here
+  final allUsersTextEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    allUsersTextEditingController.dispose();
+    super.dispose();
+  }
+
+  //when a user is searching for users
+  bool isSearching = false;
+
+  //when a user is trying to searching for resent chats
+  bool isSearchingRecentChats = false;
+
+
   //get the instance of firebaseauth and cloud firestore
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   
-  ///////////////////
+  ///////////////////Set objects for keeping indices in check
   Set<String> selectedDocumentIdForConnectRequest = <String>{};
   Set<String> selectedDocumentIdForAllUsers = <String>{};
+
+  //delete recent chats
+  Future<void> deleteRecentChats({required String friendId}) async{
+    await firestore.collection('users').doc(auth.currentUser!.uid).collection('recent_chats').doc(friendId).delete();
+  }
 
   //SEND MESSAGES
   Future<void> sendMessage({required String receiverName, required String message}) async{
@@ -142,7 +164,7 @@ class ChatServiceController extends ChangeNotifier {
   
 
   //declineFriendRequest
-  Future declineFriendRequest({required  String friendId}) async {
+  Future declineFriendRequest({required String friendId}) async {
     try {
       // Remove sender of the request from receipient/current user friendRequests collection
       await FirebaseFirestore.instance

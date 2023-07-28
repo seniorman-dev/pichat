@@ -177,7 +177,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                     ),
                                     SizedBox(height: 4.h,),
                                     Text(
-                                      data['email'],     //data['isOnline'] ? 'online' : 'offline',
+                                      data['email'] , //data['isOnline'] ? 'online' : 'offline',  //data['email'],     
                                       style: GoogleFonts.poppins(
                                         color: AppTheme().darkGreyColor, //specify color when user is online or offline
                                         fontSize: 14.sp, //14.sp
@@ -206,7 +206,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                                 } 
                                                 else {
                                                   chatController.selectedDocumentIdForAllUsers.add(data['id']);
-                                                  chatController.acceptFriendRequest(friendName: data['name'], friendId: data['id'], friendProfilePic: data['photo']);  //daa['photo']
+                                                  chatController.acceptFriendRequest(friendName: data['name'], friendId: data['id'], friendProfilePic: data['photo']);  //data['photo']
                                                 }
                                               });
                                             },

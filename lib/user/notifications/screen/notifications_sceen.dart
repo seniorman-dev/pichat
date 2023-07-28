@@ -228,25 +228,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               ),
                             ),
                             SizedBox(height: 6.h),
-                            //date
+                            //date & time 
                             Text(
-                              formatDate(timestamp: data['timestamp']),
+                              "${formatDate(timestamp: data['timestamp'])} - ${formatTime(timestamp: data['timestamp'])}",
                               style: TextStyle(
                                 fontSize: 13.sp,
                                 fontWeight: FontWeight.normal,
                                 color: AppTheme().darkGreyColor
                               ),
                             ),
-                            SizedBox(height: 4.h),
-                            //time
-                            Text(
-                              formatTime(timestamp: data['timestamp']),
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.normal,
-                                color: AppTheme().darkGreyColor
-                              ),
-                            )
                           ],
                         )
                       ]

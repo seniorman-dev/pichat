@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/api/api.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/screen/dm_screen.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/loader.dart';
@@ -26,6 +27,7 @@ class FriendsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var controller = Provider.of<AuthController>(context);
+    var chatController = Provider.of<ChatServiceController>(context);
     return StreamBuilder(
       stream: controller.firestore.collection('users').doc(controller.userID).collection('friends').snapshots(),
       builder: (context, snapshot) {
@@ -90,6 +92,9 @@ class FriendsList extends StatelessWidget {
                           receiverName: data['name'], 
                           senderName: getUserName(),  //currentUserName controller.firebase.currentUser!.email
                         ));
+                      },
+                      onLongPress: () {
+                        chatController.removeUserFromFriendList(friendId: data['id']);
                       },
                       child: CircleAvatar(
                         radius: 40.r,

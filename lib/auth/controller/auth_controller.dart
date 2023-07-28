@@ -162,6 +162,10 @@ class AuthController extends ChangeNotifier{
         //sign in user credentials
         UserCredential userCredential = await firebase.signInWithEmailAndPassword(email: loginEmailController.text, password: loginPasswordController.text);
         if(userCredential.user != null) {
+          final box = GetStorage();
+          box.write('name', userCredential.user!.displayName);
+          box.write('id', userCredential.user!.uid);
+          debugPrint("My Name: ${box.read('name')}");
           //always update fcm_token
           await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token})
           .whenComplete(() {
@@ -186,6 +190,10 @@ class AuthController extends ChangeNotifier{
   //SIGN OUT METHOD
   Future<void> signOut() async {
     try {
+      final box = GetStorage();
+      box.remove('name');
+      box.remove('id');
+      debugPrint("My Name: ${box.read('name')}");
       await firebase.signOut().whenComplete(() => Get.offAll(() => LoginScreen()));
     } on FirebaseAuthException catch (e) {
       customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
@@ -195,6 +203,7 @@ class AuthController extends ChangeNotifier{
   //ResetPassword Method
   Future resetPassword () async {
     try {
+      
       await firebase.sendPasswordResetEmail(email: resetPasswordController.text)
       .whenComplete(() => customGetXSnackBar(title: 'Request Successful', subtitle: "we've sent a link to your mail to reset your password"));
     } on FirebaseAuthException catch (e) {

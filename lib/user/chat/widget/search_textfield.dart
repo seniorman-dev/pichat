@@ -8,16 +8,17 @@ import 'package:pichat/theme/app_theme.dart';
 
 
 
-class SearchRecentChatTextField extends StatefulWidget {
-  const SearchRecentChatTextField({super.key, required this.textController, this.onChanged});
+class SearchTextField extends StatefulWidget {
+  const SearchTextField({super.key, required this.textController, this.onChanged, required this.hintText});
   final TextEditingController textController;
   final void Function(String)? onChanged;
+  final String hintText;
 
   @override
-  State<SearchRecentChatTextField> createState() => _SearchRecentChatTextFieldState();
+  State<SearchTextField> createState() => _SearchTextFieldState();
 }
 
-class _SearchRecentChatTextFieldState extends State<SearchRecentChatTextField> {
+class _SearchTextFieldState extends State<SearchTextField> {
 
   @override
   void dispose() {
@@ -25,6 +26,8 @@ class _SearchRecentChatTextFieldState extends State<SearchRecentChatTextField> {
     widget.textController.dispose();
     super.dispose();
   }
+
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -55,7 +58,7 @@ class _SearchRecentChatTextFieldState extends State<SearchRecentChatTextField> {
               borderRadius: BorderRadius.circular(20.r),
               borderSide: BorderSide.none
             ),       
-            hintText: 'Search recent messages...',
+            hintText: widget.hintText,
             hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 13.sp),              
             filled: true,
             fillColor: AppTheme().lightGreyColor,

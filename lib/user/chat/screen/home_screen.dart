@@ -11,7 +11,7 @@ import 'package:pichat/user/chat/widget/all_users_list.dart';
 import 'package:pichat/user/chat/widget/friends_list.dart';
 import 'package:pichat/user/chat/widget/recent_chats_list.dart';
 import 'package:pichat/user/chat/widget/request_list.dart';
-import 'package:pichat/user/chat/widget/search_recent_charts.dart';
+import 'package:pichat/user/chat/widget/search_textfield.dart';
 import 'package:pichat/user/notifications/screen/notifications_sceen.dart';
 import 'package:pichat/utils/extract_firstname.dart';
 import 'package:provider/provider.dart';
@@ -31,21 +31,25 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController textController = TextEditingController();
   bool isLoading = false;
-  bool isSearching = false;
 
 
   @override
   Widget build(BuildContext context) {
+    
+    //Dependency injection by provider
     var controller = Provider.of<AuthController>(context);
     var chatServiceontroller = Provider.of<ChatServiceController>(context);
-    //when a recent chat message is searched for
+
+    //function called when a recent chat message is being searched for
     void onSearch() async{
       setState(() {
         isLoading = true;
-        isSearching = true;
+        chatServiceontroller.isSearchingRecentChats = true;
       });
-      await controller.firestore.collection('users').where("name", isEqualTo: textController.text).get().then((value) => setState(() => isLoading = false));
+      await chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').where("name", isEqualTo: textController.text).get().then((value) => setState(() => isLoading = false));
     }
+
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppTheme().whiteColor,
@@ -228,22 +232,29 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),           
               SizedBox(height: 30.h,),
+
               //list of friends
               FriendsList(),
+
               SizedBox(height: 20.h,),
               Divider(color: AppTheme().darkGreyColor, thickness: 1,),
               SizedBox(height: 20.h,), //30.h
+
               //search for recent chats
-              SearchRecentChatTextField(
+              SearchTextField(
                 textController: textController,
-                onChanged: (value) => onSearch(),
+                onChanged: (value) => onSearch(), 
+                hintText: 'Search recent messages...',
               ),
+
               SizedBox(height: 20.h,), //30.h
-              //recent chats
+
+              //recent chats stream
               RecentChats(
-                isSearching: isSearching,
+                isSearching: chatServiceontroller.isSearchingRecentChats,
                 textController: textController,
               ),
+
               SizedBox(height: 10.h,),
             ]
           ),
