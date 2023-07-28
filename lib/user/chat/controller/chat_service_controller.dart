@@ -42,6 +42,7 @@ class ChatServiceController extends ChangeNotifier {
     await firestore.collection('users').doc(auth.currentUser!.uid).collection('recent_chats').doc(friendId).delete();
   }
 
+
   //SEND MESSAGES
   Future<void> sendMessage({required String receiverName, required String message}) async{
     //get current user info
@@ -68,6 +69,7 @@ class ChatServiceController extends ChangeNotifier {
     //i'd use my own format for private chats
     await firestore.collection('chat_rooms').doc(chatRoomId).collection('messages').doc(messageId).set(newMessage.toMap());
   }
+
 
   //GET MESSAGES
   Stream<QuerySnapshot> getMessage({required String currentUserName, required String receiverName}) {
