@@ -361,7 +361,8 @@ class ChatServiceController extends ChangeNotifier {
     .collection('recent_chats')
     .doc(auth.currentUser!.uid)
     .collection('messages')
-    .add({"isSeen": isSeen});
+    .doc()
+    .set({"isSeen": isSeen});
   }
   
 }
