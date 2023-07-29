@@ -46,14 +46,14 @@ class _SendOrCancelRequestButtonState extends State<SendOrCancelRequestButton> {
                         ////////////////////////
       await chatServiceController.sendFriendRequest(recipientId: widget.receiverID)
       .then(
-        (value) => API().sendPushNotificationWithFirebaseAPI(content: '$userName wants to connect with you 🎈', receiverFCMToken: widget.FCMToken, title: 'Hi, ${widget.receiverName}')
+        (value) => API().sendPushNotificationWithFirebaseAPI(content: '${getFirstName(fullName: userName)} wants to connect with you 🎈', receiverFCMToken: widget.FCMToken, title: 'Hi, ${widget.receiverName}')
       )
       .then(
         (value) => chatServiceController.firestore.collection('users').doc(widget.receiverID).collection('notifications')
         .doc(userId)
         .set({
           'title': 'Hi, ${getFirstName(fullName: widget.receiverName)}',
-          'body': '$userName wants to connect with you 🎈',
+          'body': '${getFirstName(fullName: userName)} wants to connect with you 🎈',
           'timestamp': Timestamp.now(),
         })
       );

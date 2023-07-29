@@ -235,16 +235,16 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
 
-              SizedBox(height: 20.h,),
+              SizedBox(height: 10.h,), //20.h
 
               //list of friends
               FriendsList(),
 
-              SizedBox(height: 20.h,),
+              SizedBox(height: 10.h,), //20.h
 
               Divider(color: AppTheme().darkGreyColor, thickness: 1,),
-              
-              SizedBox(height: 20.h,), //30.h
+
+              SizedBox(height: 10.h,), //20.h
 
               //search for recent chats
               SearchTextField(
@@ -253,7 +253,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 hintText: 'Search recent messages...',
               ),
 
-              SizedBox(height: 20.h,), //30.h
+              SizedBox(height: 10.h,), //20.h
 
               //recent chats stream
               RecentChats(
