@@ -16,40 +16,44 @@ import 'package:provider/provider.dart';
 
 
 class SendOrCancelRequestButton extends StatefulWidget {
+  final String receiverName;
   final String receiverID;
   final String FCMToken;
-  final String currentUserName;
-  final String currentUserId;
-  final String receiverName;
   bool isSelected;
   
 
-  SendOrCancelRequestButton({super.key, required this.receiverID, required this.isSelected, required this.FCMToken, required this.currentUserName, required this.receiverName, required this.currentUserId});
+  SendOrCancelRequestButton({super.key, required this.receiverID, required this.isSelected, required this.FCMToken, required this.receiverName,});
 
   @override
   _SendOrCancelRequestButtonState createState() => _SendOrCancelRequestButtonState();
 }
 
 class _SendOrCancelRequestButtonState extends State<SendOrCancelRequestButton> {
-  final bool _isFriend = false;
   bool _isPending = false;
-
 
   @override
   Widget build(BuildContext context) {
     var chatServiceController = Provider.of<ChatServiceController>(context);
 
     Future<void> _sendFriendRequest() async {
+      //did this to retrieve logged in user information
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(chatServiceController.auth.currentUser!.uid)
+      .get();
+      String userName = snapshot.get('name');
+      String userId = snapshot.get('id');
+                        ////////////////////////
       await chatServiceController.sendFriendRequest(recipientId: widget.receiverID)
       .then(
-        (value) => API().sendPushNotificationWithFirebaseAPI(content: '${widget.currentUserName} wants to connect with you', receiverFCMToken: widget.FCMToken, title: 'Hi, ${widget.receiverName}')
+        (value) => API().sendPushNotificationWithFirebaseAPI(content: '$userName wants to connect with you 🎈', receiverFCMToken: widget.FCMToken, title: 'Hi, ${widget.receiverName}')
       )
       .then(
         (value) => chatServiceController.firestore.collection('users').doc(widget.receiverID).collection('notifications')
-        .doc(widget.currentUserId)
+        .doc(userId)
         .set({
           'title': 'Hi, ${getFirstName(fullName: widget.receiverName)}',
-          'body': '${widget.currentUserName} wants to connect with you',
+          'body': '$userName wants to connect with you 🎈',
           'timestamp': Timestamp.now(),
         })
       );
@@ -131,6 +135,8 @@ class _SendOrCancelRequestButtonState extends State<SendOrCancelRequestButton> {
     }
   }
 }
+
+
 
 
 
@@ -248,6 +254,9 @@ class _AcceptRequestButtonState extends State<AcceptRequestButton> {
     }
   }
 }
+
+
+
 
 
 

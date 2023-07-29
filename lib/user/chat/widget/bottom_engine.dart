@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 
 
+
 class BottomEngine extends StatelessWidget {
   BottomEngine({super.key, required this.receiverName});
   final String receiverName;
@@ -26,8 +27,8 @@ class BottomEngine extends StatelessWidget {
     void sendMessage() async{
       if(textController.text.isNotEmpty) {
         //send message
-        controller.sendMessage(receiverName: receiverName, message: textController.text)
-        .whenComplete(() => textController.clear());
+        //controller.sendMessage(receiverName: receiverName, message: textController.text)
+        //.whenComplete(() => textController.clear());
         //clear textcontroller after sending message
       }
     }

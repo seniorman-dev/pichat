@@ -56,12 +56,12 @@ class _AllUsersListState extends State<AllUsersList> {
   //for text editing controller
   final TextEditingController searchController = TextEditingController();
   //dispose textcontroller
-  @override
+  /*@override
   void dispose() {
     // Always dispose of the TextEditingController when the widget is disposed
     searchController.dispose();
     super.dispose();
-  }
+  }*/
 
   Stream<QuerySnapshot>? userStream;
 
@@ -71,6 +71,7 @@ class _AllUsersListState extends State<AllUsersList> {
     userStream = firestore.collection('users').where("id", isNotEqualTo: userID).snapshots();
     super.initState();
   }
+  
 
   void performSearch(String query) {
     // Update the stream based on the search query
@@ -83,7 +84,7 @@ class _AllUsersListState extends State<AllUsersList> {
         // If there's a search query, filter users based on the query
         userStream = FirebaseFirestore.instance
         .collection('users')
-        .where('name', isEqualTo: query)
+        .where('name', isEqualTo: query)  //query
         .snapshots();
       }
     });
@@ -279,9 +280,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                                 receiverName: data['name'],                                       
                                                 receiverID: data['id'], 
                                                 isSelected: isSelected, 
-                                                FCMToken: data['FCMToken'], 
-                                                currentUserName: getCurrentUserName(),
-                                                currentUserId: controller.userID, 
+                                                FCMToken: data['FCMToken'],  
                                               )                            
                                             ]
                                           )

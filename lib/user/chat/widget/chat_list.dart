@@ -6,6 +6,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/user/chat/controller/chat_service_controller.dart';
+import 'package:pichat/utils/error_loader.dart';
+import 'package:pichat/utils/extract_firstname.dart';
+import 'package:pichat/utils/firestore_timestamp_formatter.dart';
+import 'package:pichat/utils/loader.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -13,9 +19,11 @@ import 'package:pichat/theme/app_theme.dart';
 
 
 class ChatList extends StatefulWidget {
-  const ChatList({super.key, required this.senderName, required this.receiverName});
+  const ChatList({super.key, required this.senderName, required this.receiverName, required this.receiverId, required this.senderId});
   final String senderName;
+  final String senderId;
   final String receiverName;
+  final String receiverId;
 
   @override
   State<ChatList> createState() => _ChatListState();
@@ -34,99 +42,162 @@ class _ChatListState extends State<ChatList> {
       super.dispose();
     }
 
-    //it makes messages list automatically scroll up after a message has been sent
-    /*SchedulerBinding.instance.addPersistentFrameCallback((timeStamp) {
-      messageController.jumpTo(messageController.position.maxScrollExtent);
-    });*/
+    //provider for dependency injection
+    var chatServiceontroller = Provider.of<ChatServiceController>(context);
     
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 15.w, //20.w
-        vertical: 5.h  //20.h
-      ),
-      child: ListView.separated(
-        padding: EdgeInsets.symmetric(
-          horizontal: 10.w, //20.w
-          vertical: 10.h  //20.h
-        ),
-        //controller: messageController,
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        separatorBuilder: (context, index) => SizedBox(height: 10.h,), 
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onLongPress: () {
-              //show message info or message statistics alert dialog
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,  ///tweak this instead to suit the chatters
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  //height: 80.h,
-                  width: 200.w,
-                  padding: EdgeInsets.symmetric(
-                    vertical: 15.h, //20.h
-                    horizontal: 15.w  //15.h
+    return StreamBuilder(
+      stream: chatServiceontroller.firestore.collection('users')
+      .doc(chatServiceontroller.auth.currentUser!.uid)
+      .collection('recent_chats')
+      .doc(widget.receiverId)
+      .collection('messages').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show a loading indicator while waiting for data
+          return Loader();
+        } 
+        if (snapshot.hasError) {
+          // Handle error if any
+          return ErrorLoader();
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 25.w,
+              vertical: 20.h,
+            ),
+            child: Center(
+              child: Column(
+                //mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 150.h,),
+                  CircleAvatar(
+                    radius: 100.r,
+                    backgroundColor: AppTheme().lightestOpacityBlue,
+                      child: Icon(
+                      Icons.chat_rounded,
+                      color: AppTheme().mainColor,
+                      size: 70.r,
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                    color: AppTheme().mainColor,  ///tweak this instead to suit the chatters
-                    borderRadius: BorderRadius.circular(20.r),  ///tweak this instead to suit the chatters
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        //color: AppTheme().lightGreyColor,
-                        spreadRadius: 0.1.r,
-                        blurRadius: 8.0.r,
-                      )
-                    ],
-                  ),
-                  child: Text(
-                    'New Chat',
+                  SizedBox(height: 30.h),
+                  Text(
+                    "Start a conversation with ${getFirstName(fullName: widget.receiverName)} 😊",
                     style: GoogleFonts.poppins(
-                      color: AppTheme().whiteColor,  //tweak this instead to suit the chatters
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                        /*textStyle: TextStyle(
-                          overflow: TextOverflow.ellipsis
-                        )*/
+                      color: AppTheme().greyColor,
+                      fontSize: 14.sp,
+                      //fontWeight: FontWeight.w500
                     ),
-                  ),
-                ),
-                SizedBox(height: 5.h,),
-                //Time and isSeen icon feature
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,  //tweak this also
-                  children: [
-                    Text(
-                      '12:09',
-                      style: GoogleFonts.poppins(
-                        color: Colors.grey,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                        textStyle: TextStyle(
-                          overflow: TextOverflow.ellipsis
-                        )
-                      ),
-                    ),
-                    SizedBox(width: 3.w,),
-                    /*Icon(
-                      Icons.done_all_rounded,
-                      color: Colors.grey,
-                    ),*/
-                    Icon(
-                      CupertinoIcons.checkmark_alt,
-                      color: Colors.grey,
-                    ),
-                  ],
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           );
-        }     
-      ),
+        }
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 15.w, //20.w
+            vertical: 5.h  //20.h
+          ),
+          child: ListView.separated(
+            padding: EdgeInsets.symmetric(
+              horizontal: 10.w, //20.w
+              vertical: 10.h  //20.h
+            ),
+            controller: messageController,
+            physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            separatorBuilder: (context, index) => SizedBox(height: 10.h,), 
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+                         /*leave this stuff hear to avoid crashing*/
+              //it makes the messages list automatically scroll up after a message has been sent
+              SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                messageController.jumpTo(messageController.position.maxScrollExtent);
+              });
+              
+              var data = snapshot.data!.docs[index];
+
+              return InkWell(
+                onLongPress: () {
+                  //show message info or message statistics alert dialog
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,  ///tweak this instead to suit the chatters
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      //height: 80.h,
+                      width: 200.w,
+                      padding: EdgeInsets.symmetric(
+                        vertical: 15.h, //20.h
+                        horizontal: 15.w  //15.h
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppTheme().mainColor,  ///tweak this instead to suit the chatters
+                        borderRadius: BorderRadius.circular(20.r),  ///tweak this instead to suit the chatters
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            //color: AppTheme().lightGreyColor,
+                            spreadRadius: 0.1.r,
+                            blurRadius: 8.0.r,
+                          )
+                        ],
+                      ),
+                      child: Text(
+                        data['message'],
+                        style: GoogleFonts.poppins(
+                          color: AppTheme().whiteColor,  //tweak this instead to suit the chatters
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                            /*textStyle: TextStyle(
+                              overflow: TextOverflow.ellipsis
+                            )*/
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5.h,),
+                    //Time and isSeen icon feature
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,  //tweak this also
+                      children: [
+
+                        Text(
+                          formatTime(timestamp: data['timestamp'],),
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            textStyle: TextStyle(
+                              overflow: TextOverflow.ellipsis
+                            )
+                          ),
+                        ),
+
+                        SizedBox(width: 3.w,),
+
+                        data['isSeen'] 
+                        ?const Icon(
+                          Icons.done_all_rounded,
+                          color: Colors.grey,
+                        )
+                        :const Icon(
+                          CupertinoIcons.checkmark_alt,
+                          color: Colors.grey,
+                        ),
+
+                      ],
+                    )
+                  ],
+                ),
+              );
+            }     
+          ),
+        );
+      }
     );
   }
 }

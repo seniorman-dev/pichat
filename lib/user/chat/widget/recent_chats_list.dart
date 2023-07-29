@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,16 +21,62 @@ import 'package:provider/provider.dart';
 
 
 
-class RecentChats extends StatelessWidget {
+class RecentChats extends StatefulWidget {
   RecentChats({super.key, required this.isSearching, required this.textController});
   final TextEditingController textController;
   bool isSearching;
 
   @override
+  State<RecentChats> createState() => _RecentChatsState();
+}
+
+class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  // widgets binding observer helps us to check if user is actively using the app (online) or not.
+  // it check the state of our app
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        // TODO: Handle this case. (update 'isOnline' field accordingly)
+        //ref.read(authControllerProvider).setUserStateOnline(true);
+        break;
+      case AppLifecycleState.inactive:
+        // TODO: Handle this case.
+        //ref.read(authControllerProvider).setUserStateOnline(false);
+        break;
+      case AppLifecycleState.paused:
+        // TODO: Handle this case.
+        //ref.read(authControllerProvider).setUserStateOnline(false);
+        break;
+      case AppLifecycleState.detached:
+        // TODO: Handle this case.
+        //ref.read(authControllerProvider).setUserStateOnline(false);
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     var chatServiceontroller = Provider.of<ChatServiceController>(context);
     return StreamBuilder(
-      stream: isSearching ? chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').where("name", isEqualTo: textController.text).snapshots() : chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').snapshots(),
+      stream: widget.isSearching ? chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').where("name", isEqualTo: widget.textController.text).snapshots() : chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for data
@@ -90,7 +137,7 @@ class RecentChats extends StatelessWidget {
                 }
                 return Dismissible(
                   key: UniqueKey(),
-                  direction: DismissDirection.horizontal,
+                  direction: DismissDirection.endToStart,
                   background: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -101,16 +148,26 @@ class RecentChats extends StatelessWidget {
                     ]
                   ),
                   onDismissed: (direction) {
-                    chatServiceontroller.deleteRecentChats(friendId: data['id']);
+                    chatServiceontroller.deleteUserFromRecentChats(friendId: data['id']);
                   },
                   child: InkWell(
-                    onTap: () {
+                    onTap: () async{
+                      //did this to retrieve logged in user information
+                      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(chatServiceontroller.auth.currentUser!.uid)
+                      .get();
+                      String userName = snapshot.get('name');
+                      String userId = snapshot.get('id');
+                      ////////////////////////
+
                       Get.to(() => DMScreen(
                         isOnline: true, 
                         receiverName: data['name'],
-                        receiverProfilePic: 'photoURL', //data['photo']
+                        receiverProfilePic: data['photo'],
                         receiverID: data['id'], 
-                        senderName: getLoggedInUserName(),  //currentUserName
+                        senderName: userName,
+                        senderId: userId,
                       ));
                       
                       var randomInt = (Random().nextInt(10000)).toString();

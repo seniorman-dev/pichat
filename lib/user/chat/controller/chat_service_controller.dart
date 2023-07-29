@@ -31,14 +31,10 @@ class ChatServiceController extends ChangeNotifier {
   Set<String> selectedDocumentIdForConnectRequest = <String>{};
   Set<String> selectedDocumentIdForAllUsers = <String>{};
 
-  //delete recent chats of a chat buddy
-  Future<void> deleteRecentChats({required String friendId}) async{
-    await firestore.collection('users').doc(auth.currentUser!.uid).collection('recent_chats').doc(friendId).delete();
-  }
 
 
   //SEND MESSAGES
-  Future<void> sendMessage({required String receiverName, required String message}) async{
+  /*Future<void> sendMessage({required String receiverName, required String message}) async{
     //get current user info
     final String? currentUserName = auth.currentUser!.displayName;
     final Timestamp timestamp = Timestamp.now();
@@ -75,11 +71,11 @@ class ChatServiceController extends ChangeNotifier {
     //add new message to database (note: this idea is only applicable to creating group chats)
     //i'd use my own format for private chats
     return firestore.collection('chat_rooms').doc(chatRoomId).collection('messages').orderBy('timestamp', descending: false).snapshots();
-  }
+  }*/
 
 
 
-  //sendFriendRequest
+  //sendFriendRequest to a user
   Future sendFriendRequest({required String recipientId}) async {
     try {
       //get logged in user's name from local storage
@@ -107,7 +103,7 @@ class ChatServiceController extends ChangeNotifier {
     }
   }
 
-  //cancelFriendRequest
+  //cancelFriendRequest sent to a user
   Future cancelFriendRequest({required String recipientId}) async {
     try {
       // delete/remove current user or sender from receipient friend request collection
@@ -124,14 +120,9 @@ class ChatServiceController extends ChangeNotifier {
   }
 
 
-  //acceptFriendRequest
+  //acceptFriendRequest of the sender
   Future acceptFriendRequest({required String friendName, required String friendId, required String friendProfilePic,}) async {
     try {
-
-      String getUserName() {
-        final box = GetStorage();
-        return box.read('name') ?? ''; // Return an empty string if data is not found
-      }
 
       //do this if you want to get any logged in user property 
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
@@ -173,7 +164,7 @@ class ChatServiceController extends ChangeNotifier {
   }
   
 
-  //declineFriendRequest
+  //declineFriendRequest of the sender
   Future declineFriendRequest({required String friendId}) async {
     try {
       // Remove sender of the request from receipient/current user friendRequests collection
@@ -188,7 +179,7 @@ class ChatServiceController extends ChangeNotifier {
     }
   }
 
-  //remove user from friend list
+  //remove user from friend list (this will serve as block function)
   Future removeUserFromFriendList({required String friendId}) async{
     try {
       ////remove other user from current user's friend list
@@ -209,8 +200,149 @@ class ChatServiceController extends ChangeNotifier {
       debugPrint('Error removing friend request: $e');
     }
   }
-
-
   
+  //make key board disappear after a message has been sent
+  void makeKeyboardDisappear() {
+    FocusNode focusNode = FocusNode();
+    return focusNode.unfocus();
+  }
+
+
+
+
+
+
+                 /**for chat fuctionalitites */
+  /////////////////////////////////////////////////////////////////////
+  
+  //(to be placed inside "sendDirectMessages" function)//
+  Future<void> addUserToRecentChats({required String receiverId, required String receiverName, required String receiverPhoto, required String lastMessage}) async{
+    //do this if you want to get any logged in user property 
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(auth.currentUser!.uid)
+    .get();
+    String userName = snapshot.get('name');
+    String userId = snapshot.get('id');
+    String userPhoto = snapshot.get('photo');
+    bool userOnline = snapshot.get('isOnline');
+    //////////////////////////////////
+    
+    //add receiver of the text message to my recent chats stream
+    await firestore.collection('users')
+    .doc(auth.currentUser!.uid)
+    .collection('recent_chats')
+    .doc(receiverId)
+    .set({
+      'name': receiverName,
+      'id': receiverId,
+      'photo': receiverPhoto,
+      'lastMessage': lastMessage
+    });
+
+    //add myself to receiver's recent chat stream  (update isMessageSeen later)
+    await firestore.collection('users')
+    .doc(receiverId)
+    .collection('recent_chats')
+    .doc(auth.currentUser!.uid)
+    .set({
+      'name': userName,
+      'id': userId,
+      'photo': userPhoto,
+      'lastMessage': lastMessage
+    });
+  }
+
+  //delete recent chats of a chat buddy
+  Future<void> deleteUserFromRecentChats({required String friendId}) async{
+    await firestore.collection('users')
+    .doc(auth.currentUser!.uid)
+    .collection('recent_chats').
+    doc(friendId).delete();
+  }
+  
+  //send direct messages
+  Future<void> sendDirectMessages({
+    required String receiverId,
+    required String receiverName,
+    required String receiverPhoto,
+    required String message  //gotten from the text controller used to send message
+  }) async{
+
+    Timestamp timestamp = Timestamp.now();
+    var messageId = (Random().nextInt(100000)).toString();
+
+    //did this to get the last message sent from any of the chatters (messages stream)
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(auth.currentUser!.uid)
+    .collection('recent_chats')
+    .doc(receiverId)
+    .collection('messages')
+    .doc(messageId)
+    .get();
+    String lastMessageSent = snapshot.get('message');
+    /////////////////////////////////////////////
+
+    //add message to current user / sender collection (update isSeen later)
+    await firestore.collection('users')
+    .doc(auth.currentUser!.uid)
+    .collection('recent_chats')
+    .doc(receiverId)
+    .collection('messages')
+    .doc(messageId)
+    .set({
+      'messageId': messageId,
+      'message': message,
+      'isSeen': false,
+      'timestamp': timestamp,
+    });
+    
+    //add message to friend / receiver's  collection (update isSeen later)
+    await firestore.collection('users')
+    .doc(receiverId)
+    .collection('recent_chats')
+    .doc(auth.currentUser!.uid)
+    .collection('messages')
+    .doc(messageId)
+    .set({
+      'messageId': messageId,
+      'message': message,
+      'isSeen': false,
+      'timestamp': timestamp,
+    });
+
+    //add who ever you are chatting with to 'recent_chats" and vic-versa
+    addUserToRecentChats(lastMessage: lastMessageSent, receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto);
+  }
+  
+  //delete direct message
+  Future<void> deleteDirectMessages({required String messageId, required String receiverId}) async{
+    //do this if you want to get any logged in user property 
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(auth.currentUser!.uid)
+    .get();
+    String userName = snapshot.get('name');
+    String userId = snapshot.get('id');
+
+    //add message to current user / sender collection (update isSeen later)
+    await firestore.collection('users')
+    .doc(userId)
+    .collection('recent_chats')
+    .doc(receiverId)
+    .collection('messages')
+    .doc(messageId)
+    .delete();
+    
+    //add message to friend / receiver's  collection (update isSeen later)
+    await firestore.collection('users')
+    .doc(receiverId)
+    .collection('recent_chats')
+    .doc(userId)
+    .collection('messages')
+    .doc(messageId)
+    .delete();
+  }
   
 }

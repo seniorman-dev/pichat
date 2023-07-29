@@ -187,6 +187,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                         )
                                       ),
                                     ),
+                                    SizedBox(height: 5.h,),
                                     //Row (button to send friend request)
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
@@ -197,8 +198,9 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                           //width: 85.w,
                                           child: ElevatedButton(
                                             onPressed: () {
-                                              //chatController.declineFriendRequest(friendId: data['id']);
-                                              setState(() {
+                                              chatController.selectedDocumentIdForAllUsers.remove(data['id']);
+                                              chatController.declineFriendRequest(friendId: data['id']);
+                                              /*setState(() {
                                                 //isSelected = !isSelected;
                                                 if (isSelected) {
                                                   chatController.selectedDocumentIdForAllUsers.remove(data['id']);
@@ -208,7 +210,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                                   chatController.selectedDocumentIdForAllUsers.add(data['id']);
                                                   chatController.acceptFriendRequest(friendName: data['name'], friendId: data['id'], friendProfilePic: data['photo']);  //data['photo']
                                                 }
-                                              });
+                                              });*/
                                             },
                                             style: ElevatedButton.styleFrom(
                                               elevation: 2,
@@ -222,7 +224,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                               size: 18.r,
                                             ),*/
                                             child: Text(
-                                              isSelected ? 'decline' : 'accept',
+                                              'decline',
                                               style: GoogleFonts.poppins(
                                                 textStyle: TextStyle(
                                                   color: AppTheme().whiteColor,
@@ -233,14 +235,15 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                             )
                                           ),
                                         ),
-                                        /*SizedBox(width: 10.w,),
+                                        SizedBox(width: 10.w,),
                                         //button to accept friend request
                                         SizedBox(
-                                          height: 35.h,
+                                          height: 30.h,
                                           //width: 85.w,
                                           child: ElevatedButton(
                                             onPressed: () {
-                                              chatController.acceptFriendRequest(friendName: data['name'], friendId: data['id'], friendProfilePic: 'photURL');  //daa['photo']
+                                              chatController.selectedDocumentIdForAllUsers.add(data['id']);
+                                              chatController.acceptFriendRequest(friendName: data['name'], friendId: data['id'], friendProfilePic: data['photo']);  //data['photo']
                                             },
                                             style: ElevatedButton.styleFrom(
                                               elevation: 2,
@@ -264,7 +267,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                               ),
                                             )
                                           ),
-                                        ),*/
+                                        ),
                                         ]
                                       )
                                     ]

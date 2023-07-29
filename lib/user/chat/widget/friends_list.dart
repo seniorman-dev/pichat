@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +12,7 @@ import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/screen/dm_screen.dart';
 import 'package:pichat/utils/error_loader.dart';
+import 'package:pichat/utils/extract_firstname.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
 
@@ -44,12 +46,12 @@ class FriendsList extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircleAvatar(
-                radius: 30.r,
+                radius: 25.r,
                 backgroundColor: AppTheme().lightestOpacityBlue,
                 child: Icon(
                   CupertinoIcons.person_badge_plus,
                   color: AppTheme().mainColor,
-                  size: 30.r,
+                  size: 25.r,
                 ),
               ),
               SizedBox(width: 10.w),
@@ -76,21 +78,25 @@ class FriendsList extends StatelessWidget {
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 var data = snapshot.data!.docs[index];
-                //get logged in user's name from local storage
-                String getUserName() {
-                  final box = GetStorage();
-                  return box.read('name') ?? ''; // Return an empty string if data is not found
-                }
                 return Column(
                   children: [
                     InkWell(
-                      onTap: () {
+                      onTap: () async{
+                        //did this to retrieve logged in user information
+                        DocumentSnapshot snapshot = await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(controller.userID)
+                        .get();
+                        String userName = snapshot.get('name');
+                        String userId = snapshot.get('id');
+                        ////////////////////////
                         Get.to(() => DMScreen(
                           isOnline: true,  //data['isOnline'],
                           receiverProfilePic: data['photo'],
                           receiverID: data['id'],
                           receiverName: data['name'], 
-                          senderName: getUserName(),  //currentUserName controller.firebase.currentUser!.email
+                          senderName: userName, 
+                          senderId: userId,
                         ));
                       },
                       onLongPress: () {
@@ -112,7 +118,7 @@ class FriendsList extends StatelessWidget {
                     ),
                     SizedBox(height: 10.h),
                     Text(
-                      data['name'],
+                      getFirstName(fullName: data['name']),
                       style: GoogleFonts.poppins(
                         color: AppTheme().blackColor,
                         fontSize: 14.sp,

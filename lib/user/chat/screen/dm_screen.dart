@@ -14,18 +14,19 @@ import 'package:pichat/user/chat/widget/chat_list.dart';
 
 
 class DMScreen extends StatelessWidget {
-  const DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName});
+  const DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName, required this.senderId});
   final String receiverProfilePic;
   final String receiverName;
   final String receiverID;
   final String senderName;
+  final String senderId;
   final bool isOnline;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppTheme().lightGreyColor,
+        backgroundColor: AppTheme().whiteColor,//.lightGreyColor,
         appBar: AppBar(
           toolbarHeight: 110.h,
           backgroundColor: AppTheme().whiteColor,
@@ -104,20 +105,28 @@ class DMScreen extends StatelessWidget {
             )  
           ],
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        body: Stack(
           children: [
-            Expanded(
-              child: ChatList(
-                senderName: senderName, 
-                receiverName: receiverName
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //list of messages
+                Expanded(
+                  child: ChatList(
+                    senderName: senderName, 
+                    senderId: senderId,
+                    receiverName: receiverName, 
+                    receiverId: receiverID,
+                  ),
+                ),
+                //input content or textfield
+                BottomEngine(
+                  receiverName: receiverName
+                ),
+                SizedBox(height: 20.h,)         
+              ]        
             ),
-            BottomEngine(
-              receiverName: receiverName
-            ),
-            SizedBox(height: 20.h,)         
-          ]        
+          ],
         ),
       ),
     );
