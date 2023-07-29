@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/utils/error_loader.dart';
@@ -43,14 +44,17 @@ class _ChatListState extends State<ChatList> {
     }
 
     //provider for dependency injection
-    var chatServiceontroller = Provider.of<ChatServiceController>(context);
+    var authController = Provider.of<AuthController>(context);
+    var chatServiceController = Provider.of<ChatServiceController>(context);
     
     return StreamBuilder(
-      stream: chatServiceontroller.firestore.collection('users')
-      .doc(chatServiceontroller.auth.currentUser!.uid)
+      stream: chatServiceController.firestore.collection('users')
+      .doc(chatServiceController.auth.currentUser!.uid)
       .collection('recent_chats')
       .doc(widget.receiverId)
-      .collection('messages').snapshots(),
+      .collection('messages')
+      .orderBy('timestamp')
+      .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for data
@@ -76,7 +80,7 @@ class _ChatListState extends State<ChatList> {
                     radius: 100.r,
                     backgroundColor: AppTheme().lightestOpacityBlue,
                       child: Icon(
-                      Icons.chat_rounded,
+                      CupertinoIcons.text_bubble,
                       color: AppTheme().mainColor,
                       size: 70.r,
                     ),
@@ -112,6 +116,7 @@ class _ChatListState extends State<ChatList> {
             separatorBuilder: (context, index) => SizedBox(height: 10.h,), 
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
+              
                          /*leave this stuff hear to avoid crashing*/
               //it makes the messages list automatically scroll up after a message has been sent
               SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
@@ -120,78 +125,83 @@ class _ChatListState extends State<ChatList> {
               
               var data = snapshot.data!.docs[index];
 
-              return InkWell(
-                onLongPress: () {
-                  //show message info or message statistics alert dialog
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,  ///tweak this instead to suit the chatters
-                  children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      //height: 80.h,
-                      width: 200.w,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 15.h, //20.h
-                        horizontal: 15.w  //15.h
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppTheme().mainColor,  ///tweak this instead to suit the chatters
-                        borderRadius: BorderRadius.circular(20.r),  ///tweak this instead to suit the chatters
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            //color: AppTheme().lightGreyColor,
-                            spreadRadius: 0.1.r,
-                            blurRadius: 8.0.r,
-                          )
-                        ],
-                      ),
-                      child: Text(
-                        data['message'],
-                        style: GoogleFonts.poppins(
-                          color: AppTheme().whiteColor,  //tweak this instead to suit the chatters
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                            /*textStyle: TextStyle(
-                              overflow: TextOverflow.ellipsis
-                            )*/
+              return Dismissible(
+                key: UniqueKey(),
+                direction: DismissDirection.startToEnd,
+                onDismissed: (direction) => chatServiceController.deleteDirectMessages(messageId: data['messageId'], receiverId: widget.receiverId),
+                child: InkWell(
+                  onLongPress: () {
+                    //show message info or message statistics alert dialog
+                  },
+                  child: Column(
+                    crossAxisAlignment: data['senderId'] == authController.userID ? CrossAxisAlignment.end : CrossAxisAlignment.start,  ///tweak this instead to suit the chatters
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        //height: 80.h,
+                        width: 200.w,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 15.h, //20.h
+                          horizontal: 15.w  //15.h
                         ),
-                      ),
-                    ),
-                    SizedBox(height: 5.h,),
-                    //Time and isSeen icon feature
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,  //tweak this also
-                      children: [
-
-                        Text(
-                          formatTime(timestamp: data['timestamp'],),
-                          style: GoogleFonts.poppins(
-                            color: Colors.grey,
+                        decoration: BoxDecoration(
+                          color: data['senderId'] == authController.userID ? AppTheme().mainColor : AppTheme().lightGreyColor,  ///tweak this instead to suit the chatters
+                          borderRadius: BorderRadius.circular(20.r),  ///tweak this instead to suit the chatters
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              //color: AppTheme().lightGreyColor,
+                              spreadRadius: 0.1.r,
+                              blurRadius: 8.0.r,
+                            )
+                          ],
+                        ),
+                        child: Text(
+                          data['message'],
+                          style: GoogleFonts.poppins(  //urbanist
+                            color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w500,
-                            textStyle: TextStyle(
-                              overflow: TextOverflow.ellipsis
-                            )
+                              /*textStyle: TextStyle(
+                                overflow: TextOverflow.ellipsis
+                              )*/
                           ),
                         ),
-
-                        SizedBox(width: 3.w,),
-
-                        data['isSeen'] 
-                        ?const Icon(
-                          Icons.done_all_rounded,
-                          color: Colors.grey,
-                        )
-                        :const Icon(
-                          CupertinoIcons.checkmark_alt,
-                          color: Colors.grey,
-                        ),
-
-                      ],
-                    )
-                  ],
+                      ),
+                      SizedBox(height: 5.h,),
+                      //Time and isSeen icon feature
+                      Row(
+                        mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.end : MainAxisAlignment.start,  //tweak this also
+                        children: [
+              
+                          Text(
+                            formatTime(timestamp: data['timestamp'],),
+                            style: GoogleFonts.poppins(
+                              color: Colors.grey,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              textStyle: TextStyle(
+                                overflow: TextOverflow.ellipsis
+                              )
+                            ),
+                          ),
+              
+                          SizedBox(width: 3.w,),
+              
+                          data['isSeen'] 
+                          ?const Icon(
+                            Icons.done_all_rounded,
+                            color: Colors.grey,
+                          )
+                          :const Icon(
+                            CupertinoIcons.checkmark_alt,
+                            color: Colors.grey,
+                          ),
+              
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               );
             }     

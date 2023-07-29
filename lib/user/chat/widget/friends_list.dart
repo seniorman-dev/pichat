@@ -29,7 +29,7 @@ class FriendsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var controller = Provider.of<AuthController>(context);
-    var chatController = Provider.of<ChatServiceController>(context);
+    var chatServiceController = Provider.of<ChatServiceController>(context);
     return StreamBuilder(
       stream: controller.firestore.collection('users').doc(controller.userID).collection('friends').snapshots(),
       builder: (context, snapshot) {
@@ -91,16 +91,18 @@ class FriendsList extends StatelessWidget {
                         String userId = snapshot.get('id');
                         ////////////////////////
                         Get.to(() => DMScreen(
-                          isOnline: true,  //data['isOnline'],
+                          isOnline: true, //data['isOnline'],
                           receiverProfilePic: data['photo'],
                           receiverID: data['id'],
                           receiverName: data['name'], 
                           senderName: userName, 
                           senderId: userId,
                         ));
+                        chatServiceController.updateisSeenStatus(isSeen: true, receiverId: data['id']);
+                        //chatServiceController.updateOnlineStatus(isOnline: true);
                       },
                       onLongPress: () {
-                        chatController.removeUserFromFriendList(friendId: data['id']);
+                        chatServiceController.removeUserFromFriendList(friendId: data['id']);
                       },
                       child: CircleAvatar(
                         radius: 40.r,

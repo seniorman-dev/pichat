@@ -50,7 +50,6 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
 
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppTheme().whiteColor,
@@ -80,26 +79,26 @@ class _ChatScreenState extends State<ChatScreen> {
                             style: GoogleFonts.poppins(
                               textStyle: TextStyle(
                                 color: AppTheme().darkGreyColor,
-                                fontSize: 12.sp,
+                                fontSize: 14.sp, //12.sp
                                 fontWeight: FontWeight.w500
                               )
                             ),
                           );
                         } 
-                        else if (snapshot.hasError) {
+                        if (snapshot.hasError) {
                           // Handle error if any
                           return Text(
                             'Error: ${snapshot.error}',
                             style: GoogleFonts.poppins(
                               textStyle: TextStyle(
                                 color: AppTheme().darkGreyColor,
-                                fontSize: 12.sp,
+                                fontSize: 14.sp, //12.sp
                                 fontWeight: FontWeight.w500
                               )
                             ),
                           );
                         } 
-                        else if (snapshot.hasData) {
+                        if (snapshot.hasData) {
                           // Check if the snapshot has data before accessing it
                           var data = snapshot.data!.data(); 
                           if (data != null) {
@@ -110,24 +109,23 @@ class _ChatScreenState extends State<ChatScreen> {
                               style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                   color: AppTheme().darkGreyColor,
-                                  fontSize: 12.sp,
+                                  fontSize: 14.sp, //12.sp
                                   fontWeight: FontWeight.w500
                                 )
                               ),
                             );
-                          } 
-                          else {
-                            return Text(
-                              'Data not found',
-                              style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                  color: AppTheme().darkGreyColor,
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500
-                                )
-                              ),
-                            );
-                          }
+                          }                        
+                          return Text(
+                            'Data not found',
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                color: AppTheme().darkGreyColor,
+                                fontSize: 14.sp,  //12.sp
+                                fontWeight: FontWeight.w500
+                              )
+                            ),
+                          );
+                          
                         } 
                         else {
                           return SizedBox();
@@ -136,6 +134,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
         
                     //SizedBox(height: 5.h,),
+
+                    //////////////GEOLOCATOR
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -171,7 +171,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   ],
                 ),
               ),
+
               SizedBox(height: 5.h,),
+
               //find connects button
               Center(
                 child: Row(
@@ -231,14 +233,17 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ],
                 ),
-              ),           
-              SizedBox(height: 30.h,),
+              ),
+
+              SizedBox(height: 20.h,),
 
               //list of friends
               FriendsList(),
 
               SizedBox(height: 20.h,),
+
               Divider(color: AppTheme().darkGreyColor, thickness: 1,),
+              
               SizedBox(height: 20.h,), //30.h
 
               //search for recent chats

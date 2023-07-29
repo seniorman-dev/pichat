@@ -216,7 +216,7 @@ class ChatServiceController extends ChangeNotifier {
   /////////////////////////////////////////////////////////////////////
   
   //(to be placed inside "sendDirectMessages" function)//
-  Future<void> addUserToRecentChats({required String receiverId, required String receiverName, required String receiverPhoto, required String lastMessage}) async{
+  Future<void> addUserToRecentChats({required String receiverId, required String receiverName, required String receiverPhoto, required String lastMessage, required Timestamp timestamp}) async{
     //do this if you want to get any logged in user property 
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
     .collection('users')
@@ -225,7 +225,7 @@ class ChatServiceController extends ChangeNotifier {
     String userName = snapshot.get('name');
     String userId = snapshot.get('id');
     String userPhoto = snapshot.get('photo');
-    bool userOnline = snapshot.get('isOnline');
+    //bool userOnline = snapshot.get('isOnline');
     //////////////////////////////////
     
     //add receiver of the text message to my recent chats stream
@@ -237,7 +237,8 @@ class ChatServiceController extends ChangeNotifier {
       'name': receiverName,
       'id': receiverId,
       'photo': receiverPhoto,
-      'lastMessage': lastMessage
+      'lastMessage': lastMessage,
+      'timestamp': timestamp
     });
 
     //add myself to receiver's recent chat stream  (update isMessageSeen later)
@@ -249,7 +250,8 @@ class ChatServiceController extends ChangeNotifier {
       'name': userName,
       'id': userId,
       'photo': userPhoto,
-      'lastMessage': lastMessage
+      'lastMessage': lastMessage,
+      'timestamp': timestamp,
     });
   }
 
@@ -272,18 +274,6 @@ class ChatServiceController extends ChangeNotifier {
     Timestamp timestamp = Timestamp.now();
     var messageId = (Random().nextInt(100000)).toString();
 
-    //did this to get the last message sent from any of the chatters (messages stream)
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-    .collection('users')
-    .doc(auth.currentUser!.uid)
-    .collection('recent_chats')
-    .doc(receiverId)
-    .collection('messages')
-    .doc(messageId)
-    .get();
-    String lastMessageSent = snapshot.get('message');
-    /////////////////////////////////////////////
-
     //add message to current user / sender collection (update isSeen later)
     await firestore.collection('users')
     .doc(auth.currentUser!.uid)
@@ -292,6 +282,7 @@ class ChatServiceController extends ChangeNotifier {
     .collection('messages')
     .doc(messageId)
     .set({
+      'senderId': auth.currentUser!.uid,
       'messageId': messageId,
       'message': message,
       'isSeen': false,
@@ -306,24 +297,37 @@ class ChatServiceController extends ChangeNotifier {
     .collection('messages')
     .doc(messageId)
     .set({
+      'senderId': auth.currentUser!.uid,
       'messageId': messageId,
       'message': message,
       'isSeen': false,
       'timestamp': timestamp,
     });
+    
+    //did this to get the last message sent from any of the chatters (messages stream)
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(auth.currentUser!.uid)
+    .collection('recent_chats')
+    .doc(receiverId)
+    .collection('messages')
+    .doc(messageId)
+    .get();
+    String lastMessageSent = snapshot.get('message');
+    Timestamp timeofLastMessageSnet = snapshot.get('timestamp');
+    /////////////////////////////////////////////
 
-    //add who ever you are chatting with to 'recent_chats" and vic-versa
-    addUserToRecentChats(lastMessage: lastMessageSent, receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto);
+    //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
+    addUserToRecentChats(timestamp: timeofLastMessageSnet, lastMessage: lastMessageSent, receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto);
   }
   
-  //delete direct message
+  //delete direct message when texting
   Future<void> deleteDirectMessages({required String messageId, required String receiverId}) async{
     //do this if you want to get any logged in user property 
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
     .collection('users')
     .doc(auth.currentUser!.uid)
     .get();
-    String userName = snapshot.get('name');
     String userId = snapshot.get('id');
 
     //add message to current user / sender collection (update isSeen later)
@@ -343,6 +347,22 @@ class ChatServiceController extends ChangeNotifier {
     .collection('messages')
     .doc(messageId)
     .delete();
+  }
+
+  //to make a currently logged in user go offline or come online depending on the app's life cycle
+  Future<void> updateOnlineStatus({required bool isOnline}) async{
+    await firestore.collection('users').doc(auth.currentUser!.uid).update({"isOnline": isOnline});
+  }
+
+  //to check if a message sent by a user is seen by the opposite or not
+  Future<void> updateisSeenStatus({required bool isSeen, required String receiverId}) async{
+    await firestore.collection('users')
+    .doc(receiverId)
+    .collection('recent_chats')
+    .doc(auth.currentUser!.uid)
+    .collection('messages')
+    .doc()
+    .update({"isSeen": isSeen});
   }
   
 }

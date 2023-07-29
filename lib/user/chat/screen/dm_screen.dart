@@ -121,9 +121,11 @@ class DMScreen extends StatelessWidget {
                 ),
                 //input content or textfield
                 BottomEngine(
-                  receiverName: receiverName
+                  receiverName: receiverName, 
+                  receiverId: receiverID, 
+                  receiverPhoto: receiverProfilePic,
                 ),
-                SizedBox(height: 20.h,)         
+                SizedBox(height: 10.h,)         
               ]        
             ),
           ],

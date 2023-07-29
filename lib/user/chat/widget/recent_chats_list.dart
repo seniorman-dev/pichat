@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,6 +40,10 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
     super.initState();
   }
 
+  //get the instance of firebaseauth and cloud firestore
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   // widgets binding observer helps us to check if user is actively using the app (online) or not.
   // it check the state of our app
   @override
@@ -46,19 +51,19 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         // TODO: Handle this case. (update 'isOnline' field accordingly)
-        //ref.read(authControllerProvider).setUserStateOnline(true);
+        firestore.collection('users').doc(auth.currentUser!.uid).update({"isOnline": true});
         break;
       case AppLifecycleState.inactive:
         // TODO: Handle this case.
-        //ref.read(authControllerProvider).setUserStateOnline(false);
+        firestore.collection('users').doc(auth.currentUser!.uid).update({"isOnline":false});
         break;
       case AppLifecycleState.paused:
         // TODO: Handle this case.
-        //ref.read(authControllerProvider).setUserStateOnline(false);
+        firestore.collection('users').doc(auth.currentUser!.uid).update({"isOnline": false});
         break;
       case AppLifecycleState.detached:
         // TODO: Handle this case.
-        //ref.read(authControllerProvider).setUserStateOnline(false);
+        firestore.collection('users').doc(auth.currentUser!.uid).update({"isOnline": false});
         break;
     }
     super.didChangeAppLifecycleState(state);
@@ -130,11 +135,9 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
               //separatorBuilder: (context, index) => SizedBox(height: 0.h,), 
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
+
                 var data = snapshot.data!.docs[index];
-                String getLoggedInUserName() {
-                  final box = GetStorage();
-                  return box.read('name');
-                }
+          
                 return Dismissible(
                   key: UniqueKey(),
                   direction: DismissDirection.endToStart,
@@ -169,9 +172,9 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                         senderName: userName,
                         senderId: userId,
                       ));
-                      
-                      var randomInt = (Random().nextInt(10000)).toString();
-                      debugPrint(randomInt);
+                        
+                      chatServiceontroller.updateisSeenStatus(isSeen: true, receiverId: data['id']);
+                      //chatServiceontroller.updateOnlineStatus(isOnline: true);
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(
@@ -199,7 +202,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            //profilePic
+                            //profilePic  //data['photo'],
                             CircleAvatar(
                               radius: 32.r,
                               backgroundColor: AppTheme().opacityBlue,
@@ -244,7 +247,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                       //figure this out
                                       //show when a receiver sends a new message then disappear when the current user taps on it
                                       Text(
-                                        'New Chat',
+                                        data['lastMessage'],
                                         style: GoogleFonts.poppins(
                                           color: AppTheme().darkGreyColor,
                                           fontSize: 12.sp,
@@ -254,7 +257,8 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                           )
                                         ),
                                       ),
-                                      //show when a receiver sends a new message then disappear when the current user taps on it
+
+                                      //find a way to show this status bar when your chat partner sends you a message
                                       CircleAvatar(
                                         backgroundColor: AppTheme().mainColor,
                                         radius: 7.r,
