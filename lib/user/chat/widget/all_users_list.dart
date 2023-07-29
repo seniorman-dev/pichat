@@ -72,6 +72,23 @@ class _AllUsersListState extends State<AllUsersList> {
     super.initState();
   }
 
+  void performSearch(String query) {
+    // Update the stream based on the search query
+    setState(() {
+      if (query.isEmpty) {
+        // If the search query is empty, show all users
+        userStream = FirebaseFirestore.instance.collection('users').where("id", isNotEqualTo: userID).snapshots();
+      } 
+      else {
+        // If there's a search query, filter users based on the query
+        userStream = FirebaseFirestore.instance
+        .collection('users')
+        .where('name', isEqualTo: query)
+        .snapshots();
+      }
+    });
+  }
+
 
 
   @override
@@ -122,12 +139,7 @@ class _AllUsersListState extends State<AllUsersList> {
               //search users
               SearchTextField(
                 textController: searchController,
-                onChanged: (query) {
-                  setState(() {
-                    userStream = firestore.collection('users').where("name", isEqualTo: searchController.text).snapshots();
-                    chatServiceController.isSearching = true;
-                  });
-                }, 
+                onChanged: performSearch,
                 hintText: 'Search users by name...',
               ),
 
