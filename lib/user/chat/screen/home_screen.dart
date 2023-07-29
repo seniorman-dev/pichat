@@ -247,11 +247,11 @@ class _ChatScreenState extends State<ChatScreen> {
               SizedBox(height: 10.h,), //20.h
 
               //search for recent chats
-              SearchTextField(
+              /*SearchTextField(
                 textController: textController,
                 onChanged: (value) => onSearch(), 
                 hintText: 'Search recent messages...',
-              ),
+              ),*/
 
               SizedBox(height: 10.h,), //20.h
 

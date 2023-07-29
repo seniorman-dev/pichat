@@ -105,31 +105,29 @@ class DMScreen extends StatelessWidget {
             )  
           ],
         ),
-        body: Stack(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //list of messages
-                Expanded(
-                  child: ChatList(
-                    senderName: senderName, 
-                    senderId: senderId,
-                    receiverName: receiverName, 
-                    receiverId: receiverID,
-                  ),
-                ),
-                //input content or textfield
-                BottomEngine(
-                  receiverName: receiverName, 
-                  receiverId: receiverID, 
-                  receiverPhoto: receiverProfilePic,
-                ),
-                SizedBox(height: 10.h,)         
-              ]        
+            //list of messages
+            Expanded(
+              flex: 2,
+              child: ChatList(
+                senderName: senderName, 
+                senderId: senderId,
+                receiverName: receiverName, 
+                receiverId: receiverID,
+              ),
             ),
-          ],
-        ),
+            //input content or textfield
+            BottomEngine(
+              receiverName: receiverName, 
+              receiverId: receiverID, 
+              receiverPhoto: receiverProfilePic,
+            ),
+            SizedBox(height: 10.h,)        
+          ]        
+        ),   
       ),
     );
   }

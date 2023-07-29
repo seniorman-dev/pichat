@@ -364,5 +364,8 @@ class ChatServiceController extends ChangeNotifier {
     .doc()
     .set({"isSeen": isSeen});
   }
+
+  //geolocator functionality
+  
   
 }

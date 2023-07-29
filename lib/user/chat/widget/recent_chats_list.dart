@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
@@ -13,9 +12,11 @@ import 'package:pichat/user/chat/screen/dm_screen.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
-import 'dart:math';
-
 import 'package:provider/provider.dart';
+
+
+
+
 
 
 
@@ -81,7 +82,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     var chatServiceontroller = Provider.of<ChatServiceController>(context);
     return StreamBuilder(
-      stream: widget.isSearching ? chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').where("name", isEqualTo: widget.textController.text).snapshots() : chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').snapshots(),
+      stream: chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').snapshots(),  //widget.isSearching ? chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').where("name", isEqualTo: widget.textController.text).snapshots() : chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for data
@@ -91,7 +92,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
           // Handle error if any
           return ErrorLoader();
         }
-        else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+        else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) { //!snapshot.hasData || snapshot.data!.docs.isEmpty
           return Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 25.w,
@@ -102,14 +103,14 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                 //mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 20.h,),
+                  SizedBox(height: 30.h,),
                   CircleAvatar(
-                    radius: 100.r,
+                    radius: 70.r,
                     backgroundColor: AppTheme().lightestOpacityBlue,
                       child: Icon(
                       CupertinoIcons.chat_bubble,
                       color: AppTheme().mainColor,
-                      size: 70.r,
+                      size: 40.r,
                     ),
                   ),
                   SizedBox(height: 30.h),
@@ -127,7 +128,8 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
           );
         }
         else {
-          return Expanded(
+          return SizedBox(
+            height: 250.h,
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,

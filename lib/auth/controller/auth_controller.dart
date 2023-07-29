@@ -163,9 +163,8 @@ class AuthController extends ChangeNotifier{
         UserCredential userCredential = await firebase.signInWithEmailAndPassword(email: loginEmailController.text, password: loginPasswordController.text);
         if(userCredential.user != null) {
 
-          final box = GetStorage();
-          debugPrint("My Name: ${box.read('name')}");
           
+          await firestore.collection('users').doc(userCredential.user!.uid).update({"isOnline": true});
           //always update fcm_token
           await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token})
           .whenComplete(() {
@@ -191,6 +190,7 @@ class AuthController extends ChangeNotifier{
   Future<void> signOut() async {
     try {
       await firebase.signOut().whenComplete(() => Get.offAll(() => LoginScreen()));
+      await firestore.collection('users').doc(userID).update({"isOnline": false});
     } on FirebaseAuthException catch (e) {
       customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }
@@ -198,8 +198,7 @@ class AuthController extends ChangeNotifier{
 
   //ResetPassword Method
   Future resetPassword () async {
-    try {
-      
+    try {  
       await firebase.sendPasswordResetEmail(email: resetPasswordController.text)
       .whenComplete(() => customGetXSnackBar(title: 'Request Successful', subtitle: "we've sent a link to your mail to reset your password"));
     } on FirebaseAuthException catch (e) {

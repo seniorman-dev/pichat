@@ -147,14 +147,14 @@ class _ChatListState extends State<ChatList> {
                         decoration: BoxDecoration(
                           color: data['senderId'] == authController.userID ? AppTheme().mainColor : AppTheme().lightGreyColor,  ///tweak this instead to suit the chatters
                           borderRadius: BorderRadius.circular(20.r),  ///tweak this instead to suit the chatters
-                          boxShadow: [
+                          /*boxShadow: [
                             BoxShadow(
                               color: Colors.grey.withOpacity(0.2),
                               //color: AppTheme().lightGreyColor,
                               spreadRadius: 0.1.r,
                               blurRadius: 8.0.r,
                             )
-                          ],
+                          ],*/
                         ),
                         child: Text(
                           data['message'],
@@ -188,15 +188,16 @@ class _ChatListState extends State<ChatList> {
               
                           SizedBox(width: 3.w,),
               
-                          data['isSeen'] 
-                          ?const Icon(
+                          data['isSeen'] && data['senderId'] == authController.userID
+                          ?Icon(
                             Icons.done_all_rounded,
                             color: Colors.grey,
                           )
-                          :const Icon(
+                          : SizedBox()
+                          /*const Icon(
                             CupertinoIcons.checkmark_alt,
                             color: Colors.grey,
-                          ),
+                          ),*/
               
                         ],
                       )

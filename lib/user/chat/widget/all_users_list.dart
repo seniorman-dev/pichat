@@ -18,8 +18,9 @@ import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
 import 'package:date_time_format/date_time_format.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'search_textfield.dart';
+
+
 
 
 
@@ -136,13 +137,13 @@ class _AllUsersListState extends State<AllUsersList> {
           physics: BouncingScrollPhysics(),
           child: Column(
             children: [
-              SizedBox(height: 20.h,),
+              /*SizedBox(height: 20.h,),
               //search users
               SearchTextField(
                 textController: searchController,
                 onChanged: performSearch,
                 hintText: 'Search users by name...',
-              ),
+              ),*/
 
               SizedBox(height: 30.h,),
 
