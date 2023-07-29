@@ -355,14 +355,14 @@ class ChatServiceController extends ChangeNotifier {
   }
 
   //to check if a message sent by a user is seen by the opposite or not
-  Future<void> updateisSeenStatus({required bool isSeen, required String receiverId}) async{
+  Future<void> updateisSeenStatus({required bool isSeen, required String receiverId,}) async{
     await firestore.collection('users')
     .doc(receiverId)
     .collection('recent_chats')
     .doc(auth.currentUser!.uid)
     .collection('messages')
     .doc()
-    .set({"isSeen": isSeen});
+    .update({"isSeen": isSeen});
   }
 
   //geolocator functionality

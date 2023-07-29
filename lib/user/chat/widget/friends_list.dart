@@ -90,6 +90,7 @@ class FriendsList extends StatelessWidget {
                         String userName = snapshot.get('name');
                         String userId = snapshot.get('id');
                         ////////////////////////
+
                         Get.to(() => DMScreen(
                           isOnline: true, //data['isOnline'],
                           receiverProfilePic: data['photo'],
@@ -98,7 +99,7 @@ class FriendsList extends StatelessWidget {
                           senderName: userName, 
                           senderId: userId,
                         ));
-                        chatServiceController.updateisSeenStatus(isSeen: true, receiverId: data['id']);
+                        //chatServiceController.updateisSeenStatus(isSeen: true, receiverId: data['id'],);
                         //chatServiceController.updateOnlineStatus(isOnline: true);
                       },
                       onLongPress: () {

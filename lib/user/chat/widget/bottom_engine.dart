@@ -36,8 +36,9 @@ class BottomEngine extends StatelessWidget {
           receiverPhoto: receiverPhoto, 
           message: textController.text
         )
-        .then((val) => textController.clear())
+        //.then((val) => textController.clear())
         .then((value) => controller.makeKeyboardDisappear());
+        textController.clear();
       }
     }
 

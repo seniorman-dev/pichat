@@ -131,7 +131,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
           return SizedBox(
             height: 250.h,
             child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
+              physics: NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               //separatorBuilder: (context, index) => SizedBox(height: 0.h,), 
@@ -175,7 +175,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                         senderId: userId,
                       ));
                         
-                      chatServiceontroller.updateisSeenStatus(isSeen: true, receiverId: data['id']);
+                      //chatServiceontroller.updateisSeenStatus(isSeen: true, receiverId: data['id'],);
                       //chatServiceontroller.updateOnlineStatus(isOnline: true);
                     },
                     child: Padding(
