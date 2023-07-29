@@ -50,6 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
 
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppTheme().whiteColor,
@@ -66,7 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-        
+                    SizedBox(height: 30.h,),   
                     //to get logged in user's name
                     StreamBuilder(
                       stream: controller.firestore.collection('users').doc(controller.userID).snapshots(),

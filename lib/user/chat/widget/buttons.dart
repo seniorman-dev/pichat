@@ -19,11 +19,12 @@ class SendOrCancelRequestButton extends StatefulWidget {
   final String receiverID;
   final String FCMToken;
   final String currentUserName;
+  final String currentUserId;
   final String receiverName;
   bool isSelected;
   
 
-  SendOrCancelRequestButton({super.key, required this.receiverID, required this.isSelected, required this.FCMToken, required this.currentUserName, required this.receiverName});
+  SendOrCancelRequestButton({super.key, required this.receiverID, required this.isSelected, required this.FCMToken, required this.currentUserName, required this.receiverName, required this.currentUserId});
 
   @override
   _SendOrCancelRequestButtonState createState() => _SendOrCancelRequestButtonState();
@@ -45,7 +46,8 @@ class _SendOrCancelRequestButtonState extends State<SendOrCancelRequestButton> {
       )
       .then(
         (value) => chatServiceController.firestore.collection('users').doc(widget.receiverID).collection('notifications')
-        .add({
+        .doc(widget.currentUserId)
+        .set({
           'title': 'Hi, ${getFirstName(fullName: widget.receiverName)}',
           'body': '${widget.currentUserName} wants to connect with you',
           'timestamp': Timestamp.now(),

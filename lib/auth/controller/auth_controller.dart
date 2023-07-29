@@ -122,7 +122,7 @@ class AuthController extends ChangeNotifier{
             'name': registerNameController.text,
             'email': registerEmailController.text,
             'password': registerConfirmPasswordController.text,
-            //'photo': 'photoURL', //upload photo from profile
+            'photo': 'photoURL', //put dummy image link pending when the user updates his/her photo
             'id': userCredential.user!.uid,
             'isOnline': true,
             'isVerified': false,
@@ -162,10 +162,10 @@ class AuthController extends ChangeNotifier{
         //sign in user credentials
         UserCredential userCredential = await firebase.signInWithEmailAndPassword(email: loginEmailController.text, password: loginPasswordController.text);
         if(userCredential.user != null) {
+
           final box = GetStorage();
-          box.write('name', userCredential.user!.displayName);
-          box.write('id', userCredential.user!.uid);
           debugPrint("My Name: ${box.read('name')}");
+          
           //always update fcm_token
           await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token})
           .whenComplete(() {
@@ -190,10 +190,6 @@ class AuthController extends ChangeNotifier{
   //SIGN OUT METHOD
   Future<void> signOut() async {
     try {
-      final box = GetStorage();
-      box.remove('name');
-      box.remove('id');
-      debugPrint("My Name: ${box.read('name')}");
       await firebase.signOut().whenComplete(() => Get.offAll(() => LoginScreen()));
     } on FirebaseAuthException catch (e) {
       customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");

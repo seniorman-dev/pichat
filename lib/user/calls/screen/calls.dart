@@ -79,7 +79,7 @@ class CallScreen extends StatelessWidget {
                     radius: 100.r,
                     backgroundColor: AppTheme().lightestOpacityBlue,
                     child: Icon(
-                      CupertinoIcons.phone_down,
+                      CupertinoIcons.phone,
                       color: AppTheme().mainColor,
                       size: 70.r,
                     ),

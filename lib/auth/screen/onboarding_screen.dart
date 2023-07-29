@@ -30,7 +30,7 @@ class OnboardingScreen extends StatelessWidget {
         backgroundColor: AppTheme().whiteColor,
         //appBar: CustomAppBar(title: 'Created Events'),
         body: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(), //ClampingScrollPhysics(),
+          physics: BouncingScrollPhysics(), //ClampingScrollPhysics(),
           child: buildBody(context),
         ),
       ),

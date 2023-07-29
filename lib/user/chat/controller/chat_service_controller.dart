@@ -13,14 +13,8 @@ import 'package:pichat/user/model/message.dart';
 class ChatServiceController extends ChangeNotifier {
 
   //////////////TextEditingControllers here
-  final allUsersTextEditingController = TextEditingController();
+  //final allUsersTextEditingController = TextEditingController();
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    allUsersTextEditingController.dispose();
-    super.dispose();
-  }
 
   //when a user is searching for users
   bool isSearching = false;
@@ -37,7 +31,7 @@ class ChatServiceController extends ChangeNotifier {
   Set<String> selectedDocumentIdForConnectRequest = <String>{};
   Set<String> selectedDocumentIdForAllUsers = <String>{};
 
-  //delete recent chats
+  //delete recent chats of a chat buddy
   Future<void> deleteRecentChats({required String friendId}) async{
     await firestore.collection('users').doc(auth.currentUser!.uid).collection('recent_chats').doc(friendId).delete();
   }
@@ -129,13 +123,27 @@ class ChatServiceController extends ChangeNotifier {
     }
   }
 
+
   //acceptFriendRequest
   Future acceptFriendRequest({required String friendName, required String friendId, required String friendProfilePic,}) async {
     try {
+
       String getUserName() {
         final box = GetStorage();
         return box.read('name') ?? ''; // Return an empty string if data is not found
       }
+
+      //do this if you want to get any logged in user property 
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .get();
+      String userName = snapshot.get('name');
+      String userId = snapshot.get('id');
+      String userPhoto = snapshot.get('photo');
+      bool userOnline = snapshot.get('isOnline');
+      //////////////////////////////////
+
       // Add sender of the request to the current user or receipient's friend list
       await firestore.collection('users').doc(auth.currentUser!.uid).collection('friends').doc(friendId)
       .set({
@@ -146,9 +154,9 @@ class ChatServiceController extends ChangeNotifier {
       // Add receiver of the request or current user to the sender's friend list
       await firestore.collection('users').doc(friendId).collection('friends').doc(auth.currentUser!.uid)
       .set({
-      'name': getUserName(),
-      'id': auth.currentUser!.uid,
-      'photo': 'photo',  //getPhotoString
+      'name': userName,   
+      'id': userId, //auth.currentUser!.uid,
+      'photo': userPhoto, 
       });
 
       //Remove sender of the request from the current user / receipient's friendRequests collection
