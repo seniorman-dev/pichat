@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
@@ -86,11 +85,11 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for data
-          return Loader();
+          return const Loader();
         } 
         else if (snapshot.hasError) {
           // Handle error if any
-          return ErrorLoader();
+          return const ErrorLoader();
         }
         else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) { //!snapshot.hasData || snapshot.data!.docs.isEmpty
           return Padding(
@@ -131,7 +130,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
           return SizedBox(
             height: 250.h,
             child: ListView.builder(
-              physics: NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               //separatorBuilder: (context, index) => SizedBox(height: 0.h,), 
@@ -254,27 +253,19 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                           color: AppTheme().darkGreyColor,
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w500,
-                                          textStyle: TextStyle(
+                                          textStyle: const TextStyle(
                                             overflow: TextOverflow.ellipsis
                                           )
                                         ),
                                       ),
-
-                                      //find a way to show this status bar when your chat partner sends you a message
-                                      CircleAvatar(
-                                        backgroundColor: AppTheme().mainColor,
-                                        radius: 7.r,
-                                        /*child: Text(
-                                          '2',
-                                          style: GoogleFonts.poppins(
-                                            textStyle: TextStyle(
-                                              color: AppTheme().whiteColor,
-                                              fontSize: 9.sp,
-                                              //fontWeight: FontWeight.w500
-                                            )
-                                          ),
-                                        ),*/
+                                       
+                                      data['id'] != chatServiceontroller.auth.currentUser!.uid
+                                      ? CircleAvatar(
+                                         backgroundColor: AppTheme().mainColor,
+                                         radius: 7.r,
                                       )
+                                      //find a way to show this status bar when your chat partner sends you a message
+                                      :const SizedBox()
                                     ],
                                   )
                                 ]

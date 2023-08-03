@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
@@ -11,7 +12,6 @@ import 'package:pichat/user/chat/widget/all_users_list.dart';
 import 'package:pichat/user/chat/widget/friends_list.dart';
 import 'package:pichat/user/chat/widget/recent_chats_list.dart';
 import 'package:pichat/user/chat/widget/request_list.dart';
-import 'package:pichat/user/chat/widget/search_textfield.dart';
 import 'package:pichat/user/notifications/screen/notifications_sceen.dart';
 import 'package:pichat/utils/extract_firstname.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +22,7 @@ import 'package:provider/provider.dart';
 
 
 class ChatScreen extends StatefulWidget {
-  ChatScreen({super.key});
+  const ChatScreen({super.key});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -31,6 +31,95 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController textController = TextEditingController();
   bool isLoading = false;
+  
+  //seek for permission before getting location
+  Future seekPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the 
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale 
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+  
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately. 
+      return Future.error(
+        'Location permissions are permanently denied, we cannot request permissions.');
+    } 
+
+    return _getCurrentLocation();
+  }
+
+
+  //get the user location neat
+  Future<void> _getCurrentLocation() async {
+    try {
+      // Get the current position (latitude and longitude)
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Get the human-readable address from the position
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      // Format the address
+      String formattedAddress = placemarks.first.street ?? '';
+      if (placemarks.first.subLocality != null) {
+        formattedAddress += ', ${placemarks.first.subLocality!}';
+      }
+      if (placemarks.first.locality != null) {
+        formattedAddress += ', ${placemarks.first.locality!}';
+      }
+      if (placemarks.first.administrativeArea != null) {
+        formattedAddress += ', ${placemarks.first.administrativeArea!}';
+      }
+      if (placemarks.first.country != null) {
+        formattedAddress += ', ${placemarks.first.country!}';
+      }
+
+      setState(() {
+        location = formattedAddress;
+      });
+    } catch (e) {
+      setState(() {
+        location = "couldn't fetch location";
+        debugPrint("i got this location error: $e");
+      });
+    }
+  }
+
+  String location= '....';
+
+  @override
+  void initState() {
+    super.initState();
+    seekPermission();
+  }
+
+  
+
+
 
 
   @override
@@ -49,12 +138,11 @@ class _ChatScreenState extends State<ChatScreen> {
       await chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').where("name", isEqualTo: textController.text).get().then((value) => setState(() => isLoading = false));
     }
 
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppTheme().whiteColor,
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -128,7 +216,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           
                         } 
                         else {
-                          return SizedBox();
+                          return const SizedBox();
                         }
                       }
                     ),
@@ -141,17 +229,25 @@ class _ChatScreenState extends State<ChatScreen> {
                       children: [
                         Row(
                           children: [
-                            Icon(
-                              CupertinoIcons.placemark_fill,
-                              color: AppTheme().blackColor,
+                            InkWell(
+                              onTap: () async{},
+                              child: Icon(
+                                CupertinoIcons.placemark_fill,
+                                color: AppTheme().blackColor,
+                              ),
                             ),
+
                             SizedBox(width: 2.w),
+                            
                             Text(
-                              'Shomolu Lagos, Nigeria.',
+                              location,
                               style: GoogleFonts.poppins(
                                 color: AppTheme().blackColor,
                                 fontSize: 14.sp,
-                                fontWeight: FontWeight.w500
+                                fontWeight: FontWeight.w500,
+                                textStyle: const TextStyle(
+                                  overflow: TextOverflow.ellipsis
+                                )
                               ),
                             )
                           ],
@@ -163,7 +259,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             size: 30.r,
                           ),
                           onPressed: () {
-                            Get.to(() => NotificationScreen());
+                            Get.to(() => const NotificationScreen());
                           },          
                         ),
                       ],
@@ -185,7 +281,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       //width: 120.w,
                       child: ElevatedButton( 
                         onPressed: () {
-                          Get.to(() => AllUsersList());
+                          Get.to(() => const AllUsersList());
                         },
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
@@ -211,7 +307,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       //width: 190.w,
                       child: ElevatedButton( 
                         onPressed: () {
-                          Get.to(() => FriendsRequestList());
+                          Get.to(() => const FriendsRequestList());
                         },
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
@@ -238,7 +334,7 @@ class _ChatScreenState extends State<ChatScreen> {
               SizedBox(height: 10.h,), //20.h
 
               //list of friends
-              FriendsList(),
+              const FriendsList(),
 
               SizedBox(height: 10.h,), //20.h
 

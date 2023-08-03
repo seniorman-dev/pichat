@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pichat/auth/screen/login_screen.dart';
-import 'package:pichat/auth/screen/onboarding_screen.dart';
 import 'package:pichat/auth/screen/successful_registration_screen.dart';
 import 'package:pichat/main_page/screen/main_page.dart';
 import 'package:pichat/utils/snackbar.dart';
@@ -168,7 +165,7 @@ class AuthController extends ChangeNotifier{
           //always update fcm_token
           await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token})
           .whenComplete(() {
-            Get.offAll(() => MainPage());
+            Get.offAll(() => const MainPage());
             loginEmailController.clear();
             loginPasswordController.clear();
           });
@@ -189,7 +186,7 @@ class AuthController extends ChangeNotifier{
   //SIGN OUT METHOD
   Future<void> signOut() async {
     try {
-      await firebase.signOut().whenComplete(() => Get.offAll(() => LoginScreen()));
+      await firebase.signOut().whenComplete(() => Get.offAll(() => const LoginScreen()));
       await firestore.collection('users').doc(userID).update({"isOnline": false});
     } on FirebaseAuthException catch (e) {
       customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");

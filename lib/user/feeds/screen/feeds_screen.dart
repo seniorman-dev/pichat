@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
 
@@ -24,7 +22,7 @@ class FeedScreen extends StatelessWidget {
           backgroundColor: AppTheme().whiteColor,
           centerTitle: true,
           elevation: 0,
-          title: Text(
+          title: const Text(
             'Feeds'
           ),
           titleSpacing: 2,
@@ -37,7 +35,7 @@ class FeedScreen extends StatelessWidget {
           ),
         ),
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: buildBody(context),
         )
       ),
@@ -116,7 +114,7 @@ class FeedScreen extends StatelessWidget {
                                       backgroundColor: AppTheme().lightGreyColor,
                                       radius: 20.r,
                                       child: IconButton(
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.more_horiz_rounded,
                                         ),
                                         color: AppTheme().blackColor,
@@ -133,7 +131,7 @@ class FeedScreen extends StatelessWidget {
                                     color: AppTheme().darkGreyColor,
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w500,
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                       overflow: TextOverflow.ellipsis
                                     )
                                   ),
@@ -181,7 +179,7 @@ class FeedScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               CupertinoIcons.heart_fill  //heart,
                             ),
                             iconSize: 30.r,
@@ -201,7 +199,7 @@ class FeedScreen extends StatelessWidget {
                           ),*/
                           SizedBox(width: 5.w,),
                           IconButton(
-                            icon: Icon(CupertinoIcons.smallcircle_circle),  //smallcircle_circle_fill
+                            icon: const Icon(CupertinoIcons.smallcircle_circle),  //smallcircle_circle_fill
                             iconSize: 30.r,
                             //isSelected: true,
                             color: AppTheme().darkGreyColor,
@@ -224,7 +222,7 @@ class FeedScreen extends StatelessWidget {
                                   color: AppTheme().greyColor,
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w500,
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     overflow: TextOverflow.ellipsis
                                   )
                                 ),
@@ -236,7 +234,7 @@ class FeedScreen extends StatelessWidget {
                                   color: AppTheme().blackColor,
                                   fontSize: 12.sp,
                                   //fontWeight: FontWeight.w500,
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     overflow: TextOverflow.ellipsis
                                   )
                                 ),
@@ -284,7 +282,7 @@ class FeedScreen extends StatelessWidget {
                                   color: AppTheme().greyColor,
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w500,
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     overflow: TextOverflow.ellipsis
                                   )
                                 ),
@@ -296,7 +294,7 @@ class FeedScreen extends StatelessWidget {
                                   color: AppTheme().blackColor,
                                   fontSize: 12.sp,
                                   //fontWeight: FontWeight.w500,
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     overflow: TextOverflow.ellipsis
                                   )
                                 ),

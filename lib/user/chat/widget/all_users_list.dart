@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,12 +11,8 @@ import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/widget/buttons.dart';
 import 'package:pichat/utils/error_loader.dart';
-import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
-import 'package:date_time_format/date_time_format.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'search_textfield.dart';
 
 
 
@@ -134,7 +128,7 @@ class _AllUsersListState extends State<AllUsersList> {
           ),
         ),
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               /*SizedBox(height: 20.h,),
@@ -153,11 +147,11 @@ class _AllUsersListState extends State<AllUsersList> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Show a loading indicator while waiting for data
-                    return Loader();
+                    return const Loader();
                   } 
                   else if (snapshot.hasError) {
                     // Handle error if any
-                    return ErrorLoader();
+                    return const ErrorLoader();
                   }
                   else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return Padding(
@@ -197,7 +191,7 @@ class _AllUsersListState extends State<AllUsersList> {
                   else {
                     
                     return ListView.separated(
-                      physics: NeverScrollableScrollPhysics(),  //const BouncingScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),  //const BouncingScrollPhysics(),
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       separatorBuilder: (context, index) => SizedBox(height: 0.h,), 

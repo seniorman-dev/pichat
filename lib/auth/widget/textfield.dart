@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
@@ -29,7 +28,7 @@ class CustomTextField extends StatelessWidget {
       height: 70.h,
       width: double.infinity,
       child: TextFormField(          
-        scrollPhysics: BouncingScrollPhysics(),
+        scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
         textInputAction: TextInputAction.next,
         enabled: true,
@@ -82,7 +81,7 @@ class _CustomTextField2State extends State<CustomTextField2> {
       height: 70.h,
       width: double.infinity,
       child: TextFormField(          
-        scrollPhysics: BouncingScrollPhysics(),
+        scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
         obscureText: controller.blindText1,
         textInputAction: TextInputAction.next,
@@ -145,7 +144,7 @@ class _CustomTextField3State extends State<CustomTextField3> {
       height: 70.h,
       width: double.infinity,
       child: TextFormField(          
-        scrollPhysics: BouncingScrollPhysics(),
+        scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
         obscureText: controller.blindText2,
         textInputAction: TextInputAction.done,
@@ -204,7 +203,7 @@ class CustomTextField4 extends StatelessWidget {
       height: 70.h,
       width: double.infinity,
       child: TextFormField(          
-        scrollPhysics: BouncingScrollPhysics(),
+        scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
         textInputAction: TextInputAction.next,
         enabled: true,

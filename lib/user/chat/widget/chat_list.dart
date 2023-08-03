@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
@@ -13,6 +10,11 @@ import 'package:pichat/utils/extract_firstname.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
+
+
+
+
+
 
 
 
@@ -58,11 +60,11 @@ class _ChatListState extends State<ChatList> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for data
-          return Loader();
+          return const Loader();
         } 
         if (snapshot.hasError) {
           // Handle error if any
-          return ErrorLoader();
+          return const ErrorLoader();
         }
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Padding(
@@ -70,31 +72,33 @@ class _ChatListState extends State<ChatList> {
               horizontal: 25.w,
               vertical: 20.h,
             ),
-            child: Center(
-              child: Column(
-                //mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: 150.h,),
-                  CircleAvatar(
-                    radius: 100.r,
-                    backgroundColor: AppTheme().lightestOpacityBlue,
-                      child: Icon(
-                      CupertinoIcons.text_bubble,
-                      color: AppTheme().mainColor,
-                      size: 70.r,
+            child: SizedBox(
+              child: Center(
+                child: Column(
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 150.h,),
+                    CircleAvatar(
+                      radius: 100.r,
+                      backgroundColor: AppTheme().lightestOpacityBlue,
+                        child: Icon(
+                        CupertinoIcons.text_bubble,
+                        color: AppTheme().mainColor,
+                        size: 70.r,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 30.h),
-                  Text(
-                    "Start a conversation with ${getFirstName(fullName: widget.receiverName)} 😊",
-                    style: GoogleFonts.poppins(
-                      color: AppTheme().greyColor,
-                      fontSize: 14.sp,
-                      //fontWeight: FontWeight.w500
-                    ),
-                  )
-                ],
+                    SizedBox(height: 30.h),
+                    Text(
+                      "Start a conversation with ${getFirstName(fullName: widget.receiverName)} 😊",
+                      style: GoogleFonts.poppins(
+                        color: AppTheme().greyColor,
+                        fontSize: 14.sp,
+                        //fontWeight: FontWeight.w500
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           );
@@ -115,13 +119,13 @@ class _ChatListState extends State<ChatList> {
             shrinkWrap: true,
             separatorBuilder: (context, index) => SizedBox(height: 10.h,), 
             itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
+            itemBuilder: (context, index, ) {
               
                          /*leave this stuff hear to avoid crashing*/
               //it makes the messages list automatically scroll up after a message has been sent
-              SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              /*SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
                 messageController.jumpTo(messageController.position.maxScrollExtent);
-              });
+              });*/
               
               var data = snapshot.data!.docs[index];
 
@@ -178,12 +182,12 @@ class _ChatListState extends State<ChatList> {
                         children: [
               
                           Text(
-                            formatTime(timestamp: data['timestamp'],),
+                            "${formatDate(timestamp: data['timestamp'])} - ${formatTime(timestamp: data['timestamp'])}",
                             style: GoogleFonts.poppins(
                               color: Colors.grey,
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w500,
-                              textStyle: TextStyle(
+                              textStyle: const TextStyle(
                                 overflow: TextOverflow.ellipsis
                               )
                             ),

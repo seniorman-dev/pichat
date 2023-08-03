@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
 
@@ -46,22 +44,22 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
 List<BottomNavigationBarItem> _navBarsItems() {
   return <BottomNavigationBarItem>[
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
       activeIcon: Icon(CupertinoIcons.hexagon_fill),
       icon: Icon(CupertinoIcons.hexagon),
       label: 'Home',
     ),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
       activeIcon: Icon(CupertinoIcons.chart_pie_fill),
       icon: Icon(CupertinoIcons.chart_pie),
       label: 'Feeds',
     ),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
       activeIcon: Icon(CupertinoIcons.phone_fill),
       icon:  Icon(CupertinoIcons.phone),
       label: 'Calls',
     ),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
       activeIcon:  Icon(CupertinoIcons.gear_alt_fill),
       icon: Icon(CupertinoIcons.gear_alt),
       label: 'Account',

@@ -142,7 +142,7 @@ Future<void> initFCM({required Future<void> Function(RemoteMessage) backgroundHa
   //FCM Instance
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   //FLNP Instance
-  FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   //FLNP component
   //This is used to define the initialization settings for iOS and android
@@ -158,7 +158,7 @@ Future<void> initFCM({required Future<void> Function(RemoteMessage) backgroundHa
     }
   }
   
-  _flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onSelectNotification);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onSelectNotification);
 
   //Get Unique FCM DEVICE TOKEN
   String? token = await messaging.getToken();

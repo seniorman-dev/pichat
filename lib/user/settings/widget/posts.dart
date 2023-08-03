@@ -16,7 +16,7 @@ class MyPosts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      physics: BouncingScrollPhysics(), //const BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(), //const BouncingScrollPhysics(),
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       separatorBuilder: (context, index) => SizedBox(height: 30.h,),  //20.h
@@ -82,7 +82,7 @@ class MyPosts extends StatelessWidget {
                                   backgroundColor: AppTheme().lightGreyColor,
                                   radius: 20.r,
                                   child: IconButton(
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.more_horiz_rounded,
                                     ),
                                     color: AppTheme().blackColor,
@@ -99,7 +99,7 @@ class MyPosts extends StatelessWidget {
                                 color: AppTheme().darkGreyColor,
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w500,
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   overflow: TextOverflow.ellipsis
                                 )
                               ),
@@ -147,7 +147,7 @@ class MyPosts extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           CupertinoIcons.heart_fill  //heart,
                         ),
                         iconSize: 30.r,
@@ -167,7 +167,7 @@ class MyPosts extends StatelessWidget {
                       ),*/
                       SizedBox(width: 5.w,),
                       IconButton(
-                        icon: Icon(CupertinoIcons.smallcircle_circle),  //smallcircle_circle_fill
+                        icon: const Icon(CupertinoIcons.smallcircle_circle),  //smallcircle_circle_fill
                         iconSize: 30.r,
                         //isSelected: true,
                         color: AppTheme().darkGreyColor,
@@ -190,7 +190,7 @@ class MyPosts extends StatelessWidget {
                                 color: AppTheme().greyColor,
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w500,
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   overflow: TextOverflow.ellipsis
                                 )
                               ),
@@ -202,7 +202,7 @@ class MyPosts extends StatelessWidget {
                                 color: AppTheme().blackColor,
                                 fontSize: 12.sp,
                                 //fontWeight: FontWeight.w500,
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   overflow: TextOverflow.ellipsis
                                 )
                               ),
@@ -220,7 +220,7 @@ class MyPosts extends StatelessWidget {
                                 color: AppTheme().greyColor,
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w500,
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   overflow: TextOverflow.ellipsis
                                 )
                               ),
@@ -232,7 +232,7 @@ class MyPosts extends StatelessWidget {
                                 color: AppTheme().blackColor,
                                 fontSize: 12.sp,
                                 //fontWeight: FontWeight.w500,
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   overflow: TextOverflow.ellipsis
                                 )
                               ),

@@ -1,14 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/auth/screen/login_screen.dart';
-import 'package:pichat/main_page/screen/main_page.dart';
 import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
 
 
@@ -30,7 +26,7 @@ class OnboardingScreen extends StatelessWidget {
         backgroundColor: AppTheme().whiteColor,
         //appBar: CustomAppBar(title: 'Created Events'),
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(), //ClampingScrollPhysics(),
+          physics: const BouncingScrollPhysics(), //ClampingScrollPhysics(),
           child: buildBody(context),
         ),
       ),
@@ -99,7 +95,7 @@ class OnboardingScreen extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton( 
                   onPressed: () {
-                    Get.offAll(() => LoginScreen());
+                    Get.offAll(() => const LoginScreen());
                   },
                   style: ElevatedButton.styleFrom(
                     elevation: 3,

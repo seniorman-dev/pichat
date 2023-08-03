@@ -1,8 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/screen/onboarding_screen.dart';
 import 'package:pichat/theme/app_theme.dart';
@@ -41,7 +39,7 @@ class SplashePage1 extends StatelessWidget {
           ],
         ),
       ), 
-      nextScreen: OnboardingScreen(), 
+      nextScreen: const OnboardingScreen(), 
       duration: 2000, //4000
       backgroundColor: AppTheme().whiteColor, //real image color
       centered: true,

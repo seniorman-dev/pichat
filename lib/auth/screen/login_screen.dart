@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
@@ -35,8 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         backgroundColor: AppTheme().whiteColor,
         //appBar: CustomAppBar(title: 'Created Events'),
-        body: controller.isLoading ? Loader() : SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+        body: controller.isLoading ? const Loader() : SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: buildBody(context),
         ),
       ),
@@ -144,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Get.to(() => RegisterScreen());
+                  Get.to(() => const RegisterScreen());
                 }, 
               )
             ],

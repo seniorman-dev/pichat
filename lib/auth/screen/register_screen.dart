@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/auth/screen/login_screen.dart';
-import 'package:pichat/auth/screen/successful_registration_screen.dart';
 import 'package:pichat/auth/widget/textfield.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/utils/elevated_button.dart';
@@ -35,8 +32,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Scaffold(
         backgroundColor: AppTheme().whiteColor,
         //appBar: CustomAppBar(title: 'Created Events'),
-        body: controller.isLoading ? Loader() : SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+        body: controller.isLoading ? const Loader() : SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: buildBody(context),
         ),
       ),
@@ -215,7 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Get.offAll(() => LoginScreen());
+                  Get.offAll(() => const LoginScreen());
                 }, 
               )
             ],

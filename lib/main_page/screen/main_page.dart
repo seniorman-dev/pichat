@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:pichat/main_page/widget/bottom_nav_bar.dart';
 import 'package:pichat/theme/app_theme.dart';
-import 'package:hidable/hidable.dart';
 import 'package:pichat/user/calls/screen/calls.dart';
 import 'package:pichat/user/chat/screen/home_screen.dart';
 import 'package:pichat/user/feeds/screen/feeds_screen.dart';
@@ -30,10 +28,10 @@ class _MainPageState extends State<MainPage> {
   int selectedIndex = 0;
 
   final List<Widget> widgetOptions = <Widget>[
-    ChatScreen(),
-    FeedScreen(),
-    CallScreen(),
-    ProfileScreen()
+    const ChatScreen(),
+    const FeedScreen(),
+    const CallScreen(),
+    const ProfileScreen()
   ];
 
   void _onItemTapped(int index) {

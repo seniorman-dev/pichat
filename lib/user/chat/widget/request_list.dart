@@ -1,15 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/api/api.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/user/chat/screen/dm_screen.dart';
-import 'package:pichat/user/chat/widget/all_users_list.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +47,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
               size: 30.r,
             )
           ),
-          title: Text(
+          title: const Text(
             'Connect Request'
           ),
           titleSpacing: 2,
@@ -68,11 +64,11 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               // Show a loading indicator while waiting for data
-              return Loader();
+              return const Loader();
             } 
             else if (snapshot.hasError) {
               // Handle error if any
-              return ErrorLoader();
+              return const ErrorLoader();
             }
             else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
               return Padding(
@@ -115,7 +111,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                 //height: 170.h, //200.h
                 child: ListView.separated(
                   shrinkWrap: true,
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
                   separatorBuilder: (context, index) => SizedBox(width: 20.w),

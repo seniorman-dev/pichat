@@ -8,13 +8,12 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pichat/api/api.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
-import 'package:pichat/auth/screen/register_screen.dart';
 import 'package:pichat/auth/screen/splash_screen.dart';
 import 'package:pichat/auth/screen/splash_screen_2.dart';
 import 'package:pichat/main_page/controller/main_page_controller.dart';
-import 'package:pichat/main_page/screen/main_page.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
+import 'package:pichat/user/feeds/screen/feeds_screen.dart';
 import 'package:pichat/user/settings/controller/profile_controller.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -72,7 +71,7 @@ void main() async{
           create: (_) => AuthController()
         )
       ],
-      child: MyApp(),
+      child: const MyApp(),
     )
   );
 }
@@ -88,7 +87,7 @@ class MyApp extends StatelessWidget {
       builder: (_, child) {
         return child!;
       },
-      child: GetMaterialApp(
+      child: const GetMaterialApp(
         transitionDuration: Duration(milliseconds: 100),
         debugShowCheckedModeBanner: false,
         home: FirebaseCheck()  //MainPage()
@@ -111,18 +110,18 @@ class FirebaseCheck extends StatelessWidget {
           stream: authController.firebase.authStateChanges(),
           builder: (context, snapshot) {
             if(snapshot.connectionState == ConnectionState.waiting) {
-              return Loader();
+              return const Loader();
             }
             else if(snapshot.connectionState == ConnectionState.active) {
               if(snapshot.data == null) {
-                return SplashePage1();
+                return const SplashePage1();
               }
               else {
-                return SplashePage2();
+                return const SplashePage2();
               }
             }
             else {
-              return ErrorLoader();
+              return const ErrorLoader();
             }
           }
         )

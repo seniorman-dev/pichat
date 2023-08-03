@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
@@ -44,7 +43,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               size: 30.r,
             )
           ),
-          title: Text(
+          title: const Text(
             'Notifications'
           ),
           titleSpacing: 2,
@@ -57,7 +56,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           ),
         ),
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: buildBody(context),
         )
       ),
@@ -71,11 +70,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for data
-          return Loader();
+          return const Loader();
         } 
         else if (snapshot.hasError) {
           // Handle error if any
-          return ErrorLoader();
+          return const ErrorLoader();
         }
         else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Padding(
@@ -222,7 +221,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 fontSize: 12.sp,
                                 //fontWeight: FontWeight.w500,
                                 color: AppTheme().blackColor,
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   overflow: TextOverflow.ellipsis
                                 )
                               ),

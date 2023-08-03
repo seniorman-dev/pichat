@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
@@ -14,7 +13,7 @@ import 'package:pichat/user/chat/widget/chat_list.dart';
 
 
 class DMScreen extends StatelessWidget {
-  const DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName, required this.senderId});
+  DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName, required this.senderId});
   final String receiverProfilePic;
   final String receiverName;
   final String receiverID;
@@ -22,10 +21,13 @@ class DMScreen extends StatelessWidget {
   final String senderId;
   final bool isOnline;
 
+  final scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: AppTheme().whiteColor,//.lightGreyColor,
         appBar: AppBar(
           toolbarHeight: 110.h,
@@ -76,7 +78,7 @@ class DMScreen extends StatelessWidget {
                         color: isOnline? AppTheme().greenColor : AppTheme().darkGreyColor,
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           overflow: TextOverflow.ellipsis
                         )
                       ),
@@ -106,29 +108,34 @@ class DMScreen extends StatelessWidget {
           ],
         ),
         body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            //list of messages
+          children: [         
+            //list of messages        
+            ChatList(
+              senderName: senderName, 
+              senderId: senderId,
+              receiverName: receiverName, 
+              receiverId: receiverID,
+            ),
+
             Expanded(
-              flex: 2,
-              child: ChatList(
-                senderName: senderName, 
-                senderId: senderId,
+              child: BottomEngine(
                 receiverName: receiverName, 
-                receiverId: receiverID,
+                receiverId: receiverID, 
+                receiverPhoto: receiverProfilePic,
               ),
             ),
-            //input content or textfield
-            BottomEngine(
-              receiverName: receiverName, 
-              receiverId: receiverID, 
-              receiverPhoto: receiverProfilePic,
-            ),
-            SizedBox(height: 10.h,)        
-          ]        
-        ),   
-      ),
+
+            SizedBox(
+              height: MediaQuery.of(context).viewInsets.bottom,
+            )
+          ],
+        )    
+      ),   
     );
   }
 }
+
+//Future<bool> onBackPress() {
+    //Navigator.pop(context);
+    //return Future.value(false);
+ //}

@@ -1,15 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/settings/widget/connects.dart';
 import 'package:pichat/user/settings/widget/posts.dart';
 import 'package:pichat/user/settings/widget/re-posts.dart';
-import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
 
 
@@ -28,7 +25,7 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: AppTheme().whiteColor,
         //appBar: CustomAppBar(title: 'Created Events'),
         body: SingleChildScrollView(
-          physics: ClampingScrollPhysics(), //BouncingScrollPhysics(),
+          physics: const ClampingScrollPhysics(), //BouncingScrollPhysics(),
           child: buildBody(context),
         ),
       ),
@@ -124,7 +121,7 @@ class ProfileScreen extends StatelessWidget {
                                         color: AppTheme().greyColor,
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w500,
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           overflow: TextOverflow.ellipsis
                                         )
                                       ),
@@ -150,7 +147,7 @@ class ProfileScreen extends StatelessWidget {
                                         color: AppTheme().greyColor,
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w500,
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           overflow: TextOverflow.ellipsis
                                         )
                                       ),
@@ -176,7 +173,7 @@ class ProfileScreen extends StatelessWidget {
                                         color: AppTheme().greyColor,
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w500,
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           overflow: TextOverflow.ellipsis
                                         )
                                       ),
@@ -215,7 +212,7 @@ class ProfileScreen extends StatelessWidget {
                           color: AppTheme().greyColor, //.darkGreyColor,
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                               overflow: TextOverflow.visible
                             )
                         ),
@@ -242,7 +239,7 @@ class ProfileScreen extends StatelessWidget {
                                 color: AppTheme().mainColor, //opacityBlue,
                                 fontSize: 13.sp,
                                 fontWeight: FontWeight.w500,
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   overflow: TextOverflow.ellipsis
                                 )
                               ),
@@ -334,7 +331,7 @@ class ProfileScreen extends StatelessWidget {
         children: <Widget>[           
           TabBar(
             isScrollable: false,
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             labelColor: AppTheme().mainColor,
             unselectedLabelColor: AppTheme().greyColor,
             indicatorColor: AppTheme().mainColor,
@@ -375,7 +372,7 @@ class ProfileScreen extends StatelessWidget {
           SizedBox( 
             //Add this to give height
             height: MediaQuery.of(context).size.height,
-            child: TabBarView(
+            child: const TabBarView(
               physics: BouncingScrollPhysics(),
               children: [           
                 MyPosts(),              

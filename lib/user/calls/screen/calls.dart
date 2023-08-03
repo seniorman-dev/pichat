@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
@@ -30,7 +27,7 @@ class CallScreen extends StatelessWidget {
           backgroundColor: AppTheme().whiteColor,
           centerTitle: true,
           elevation: 0,
-          title: Text(
+          title: const Text(
             'Calls'
           ),
           titleSpacing: 2,
@@ -43,7 +40,7 @@ class CallScreen extends StatelessWidget {
           ),
         ),
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: buildBody(context),
         )
       ),
@@ -57,11 +54,11 @@ class CallScreen extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for data
-          return Loader();
+          return const Loader();
         } 
         else if (snapshot.hasError) {
           // Handle error if any
-          return ErrorLoader();
+          return const ErrorLoader();
         }
         else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Padding(
@@ -187,7 +184,7 @@ class CallScreen extends StatelessWidget {
                                           color: AppTheme().darkGreyColor,
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w500,
-                                          textStyle: TextStyle(
+                                          textStyle: const TextStyle(
                                             overflow: TextOverflow.ellipsis
                                           )
                                         ),
