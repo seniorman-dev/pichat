@@ -13,7 +13,6 @@ import 'package:pichat/auth/screen/splash_screen_2.dart';
 import 'package:pichat/main_page/controller/main_page_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/user/feeds/screen/feeds_screen.dart';
 import 'package:pichat/user/settings/controller/profile_controller.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';

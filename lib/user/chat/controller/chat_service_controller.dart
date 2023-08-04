@@ -11,6 +11,15 @@ import 'package:get_storage/get_storage.dart';
 
 class ChatServiceController extends ChangeNotifier {
 
+  final ScrollController messageController = ScrollController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    messageController.dispose();
+    super.dispose();
+  }
+
   //////////////TextEditingControllers here
   //final allUsersTextEditingController = TextEditingController();
 

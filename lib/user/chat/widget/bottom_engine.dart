@@ -113,7 +113,7 @@ class BottomEngine extends StatelessWidget {
                 style: GoogleFonts.poppins(color: AppTheme().blackColor),
                 decoration: InputDecoration(        
                   border: InputBorder.none,        
-                  hintText: 'Type message...',
+                  hintText: 'Type a message...',
                   hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 13.sp),              
                 )
               ),

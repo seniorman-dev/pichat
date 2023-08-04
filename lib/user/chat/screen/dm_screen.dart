@@ -1,19 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/widget/bottom_engine.dart';
 import 'package:pichat/user/chat/widget/chat_list.dart';
+import 'package:provider/provider.dart';
 
 
 
 
 
 
-class DMScreen extends StatelessWidget {
-  DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName, required this.senderId});
+class DMScreen extends StatefulWidget {
+  const DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName, required this.senderId});
   final String receiverProfilePic;
   final String receiverName;
   final String receiverID;
@@ -21,13 +24,18 @@ class DMScreen extends StatelessWidget {
   final String senderId;
   final bool isOnline;
 
-  final scrollController = ScrollController();
+  @override
+  State<DMScreen> createState() => _DMScreenState();
+}
+
+class _DMScreenState extends State<DMScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
+        //resizeToAvoidBottomInset: true,
         backgroundColor: AppTheme().whiteColor,//.lightGreyColor,
         appBar: AppBar(
           toolbarHeight: 110.h,
@@ -44,7 +52,7 @@ class DMScreen extends StatelessWidget {
               size: 30.r,
             )
           ),
-          title: Row(
+          flexibleSpace: Row( //title
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               //profilePic
@@ -64,7 +72,7 @@ class DMScreen extends StatelessWidget {
                   //mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      receiverName,
+                      widget.receiverName,
                       style: GoogleFonts.poppins(
                         color: AppTheme().blackColor,
                         fontSize: 14.sp,
@@ -73,9 +81,9 @@ class DMScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 2.h,),
                     Text(
-                      isOnline ? 'online' : 'offline',
+                      widget.isOnline ? 'online' : 'offline',
                       style: GoogleFonts.poppins(
-                        color: isOnline? AppTheme().greenColor : AppTheme().darkGreyColor,
+                        color: widget.isOnline? AppTheme().greenColor : AppTheme().darkGreyColor,
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
                         textStyle: const TextStyle(
@@ -108,28 +116,21 @@ class DMScreen extends StatelessWidget {
           ],
         ),
         body: Column(
-          children: [         
-            //list of messages        
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             ChatList(
-              senderName: senderName, 
-              senderId: senderId,
-              receiverName: receiverName, 
-              receiverId: receiverID,
+              senderName: widget.senderName, 
+              senderId: widget.senderId,
+              receiverName: widget.receiverName, 
+              receiverId: widget.receiverID,
             ),
-
-            Expanded(
-              child: BottomEngine(
-                receiverName: receiverName, 
-                receiverId: receiverID, 
-                receiverPhoto: receiverProfilePic,
-              ),
+            BottomEngine(
+              receiverName: widget.receiverName, 
+              receiverId: widget.receiverID, 
+              receiverPhoto: widget.receiverProfilePic
             ),
-
-            SizedBox(
-              height: MediaQuery.of(context).viewInsets.bottom,
-            )
           ],
-        )    
+        )   
       ),   
     );
   }
