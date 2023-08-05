@@ -37,57 +37,6 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  bool _isOnline = false;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    WidgetsBinding.instance.addObserver(this);
-    listenToUserOnlineStatus();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  // widgets binding observer helps us to check if user is actively using the app (online) or not.
-  // it check the state of our app
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      updateUserOnlineStatus(true);
-    } else if (state == AppLifecycleState.paused) {
-      updateUserOnlineStatus(false);
-    } else if (state == AppLifecycleState.inactive) {
-      updateUserOnlineStatus(false);
-    } else if (state == AppLifecycleState.detached) {
-      updateUserOnlineStatus(false);
-    }
-  }
-
-  void updateUserOnlineStatus(bool isOnline) {
-    final userRef = FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid);
-    userRef.set({
-      'isOnline': isOnline,
-      'lastActive': FieldValue.serverTimestamp()
-    }, SetOptions(merge: true));
-  }
-
-  void listenToUserOnlineStatus() {
-    final userRef = FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid);
-
-    userRef.snapshots().listen((snapshot) {
-      bool onlineStatus = snapshot.data()?['isOnline'] ?? false;
-      setState(() {
-        _isOnline = onlineStatus;
-      });
-    });
-  }
-  
-
 
 
 
@@ -189,7 +138,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                       ////////////////////////
 
                       Get.to(() => DMScreen(
-                        isOnline: _isOnline, 
+                        isOnline: chatServiceController.isSearchingRecentChats ? data['isOnline'] : data2['isOnline'], 
                         receiverName: chatServiceController.isSearchingRecentChats ? data['name'] : data2['name'],
                         receiverProfilePic: chatServiceController.isSearchingRecentChats ? data['photo'] : data2['photo'],
                         receiverID: chatServiceController.isSearchingRecentChats ? data['id'] : data2['id'], 
