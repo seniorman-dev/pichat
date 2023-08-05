@@ -104,7 +104,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                     ),
                     SizedBox(height: 2.h,),
                     Text(
-                      widget.isOnline ? 'online' : 'offline',
+                      widget.isOnline ? 'online' : widget.lastActive,  //'offline',
                       style: GoogleFonts.poppins(
                         color: widget.isOnline? AppTheme().greenColor : AppTheme().darkGreyColor,
                         fontSize: 12.sp,

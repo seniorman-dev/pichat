@@ -36,7 +36,7 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
 
-  DateTime? previousTimestamp;
+  Timestamp? previousTimestamp;
 
   //it makes messages list automatically scroll up after a message has been sent
   final ScrollController messageController = ScrollController();
@@ -139,10 +139,10 @@ class _ChatListState extends State<ChatList> {
                 var data = snapshot.data!.docs[index];
                 
                 //to get time interval of messages
-                DateTime currentTimestamp = data['timestamp'].toDate();
+                Timestamp currentTimestamp = data['timestamp'];
                 bool showInterval = false;
                 if (index > 0) {
-                  DateTime previousSenderTimestamp = snapshot.data!.docs[index - 1]['timestamp'].toDate();
+                  Timestamp previousSenderTimestamp = snapshot.data!.docs[index - 1]['timestamp'];
                   showInterval = data['senderId'] != snapshot.data!.docs[index - 1]['senderId'];
                   if (showInterval) {
                     previousTimestamp = previousSenderTimestamp;
@@ -161,13 +161,30 @@ class _ChatListState extends State<ChatList> {
                     child: Column(
                       crossAxisAlignment: data['senderId'] == authController.userID ? CrossAxisAlignment.end : CrossAxisAlignment.start,  ///tweak this instead to suit the chatters
                       children: [
-
+                             
+                             /*to show messages time intervals*/
+                        //this is how you write conditional statements in flutter widget trees
                         if (showInterval)
                           Container(
+                            decoration: BoxDecoration(
+                              color: AppTheme().lightGreyColor,
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 10.h, //15.h
+                              horizontal: 10.w  //15.h
+                            ),
                             alignment: Alignment.center,
                             child: Text(
-                              chatServiceController.formatChatInterval(previousTimestamp, currentTimestamp),
-                              style: TextStyle(color: Colors.grey),
+                              chatServiceController.formatChatInterval(previousTimestamp!, currentTimestamp),
+                              style: GoogleFonts.poppins(
+                                color: AppTheme().blackColor,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                /*textStyle: TextStyle(
+                                  overflow: TextOverflow.ellipsis
+                                )*/
+                              )
                             ),
                           ),
 

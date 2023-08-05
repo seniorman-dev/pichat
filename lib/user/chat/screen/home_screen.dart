@@ -278,7 +278,30 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                       }
                     ),
         
-                    //SizedBox(height: 5.h,),
+                    SizedBox(height: 5.h,),
+                    
+                    //online status of logged in user
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          CupertinoIcons.app_badge,
+                          color: AppTheme().blackColor,
+                        ),
+                        SizedBox(width: 2.w,),
+                        Text(
+                          _isOnline ? 'online' : 'offline',
+                          style: GoogleFonts.poppins(
+                            color: AppTheme().greenColor,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            textStyle: const TextStyle(
+                              overflow: TextOverflow.ellipsis
+                            )
+                          ),
+                        )
+                      ],
+                    )
 
                     //////////////GEOLOCATOR
                     /*Row(

@@ -144,8 +144,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                         receiverID: chatServiceController.isSearchingRecentChats ? data['id'] : data2['id'], 
                         senderName: userName,
                         senderId: userId, 
-                        //here
-                        lastActive: chatServiceController.lastActive(id: chatServiceController.isSearchingRecentChats ? data['id'] : data2['id']),
+                        lastActive: chatServiceController.isSearchingRecentChats ? "${formatTime(timestamp: data['lastActive'])} on ${formatDate(timestamp: data['lastActive'])}" : "${formatTime(timestamp: data2['lastActive'])} on ${formatDate(timestamp: data2['lastActive'])}",
                       ));
                     },
                     child: Padding(

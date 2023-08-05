@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
+
 
 
 
@@ -86,7 +86,7 @@ class ChatServiceController extends ChangeNotifier {
     //i'd use my own format for private chats
     return firestore.collection('chat_rooms').doc(chatRoomId).collection('messages').orderBy('timestamp', descending: false).snapshots();
   }*/
-
+  
 
 
   //sendFriendRequest to a user
@@ -347,7 +347,6 @@ class ChatServiceController extends ChangeNotifier {
     .get();
     String userId = snapshot.get('id');
 
-    //add message to current user / sender collection (update isSeen later)
     await firestore.collection('users')
     .doc(userId)
     .collection('recent_chats')
@@ -356,7 +355,7 @@ class ChatServiceController extends ChangeNotifier {
     .doc(messageId)
     .delete();
     
-    //add message to friend / receiver's  collection (update isSeen later)
+  
     await firestore.collection('users')
     .doc(receiverId)
     .collection('recent_chats')
@@ -377,19 +376,24 @@ class ChatServiceController extends ChangeNotifier {
     .update({"isSeen": isSeen});
   }
 
-  //to check when last a chat buddy was lastActive
-  lastActive({required String id}) async{
-    //do this if you want to get any logged in user property 
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-    .collection('users')
-    .doc(id)
-    .get();
-    String userId = snapshot.get('id');
-    return userId;
+
+  // Function to format the chat interval between two timestamps
+  String formatChatInterval(Timestamp previousTimestamp, Timestamp currentTimestamp) {
+    DateTime previousDateTime = previousTimestamp.toDate();
+    DateTime currentDateTime = currentTimestamp.toDate();
+  
+    Duration interval = currentDateTime.difference(previousDateTime);
+    if (interval.inDays > 0) {
+      return '${interval.inDays}d ago';
+    } else if (interval.inHours > 0) {
+      return '${interval.inHours}h ago';
+    } else if (interval.inMinutes > 0) {
+      return '${interval.inMinutes}m ago';
+    } else {
+      return 'Just now';
+    }
   }
-
-  //geolocator functionality
-
+  
 
 
 
