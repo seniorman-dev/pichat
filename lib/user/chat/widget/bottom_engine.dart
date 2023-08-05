@@ -23,6 +23,8 @@ class BottomEngine extends StatelessWidget {
   Widget build(BuildContext context) {
 
     var controller = Provider.of<ChatServiceController>(context);
+    
+    //global key
     GlobalKey globalKey = GlobalKey();
 
     FocusNode focusNode = FocusNode(); //for keyboard

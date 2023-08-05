@@ -51,177 +51,175 @@ class _ChatListState extends State<ChatList> {
     var chatServiceController = Provider.of<ChatServiceController>(context);
     
     return Expanded(
-      child: Container(
-        child: StreamBuilder(
-          stream: chatServiceController.firestore.collection('users')
-          .doc(chatServiceController.auth.currentUser!.uid)
-          .collection('recent_chats')
-          .doc(widget.receiverId)
-          .collection('messages')
-          .orderBy('timestamp')
-          .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              // Show a loading indicator while waiting for data
-              return Loader();
-            } 
-            if (snapshot.hasError) {
-              // Handle error if any
-              return ErrorLoader();
-            }
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 25.w,
-                  vertical: 20.h,
+      child: StreamBuilder(
+        stream: chatServiceController.firestore.collection('users')
+        .doc(chatServiceController.auth.currentUser!.uid)
+        .collection('recent_chats')
+        .doc(widget.receiverId)
+        .collection('messages')
+        .orderBy('timestamp')
+        .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show a loading indicator while waiting for data
+            return const Loader();
+          } 
+          if (snapshot.hasError) {
+            // Handle error if any
+            return const ErrorLoader();
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 25.w,
+                vertical: 20.h,
+              ),
+              child: SizedBox(
+                child: Center(
+                  child: Column(
+                    //mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 150.h,),
+                      CircleAvatar(
+                        radius: 100.r,
+                        backgroundColor: AppTheme().lightestOpacityBlue,
+                          child: Icon(
+                          CupertinoIcons.text_bubble,
+                          color: AppTheme().mainColor,
+                          size: 70.r,
+                        ),
+                      ),
+                      SizedBox(height: 30.h),
+                      Text(
+                        "Start a conversation with ${getFirstName(fullName: widget.receiverName)} 😊",
+                        style: GoogleFonts.poppins(
+                          color: AppTheme().greyColor,
+                          fontSize: 14.sp,
+                          //fontWeight: FontWeight.w500
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-                child: SizedBox(
-                  child: Center(
+              ),
+            );
+          }
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 15.w, //20.w
+              vertical: 5.h  //20.h
+            ),
+            child: ListView.separated(
+              padding: EdgeInsets.symmetric(
+                horizontal: 10.w, //20.w
+                vertical: 10.h  //20.h
+              ),
+              controller: chatServiceController.messageController,
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              separatorBuilder: (context, index) => SizedBox(height: 10.h,), 
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: 
+                (context, index, ) {
+      
+                           //leave this stuff hear to avoid crashing
+                //it makes the messages list automatically scroll up after a message has been sent
+                SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                  chatServiceController.messageController.jumpTo(chatServiceController.messageController.position.maxScrollExtent);
+                });
+                
+                var data = snapshot.data!.docs[index];
+      
+                return Dismissible(
+                  key: UniqueKey(),
+                  direction: DismissDirection.startToEnd,
+                  onDismissed: (direction) => chatServiceController.deleteDirectMessages(messageId: data['messageId'], receiverId: widget.receiverId),
+                  child: InkWell(
+                    onLongPress: () {
+                      //show message info or message statistics alert dialog
+                    },
                     child: Column(
-                      //mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: data['senderId'] == authController.userID ? CrossAxisAlignment.end : CrossAxisAlignment.start,  ///tweak this instead to suit the chatters
                       children: [
-                        SizedBox(height: 150.h,),
-                        CircleAvatar(
-                          radius: 100.r,
-                          backgroundColor: AppTheme().lightestOpacityBlue,
-                            child: Icon(
-                            CupertinoIcons.text_bubble,
-                            color: AppTheme().mainColor,
-                            size: 70.r,
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          //height: 80.h,
+                          width: 200.w,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15.h, //20.h
+                            horizontal: 15.w  //15.h
+                          ),
+                          decoration: BoxDecoration(
+                            color: data['senderId'] == authController.userID ? AppTheme().mainColor : AppTheme().lightGreyColor,  ///tweak this instead to suit the chatters
+                            borderRadius: BorderRadius.circular(20.r),
+                            /*data['senderId'] == authController.userID 
+                            ? BorderRadius.only(topLeft: Radius.circular(20.r), topRight: Radius.circular(20.r), bottomLeft: Radius.circular(20.r))
+                            : BorderRadius.only(topLeft: Radius.circular(20.r), topRight: Radius.circular(20.r), bottomRight: Radius.circular(20.r))
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                //color: AppTheme().lightGreyColor,
+                                spreadRadius: 0.1.r,
+                                blurRadius: 8.0.r,
+                              )
+                            ],*/
+                          ),
+                          child: Text(
+                            data['message'],
+                            style: GoogleFonts.poppins(  //urbanist
+                              color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                                /*textStyle: TextStyle(
+                                  overflow: TextOverflow.ellipsis
+                                )*/
+                            ),
                           ),
                         ),
-                        SizedBox(height: 30.h),
-                        Text(
-                          "Start a conversation with ${getFirstName(fullName: widget.receiverName)} 😊",
-                          style: GoogleFonts.poppins(
-                            color: AppTheme().greyColor,
-                            fontSize: 14.sp,
-                            //fontWeight: FontWeight.w500
-                          ),
+                        SizedBox(height: 5.h,),
+                        //Time and isSeen icon feature
+                        Row(
+                          mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.end : MainAxisAlignment.start,  //tweak this also
+                          children: [
+                
+                            Text(
+                              "${formatDate(timestamp: data['timestamp'])} - ${formatTime(timestamp: data['timestamp'])}",
+                              style: GoogleFonts.poppins(
+                                color: Colors.grey,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                textStyle: const TextStyle(
+                                  overflow: TextOverflow.ellipsis
+                                )
+                              ),
+                            ),
+                
+                            //SizedBox(width: 3.w,),
+                
+                            /*data['isSeen'] && data['senderId'] == authController.userID
+                            ?Icon(
+                              Icons.done_all_rounded,
+                              color: Colors.grey,
+                            )
+                            : SizedBox()
+                            const Icon(
+                              CupertinoIcons.checkmark_alt,
+                              color: Colors.grey,
+                            ),*/
+                
+                          ],
                         )
                       ],
                     ),
                   ),
-                ),
-              );
-            }
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 15.w, //20.w
-                vertical: 5.h  //20.h
-              ),
-              child: ListView.separated(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10.w, //20.w
-                  vertical: 10.h  //20.h
-                ),
-                controller: chatServiceController.messageController,
-                physics: const BouncingScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                separatorBuilder: (context, index) => SizedBox(height: 10.h,), 
-                itemCount: snapshot.data!.docs.length,
-                itemBuilder: 
-                  (context, index, ) {
+                );
+              } 
       
-                             //leave this stuff hear to avoid crashing
-                  //it makes the messages list automatically scroll up after a message has been sent
-                  SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                    chatServiceController.messageController.jumpTo(chatServiceController.messageController.position.maxScrollExtent);
-                  });
-                  
-                  var data = snapshot.data!.docs[index];
-      
-                  return Dismissible(
-                    key: UniqueKey(),
-                    direction: DismissDirection.startToEnd,
-                    onDismissed: (direction) => chatServiceController.deleteDirectMessages(messageId: data['messageId'], receiverId: widget.receiverId),
-                    child: InkWell(
-                      onLongPress: () {
-                        //show message info or message statistics alert dialog
-                      },
-                      child: Column(
-                        crossAxisAlignment: data['senderId'] == authController.userID ? CrossAxisAlignment.end : CrossAxisAlignment.start,  ///tweak this instead to suit the chatters
-                        children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            //height: 80.h,
-                            width: 200.w,
-                            padding: EdgeInsets.symmetric(
-                              vertical: 15.h, //20.h
-                              horizontal: 15.w  //15.h
-                            ),
-                            decoration: BoxDecoration(
-                              color: data['senderId'] == authController.userID ? AppTheme().mainColor : AppTheme().lightGreyColor,  ///tweak this instead to suit the chatters
-                              borderRadius: BorderRadius.circular(20.r),
-                              /*data['senderId'] == authController.userID 
-                              ? BorderRadius.only(topLeft: Radius.circular(20.r), topRight: Radius.circular(20.r), bottomLeft: Radius.circular(20.r))
-                              : BorderRadius.only(topLeft: Radius.circular(20.r), topRight: Radius.circular(20.r), bottomRight: Radius.circular(20.r))
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  //color: AppTheme().lightGreyColor,
-                                  spreadRadius: 0.1.r,
-                                  blurRadius: 8.0.r,
-                                )
-                              ],*/
-                            ),
-                            child: Text(
-                              data['message'],
-                              style: GoogleFonts.poppins(  //urbanist
-                                color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
-                                  /*textStyle: TextStyle(
-                                    overflow: TextOverflow.ellipsis
-                                  )*/
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 5.h,),
-                          //Time and isSeen icon feature
-                          Row(
-                            mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.end : MainAxisAlignment.start,  //tweak this also
-                            children: [
-                  
-                              Text(
-                                "${formatDate(timestamp: data['timestamp'])} - ${formatTime(timestamp: data['timestamp'])}",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.grey,
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  textStyle: const TextStyle(
-                                    overflow: TextOverflow.ellipsis
-                                  )
-                                ),
-                              ),
-                  
-                              //SizedBox(width: 3.w,),
-                  
-                              /*data['isSeen'] && data['senderId'] == authController.userID
-                              ?Icon(
-                                Icons.done_all_rounded,
-                                color: Colors.grey,
-                              )
-                              : SizedBox()
-                              const Icon(
-                                CupertinoIcons.checkmark_alt,
-                                color: Colors.grey,
-                              ),*/
-                  
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                } 
-      
-              ),
-            );
-          }
-        ),
+            ),
+          );
+        }
       ),
     );
   }

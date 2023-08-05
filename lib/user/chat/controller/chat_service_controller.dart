@@ -13,6 +13,9 @@ class ChatServiceController extends ChangeNotifier {
 
   final ScrollController messageController = ScrollController();
 
+  double keyboardHeight = 0;
+  double keyboardTop = 0;
+
   @override
   void dispose() {
     // TODO: implement dispose

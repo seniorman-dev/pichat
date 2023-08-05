@@ -1,14 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/widget/bottom_engine.dart';
 import 'package:pichat/user/chat/widget/chat_list.dart';
-import 'package:provider/provider.dart';
 
 
 
@@ -28,7 +25,32 @@ class DMScreen extends StatefulWidget {
   State<DMScreen> createState() => _DMScreenState();
 }
 
-class _DMScreenState extends State<DMScreen> {
+class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
+  
+  double keyboardHeight = 0;
+  double keyboardTop = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final bottomInset = WidgetsBinding.instance.window.viewInsets.bottom;
+    final topInset = WidgetsBinding.instance.window.viewInsets.top;
+    setState(() {
+      keyboardHeight = bottomInset;
+      keyboardTop = topInset; 
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +74,7 @@ class _DMScreenState extends State<DMScreen> {
               size: 30.r,
             )
           ),
-          flexibleSpace: Row( //title
+          title: Row( //title
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               //profilePic
@@ -124,10 +146,19 @@ class _DMScreenState extends State<DMScreen> {
               receiverName: widget.receiverName, 
               receiverId: widget.receiverID,
             ),
-            BottomEngine(
-              receiverName: widget.receiverName, 
-              receiverId: widget.receiverID, 
-              receiverPhoto: widget.receiverProfilePic
+            Padding(
+              padding: EdgeInsets.only(
+                top: keyboardTop,
+                //bottom: keyboardHeight - MediaQuery.of(context).padding.bottom,
+                bottom: keyboardHeight > MediaQuery.of(context).padding.bottom + 10
+                ? keyboardHeight - MediaQuery.of(context).padding.bottom - 250
+                : 0,
+              ),
+              child: BottomEngine(
+                receiverName: widget.receiverName, 
+                receiverId: widget.receiverID, 
+                receiverPhoto: widget.receiverProfilePic
+              ),
             ),
           ],
         )   
