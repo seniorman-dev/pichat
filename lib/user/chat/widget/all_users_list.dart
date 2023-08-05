@@ -257,7 +257,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                               //connect button
                                               SendOrCancelRequestButton(
                                                 receiverName: chatServiceController.isSearchingForUsers ? data['name'] : data2['name'],                                       
-                                                receiverID: chatServiceController.isSearchingForUsers ? data['id'] : data2['name'], 
+                                                receiverID: chatServiceController.isSearchingForUsers ? data['id'] : data2['id'], 
                                                 isSelected: true, 
                                                 FCMToken: chatServiceController.isSearchingForUsers ? data['FCMToken'] : data2['FCMToken'],  
                                               )                            
