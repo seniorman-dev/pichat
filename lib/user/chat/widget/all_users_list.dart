@@ -4,12 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/widget/buttons.dart';
+import 'package:pichat/user/chat/widget/search_textfield.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
@@ -34,56 +33,20 @@ class _AllUsersListState extends State<AllUsersList> {
 
   final FirebaseAuth firebase = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  User? get user => firebase.currentUser;
-  String get userID => firebase.currentUser!.uid;
-  String? get userDisplayName => firebase.currentUser!.displayName;
-  String? get userEmail => firebase.currentUser!.email;
   
-  //get name of current users
-  String getCurrentUserName(){
-    final box = GetStorage();
-    return box.read('name');
-  }
 
   //for loading animation
   bool isLoading = false;
-  
-  //for text editing controller
-  final TextEditingController searchController = TextEditingController();
-  //dispose textcontroller
-  /*@override
-  void dispose() {
-    // Always dispose of the TextEditingController when the widget is disposed
-    searchController.dispose();
-    super.dispose();
-  }*/
 
   Stream<QuerySnapshot>? userStream;
 
   @override
   void initState() {
     // TODO: implement initState
-    userStream = firestore.collection('users').where("id", isNotEqualTo: userID).snapshots();
+    userStream = firestore.collection('users').where("id", isNotEqualTo: firebase.currentUser!.uid).snapshots();
     super.initState();
   }
   
-
-  void performSearch(String query) {
-    // Update the stream based on the search query
-    setState(() {
-      if (query.isEmpty) {
-        // If the search query is empty, show all users
-        userStream = FirebaseFirestore.instance.collection('users').where("id", isNotEqualTo: userID).snapshots();
-      } 
-      else {
-        // If there's a search query, filter users based on the query
-        userStream = FirebaseFirestore.instance
-        .collection('users')
-        .where('name', isEqualTo: query)  //query
-        .snapshots();
-      }
-    });
-  }
 
 
 
@@ -91,7 +54,7 @@ class _AllUsersListState extends State<AllUsersList> {
   Widget build(BuildContext context) {
 
     //providers
-    var controller = Provider.of<AuthController>(context);
+    //var controller = Provider.of<AuthController>(context);
     var chatServiceController = Provider.of<ChatServiceController>(context);
     
     return SafeArea(
@@ -143,8 +106,12 @@ class _AllUsersListState extends State<AllUsersList> {
 
               //userstream
               StreamBuilder(
-                stream: userStream ,  //chatServiceController.isSearching ? controller.firestore.collection('users').where("name", isEqualTo: textEditingController.text).snapshots() : controller.firestore.collection('users').where("id", isNotEqualTo: controller.userID).snapshots(), //userStream
+                stream: userStream ,
                 builder: (context, snapshot) {
+
+                  //filtered list. shown when a logged in user is trying to search for a user to connect with
+                  var filteredList = snapshot.data!.docs.where((element) => element['name'].toString().contains(chatServiceController.allUsersTextEditingController.text)).toList();
+
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Show a loading indicator while waiting for data
                     return const Loader();
@@ -195,11 +162,12 @@ class _AllUsersListState extends State<AllUsersList> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       separatorBuilder: (context, index) => SizedBox(height: 0.h,), 
-                      itemCount: snapshot.data!.docs.length,
+                      itemCount: chatServiceController.isSearchingForUsers ? filteredList.length : snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
-                        var data = snapshot.data!.docs[index];
-                        //to uniquely select users
-                        var isSelected = chatServiceController.selectedDocumentIdForAllUsers.contains(data['id']); 
+
+                        var data2 = snapshot.data!.docs[index];  //normal list
+
+                        var data = filteredList[index];  //filtered list
                          
                         return Padding(
                           padding: EdgeInsets.symmetric(
@@ -209,6 +177,20 @@ class _AllUsersListState extends State<AllUsersList> {
                           child: Column(
                             children: [
                               SizedBox(height: 30.h,),
+
+                              SearchTextField(
+                                textController: chatServiceController.allUsersTextEditingController, 
+                                hintText: 'Search for connects',
+                                onChanged: (value) {
+                                  setState(() {
+                                    chatServiceController.isSearchingForUsers = true;
+                                    chatServiceController.allUsersTextEditingController.text = value;
+                                  });
+                                },
+                              ),
+
+                              SizedBox(height: 20.h,),
+
                               Container(
                                 //height: 100.h,
                                 padding: EdgeInsets.symmetric(
@@ -229,7 +211,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    //profilePic
+                                    ////profilePic  ===>> chatServiceontroller.isSearchingForUsers ? data['photo'] : data2['photo'],
                                     CircleAvatar(
                                       radius: 32.r,
                                       backgroundColor: AppTheme().opacityBlue,
@@ -245,7 +227,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            data['name'],
+                                            chatServiceController.isSearchingForUsers ? data['name'] : data2['name'],
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().blackColor,
                                               fontSize: 14.sp,
@@ -260,7 +242,9 @@ class _AllUsersListState extends State<AllUsersList> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                data['isOnline'] ? 'online' : 'offline',
+                                                chatServiceController.isSearchingForUsers
+                                                ? data['isOnline'] ? 'online' : 'offline'
+                                                : data2['isOnline'] ? 'online' : 'offline',
                                                 style: GoogleFonts.poppins(
                                                   color: AppTheme().darkGreyColor, //specify color when user is online or offline
                                                   fontSize: 14.sp, //14.sp
@@ -272,10 +256,10 @@ class _AllUsersListState extends State<AllUsersList> {
                                               ),
                                               //connect button
                                               SendOrCancelRequestButton(
-                                                receiverName: data['name'],                                       
-                                                receiverID: data['id'], 
-                                                isSelected: isSelected, 
-                                                FCMToken: data['FCMToken'],  
+                                                receiverName: chatServiceController.isSearchingForUsers ? data['name'] : data2['name'],                                       
+                                                receiverID: chatServiceController.isSearchingForUsers ? data['id'] : data2['name'], 
+                                                isSelected: true, 
+                                                FCMToken: chatServiceController.isSearchingForUsers ? data['FCMToken'] : data2['FCMToken'],  
                                               )                            
                                             ]
                                           )

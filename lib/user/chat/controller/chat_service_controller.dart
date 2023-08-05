@@ -11,6 +11,7 @@ import 'package:get_storage/get_storage.dart';
 
 class ChatServiceController extends ChangeNotifier {
 
+  //for chat list
   final ScrollController messageController = ScrollController();
 
   double keyboardHeight = 0;
@@ -20,19 +21,21 @@ class ChatServiceController extends ChangeNotifier {
   void dispose() {
     // TODO: implement dispose
     messageController.dispose();
+    allUsersTextEditingController.dispose();
+    recentChatsTextController.dispose();
     super.dispose();
   }
 
   //////////////TextEditingControllers here
-  //final allUsersTextEditingController = TextEditingController();
+  final allUsersTextEditingController = TextEditingController();
+  final recentChatsTextController = TextEditingController();
 
 
-  //when a user is searching for users
-  bool isSearching = false;
+  //when a user is searching for all users
+  bool isSearchingForUsers = false;
 
-  //when a user is trying to searching for resent chats
+  //when a user is trying to searching for recent chats messages
   bool isSearchingRecentChats = false;
-
 
   //get the instance of firebaseauth and cloud firestore
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -89,11 +92,14 @@ class ChatServiceController extends ChangeNotifier {
   //sendFriendRequest to a user
   Future sendFriendRequest({required String recipientId}) async {
     try {
-      //get logged in user's name from local storage
-      String getUserName() {
-        final box = GetStorage();
-        return box.read('name') ?? ''; // Return an empty string if data is not found
-      }
+
+      //do this if you want to get any logged in user property 
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .get();
+      String userName = snapshot.get('name');
+      
       // Add the sender to the receipient's friendRequests collection
       await FirebaseFirestore.instance
       .collection('users')
@@ -102,7 +108,7 @@ class ChatServiceController extends ChangeNotifier {
       .doc(auth.currentUser!.uid)
       .set({
         //figure out how to add other properties later(very important)
-        'name': getUserName(),
+        'name': userName,
         'email': auth.currentUser!.email,
         'id': auth.currentUser!.uid,
         'photo': 'photo'  //getPhotoString

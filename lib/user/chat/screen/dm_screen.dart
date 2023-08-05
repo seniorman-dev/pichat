@@ -151,7 +151,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                 top: keyboardTop,
                 //bottom: keyboardHeight - MediaQuery.of(context).padding.bottom,
                 bottom: keyboardHeight > MediaQuery.of(context).padding.bottom + 10
-                ? keyboardHeight - MediaQuery.of(context).padding.bottom - 250
+                ? keyboardHeight - MediaQuery.of(context).padding.bottom - 260 //250
                 : 0,
               ),
               child: BottomEngine(

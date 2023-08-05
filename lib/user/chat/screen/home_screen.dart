@@ -12,9 +12,12 @@ import 'package:pichat/user/chat/widget/all_users_list.dart';
 import 'package:pichat/user/chat/widget/friends_list.dart';
 import 'package:pichat/user/chat/widget/recent_chats_list.dart';
 import 'package:pichat/user/chat/widget/request_list.dart';
+import 'package:pichat/user/chat/widget/search_textfield.dart';
 import 'package:pichat/user/notifications/screen/notifications_sceen.dart';
 import 'package:pichat/utils/extract_firstname.dart';
 import 'package:provider/provider.dart';
+
+
 
 
 
@@ -29,7 +32,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController textController = TextEditingController();
+  //final TextEditingController textController = TextEditingController();
   bool isLoading = false;
   
   //seek for permission before getting location
@@ -135,7 +138,7 @@ class _ChatScreenState extends State<ChatScreen> {
         isLoading = true;
         chatServiceontroller.isSearchingRecentChats = true;
       });
-      await chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').where("name", isEqualTo: textController.text).get().then((value) => setState(() => isLoading = false));
+      await chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').where("name", isEqualTo: chatServiceontroller.allUsersTextEditingController.text).get().then((value) => setState(() => isLoading = false));
     }
 
     return SafeArea(
@@ -343,18 +346,24 @@ class _ChatScreenState extends State<ChatScreen> {
               SizedBox(height: 10.h,), //20.h
 
               //search for recent chats
-              /*SearchTextField(
-                textController: textController,
-                onChanged: (value) => onSearch(), 
+              SearchTextField(
+                textController: chatServiceontroller.allUsersTextEditingController,
+                onChanged: (value) {
+                  setState(() {
+                    isLoading = true;
+                    chatServiceontroller.isSearchingRecentChats = true;
+                    chatServiceontroller.allUsersTextEditingController.text = value;
+                  });
+                }, 
                 hintText: 'Search recent messages...',
-              ),*/
+              ),
 
               SizedBox(height: 10.h,), //20.h
 
               //recent chats stream
               RecentChats(
                 isSearching: chatServiceontroller.isSearchingRecentChats,
-                textController: textController,
+                textController: chatServiceontroller.allUsersTextEditingController,
               ),
 
               SizedBox(height: 10.h,),

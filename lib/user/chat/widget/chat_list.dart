@@ -38,13 +38,14 @@ class _ChatListState extends State<ChatList> {
   Widget build(BuildContext context) {
 
     //it makes messages list automatically scroll up after a message has been sent
-    /*final ScrollController messageController = ScrollController();
+    final ScrollController messageController = ScrollController();
+
     @override
     void dispose() {
       // TODO: implement dispose
       messageController.dispose();
       super.dispose();
-    }*/
+    }
 
     //provider for dependency injection
     var authController = Provider.of<AuthController>(context);
@@ -115,7 +116,7 @@ class _ChatListState extends State<ChatList> {
                 horizontal: 10.w, //20.w
                 vertical: 10.h  //20.h
               ),
-              controller: chatServiceController.messageController,
+              controller: messageController,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
@@ -124,11 +125,11 @@ class _ChatListState extends State<ChatList> {
               itemBuilder: 
                 (context, index, ) {
       
-                           //leave this stuff hear to avoid crashing
+                          //leave this stuff hear to avoid crashing
                 //it makes the messages list automatically scroll up after a message has been sent
-                SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                  chatServiceController.messageController.jumpTo(chatServiceController.messageController.position.maxScrollExtent);
-                });
+                /*SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                  messageController.jumpTo(messageController.position.maxScrollExtent);
+                });*/
                 
                 var data = snapshot.data!.docs[index];
       
