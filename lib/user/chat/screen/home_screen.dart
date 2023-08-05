@@ -361,10 +361,7 @@ class _ChatScreenState extends State<ChatScreen> {
               SizedBox(height: 10.h,), //20.h
 
               //recent chats stream
-              RecentChats(
-                isSearching: chatServiceontroller.isSearchingRecentChats,
-                textController: chatServiceontroller.allUsersTextEditingController,
-              ),
+              RecentChats(),
 
               SizedBox(height: 10.h,),
             ]

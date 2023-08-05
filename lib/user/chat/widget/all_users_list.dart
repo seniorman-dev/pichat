@@ -42,7 +42,7 @@ class _AllUsersListState extends State<AllUsersList> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    //initialized the stream
     userStream = firestore.collection('users').where("id", isNotEqualTo: firebase.currentUser!.uid).snapshots();
     super.initState();
   }

@@ -24,9 +24,8 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class RecentChats extends StatefulWidget {
-  RecentChats({super.key, required this.isSearching, required this.textController});
-  final TextEditingController textController;
-  bool isSearching;
+  const RecentChats({super.key,});
+
 
   @override
   State<RecentChats> createState() => _RecentChatsState();
