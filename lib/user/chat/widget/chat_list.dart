@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -34,18 +35,22 @@ class ChatList extends StatefulWidget {
 }
 
 class _ChatListState extends State<ChatList> {
+
+  DateTime? previousTimestamp;
+
+  //it makes messages list automatically scroll up after a message has been sent
+  final ScrollController messageController = ScrollController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    messageController.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-
-    //it makes messages list automatically scroll up after a message has been sent
-    final ScrollController messageController = ScrollController();
-
-    @override
-    void dispose() {
-      // TODO: implement dispose
-      messageController.dispose();
-      super.dispose();
-    }
 
     //provider for dependency injection
     var authController = Provider.of<AuthController>(context);
@@ -132,6 +137,18 @@ class _ChatListState extends State<ChatList> {
                 });*/
                 
                 var data = snapshot.data!.docs[index];
+                
+                //to get time interval of messages
+                DateTime currentTimestamp = data['timestamp'].toDate();
+                bool showInterval = false;
+                if (index > 0) {
+                  DateTime previousSenderTimestamp = snapshot.data!.docs[index - 1]['timestamp'].toDate();
+                  showInterval = data['senderId'] != snapshot.data!.docs[index - 1]['senderId'];
+                  if (showInterval) {
+                    previousTimestamp = previousSenderTimestamp;
+                  }
+                }
+
       
                 return Dismissible(
                   key: UniqueKey(),
@@ -144,6 +161,16 @@ class _ChatListState extends State<ChatList> {
                     child: Column(
                       crossAxisAlignment: data['senderId'] == authController.userID ? CrossAxisAlignment.end : CrossAxisAlignment.start,  ///tweak this instead to suit the chatters
                       children: [
+
+                        if (showInterval)
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              chatServiceController.formatChatInterval(previousTimestamp, currentTimestamp),
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+
                         Container(
                           alignment: Alignment.centerLeft,
                           //height: 80.h,
