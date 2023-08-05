@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen>{
+class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
   //final TextEditingController textController = TextEditingController();
   bool isLoading = false;
 
@@ -117,15 +118,56 @@ class _ChatScreenState extends State<ChatScreen>{
 
   String location= '....';
 
+  //check if logged in user is online
+  bool _isOnline = false;
+
   @override
   void initState() {
-    super.initState();
+    // TODO: implement initState
+    WidgetsBinding.instance.addObserver(this);
+    listenToUserOnlineStatus();
     seekPermission();
+    super.initState();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  // widgets binding observer helps us to check if user is actively using the app (online) or not.
+  // it check the state of our app
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      updateUserOnlineStatus(true);
+    } else if (state == AppLifecycleState.paused) {
+      updateUserOnlineStatus(false);
+    } else if (state == AppLifecycleState.inactive) {
+      updateUserOnlineStatus(false);
+    } else if (state == AppLifecycleState.detached) {
+      updateUserOnlineStatus(false);
+    }
+  }
+
+  void updateUserOnlineStatus(bool isOnline) {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid);
+    userRef.set({
+      'isOnline': isOnline,
+      'lastActive': FieldValue.serverTimestamp()
+    }, SetOptions(merge: true));
+  }
+
+  void listenToUserOnlineStatus() {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid);
+
+    userRef.snapshots().listen((snapshot) {
+      bool onlineStatus = snapshot.data()?['isOnline'] ?? false;
+      setState(() {
+        _isOnline = onlineStatus;
+      });
+    });
   }
 
 
