@@ -89,12 +89,13 @@ class FriendsList extends StatelessWidget {
                         ////////////////////////
 
                         Get.to(() => DMScreen(
-                          isOnline: true, //data['isOnline'],
+                          isOnline: data['isOnline'],
                           receiverProfilePic: data['photo'],
                           receiverID: data['id'],
                           receiverName: data['name'], 
                           senderName: userName, 
-                          senderId: userId,
+                          senderId: userId, 
+                          lastActive: data['lastActive'],
                         ));
                         //chatServiceController.updateisSeenStatus(isSeen: true, receiverId: data['id'],);
                         //chatServiceController.updateOnlineStatus(isOnline: true);

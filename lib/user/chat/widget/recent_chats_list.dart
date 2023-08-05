@@ -33,48 +33,62 @@ class RecentChats extends StatefulWidget {
 
 class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
 
+  //get the instance of firebaseauth and cloud firestore for the purpose below
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  bool _isOnline = false;
+
   @override
   void initState() {
     // TODO: implement initState
     WidgetsBinding.instance.addObserver(this);
+    listenToUserOnlineStatus();
     super.initState();
   }
 
-  //get the instance of firebaseauth and cloud firestore for the purpose below
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   // widgets binding observer helps us to check if user is actively using the app (online) or not.
   // it check the state of our app
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        // TODO: Handle this case. (update 'isOnline' field accordingly)
-        firestore.collection('users').doc(auth.currentUser!.uid).update({"isOnline": true});
-        break;
-      case AppLifecycleState.inactive:
-        // TODO: Handle this case.
-        firestore.collection('users').doc(auth.currentUser!.uid).update({"isOnline":false});
-        break;
-      case AppLifecycleState.paused:
-        // TODO: Handle this case.
-        firestore.collection('users').doc(auth.currentUser!.uid).update({"isOnline": false});
-        break;
-      case AppLifecycleState.detached:
-        // TODO: Handle this case.
-        firestore.collection('users').doc(auth.currentUser!.uid).update({"isOnline": false});
-        break;
+    if (state == AppLifecycleState.resumed) {
+      updateUserOnlineStatus(true);
+    } else if (state == AppLifecycleState.paused) {
+      updateUserOnlineStatus(false);
+    } else if (state == AppLifecycleState.inactive) {
+      updateUserOnlineStatus(false);
+    } else if (state == AppLifecycleState.detached) {
+      updateUserOnlineStatus(false);
     }
-    super.didChangeAppLifecycleState(state);
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
+  void updateUserOnlineStatus(bool isOnline) {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid);
+    userRef.set({
+      'isOnline': isOnline,
+      'lastActive': FieldValue.serverTimestamp()
+    }, SetOptions(merge: true));
   }
+
+  void listenToUserOnlineStatus() {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid);
+
+    userRef.snapshots().listen((snapshot) {
+      bool onlineStatus = snapshot.data()?['isOnline'] ?? false;
+      setState(() {
+        _isOnline = onlineStatus;
+      });
+    });
+  }
+  
+
+
 
 
   @override
@@ -175,16 +189,15 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                       ////////////////////////
 
                       Get.to(() => DMScreen(
-                        isOnline: true, 
+                        isOnline: _isOnline, 
                         receiverName: chatServiceController.isSearchingRecentChats ? data['name'] : data2['name'],
                         receiverProfilePic: chatServiceController.isSearchingRecentChats ? data['photo'] : data2['photo'],
                         receiverID: chatServiceController.isSearchingRecentChats ? data['id'] : data2['id'], 
                         senderName: userName,
-                        senderId: userId,
+                        senderId: userId, 
+                        //here
+                        lastActive: chatServiceController.lastActive(id: chatServiceController.isSearchingRecentChats ? data['id'] : data2['id']),
                       ));
-                        
-                      //chatServiceontroller.updateisSeenStatus(isSeen: true, receiverId: data['id'],);
-                      //chatServiceontroller.updateOnlineStatus(isOnline: true);
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(

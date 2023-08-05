@@ -366,11 +366,6 @@ class ChatServiceController extends ChangeNotifier {
     .delete();
   }
 
-  //to make a currently logged in user go offline or come online depending on the app's life cycle
-  Future<void> updateOnlineStatus({required bool isOnline}) async{
-    await firestore.collection('users').doc(auth.currentUser!.uid).update({"isOnline": isOnline});
-  }
-
   //to check if a message sent by a user is seen by the opposite or not
   Future<void> updateisSeenStatus({required bool isSeen, required String receiverId,}) async{
     await firestore.collection('users')
@@ -380,6 +375,17 @@ class ChatServiceController extends ChangeNotifier {
     .collection('messages')
     .doc()
     .update({"isSeen": isSeen});
+  }
+
+  //to check when last a chat buddy was lastActive
+  lastActive({required String id}) async{
+    //do this if you want to get any logged in user property 
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(id)
+    .get();
+    String userId = snapshot.get('id');
+    return userId;
   }
 
   //geolocator functionality

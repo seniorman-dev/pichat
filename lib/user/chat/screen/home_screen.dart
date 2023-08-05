@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,9 +32,11 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen>{
   //final TextEditingController textController = TextEditingController();
   bool isLoading = false;
+
+  final auth = FirebaseAuth.instance;
   
   //seek for permission before getting location
   Future seekPermission() async {
@@ -120,8 +123,10 @@ class _ChatScreenState extends State<ChatScreen> {
     seekPermission();
   }
 
-  
-
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
 
 
@@ -131,15 +136,6 @@ class _ChatScreenState extends State<ChatScreen> {
     //Dependency injection by provider
     var controller = Provider.of<AuthController>(context);
     var chatServiceontroller = Provider.of<ChatServiceController>(context);
-
-    //function called when a recent chat message is being searched for
-    void onSearch() async{
-      setState(() {
-        isLoading = true;
-        chatServiceontroller.isSearchingRecentChats = true;
-      });
-      await chatServiceontroller.firestore.collection('users').doc(chatServiceontroller.auth.currentUser!.uid).collection('recent_chats').where("name", isEqualTo: chatServiceontroller.allUsersTextEditingController.text).get().then((value) => setState(() => isLoading = false));
-    }
 
     return SafeArea(
       child: Scaffold(
@@ -195,15 +191,31 @@ class _ChatScreenState extends State<ChatScreen> {
                           if (data != null) {
                             // Access the data safely
                             var firstName = getFirstName(fullName: data['name']);  
-                            return Text(
-                              'Hello $firstName,',
-                              style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                  color: AppTheme().darkGreyColor,
-                                  fontSize: 14.sp, //12.sp
-                                  fontWeight: FontWeight.w500
-                                )
-                              ),
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Hello $firstName,',
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                      color: AppTheme().darkGreyColor,
+                                      fontSize: 14.sp, //12.sp
+                                      fontWeight: FontWeight.w500
+                                    )
+                                  ),
+                                ),
+                                //notification  icon
+                                IconButton(
+                                  icon: Icon(
+                                    CupertinoIcons.bell,
+                                    color: AppTheme().blackColor,
+                                    size: 30.r,
+                                  ),
+                                  onPressed: () {
+                                    Get.to(() => const NotificationScreen());
+                                  },          
+                                ),
+                              ],
                             );
                           }                        
                           return Text(
@@ -227,7 +239,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     //SizedBox(height: 5.h,),
 
                     //////////////GEOLOCATOR
-                    Row(
+                    /*Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
@@ -266,7 +278,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           },          
                         ),
                       ],
-                    )
+                    )*/
                   ],
                 ),
               ),
