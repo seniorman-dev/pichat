@@ -94,17 +94,23 @@ class _AllUsersListState extends State<AllUsersList> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              /*SizedBox(height: 20.h,),
-              //search users
+              SizedBox(height: 20.h,),
+
+              //search for users
               SearchTextField(
-                textController: searchController,
-                onChanged: performSearch,
-                hintText: 'Search users by name...',
-              ),*/
+                textController: chatServiceController.allUsersTextEditingController, 
+                hintText: 'Search for connects',
+                onChanged: (value) {
+                  setState(() {
+                    chatServiceController.isSearchingForUsers = true;
+                    chatServiceController.allUsersTextEditingController.text = value;
+                  });
+                },
+              ),
 
-              SizedBox(height: 30.h,),
+              SizedBox(height: 20.h,),
 
-              //userstream
+              //user stream
               StreamBuilder(
                 stream: userStream ,
                 builder: (context, snapshot) {
@@ -177,19 +183,6 @@ class _AllUsersListState extends State<AllUsersList> {
                           child: Column(
                             children: [
                               SizedBox(height: 30.h,),
-
-                              SearchTextField(
-                                textController: chatServiceController.allUsersTextEditingController, 
-                                hintText: 'Search for connects',
-                                onChanged: (value) {
-                                  setState(() {
-                                    chatServiceController.isSearchingForUsers = true;
-                                    chatServiceController.allUsersTextEditingController.text = value;
-                                  });
-                                },
-                              ),
-
-                              SizedBox(height: 20.h,),
 
                               Container(
                                 //height: 100.h,
