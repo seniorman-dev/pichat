@@ -95,8 +95,8 @@ class BottomEngine extends StatelessWidget {
             Expanded(
               child: TextFormField(   
                 onTap: ()async{
-                  await Future.delayed(const Duration(milliseconds: 500));
-                  Scrollable.ensureVisible(globalKey.currentContext!, duration: const Duration(milliseconds: 500));
+                  //await Future.delayed(const Duration(milliseconds: 500));
+                  //Scrollable.ensureVisible(globalKey.currentContext!, duration: const Duration(milliseconds: 500));
                 },       
                 scrollPhysics: const BouncingScrollPhysics(),
                 scrollController: ScrollController(),

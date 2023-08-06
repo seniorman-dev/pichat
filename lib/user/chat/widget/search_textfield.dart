@@ -20,12 +20,12 @@ class SearchTextField extends StatefulWidget {
 
 class _SearchTextFieldState extends State<SearchTextField> {
 
-  @override
+  /*@override
   void dispose() {
     // TODO: implement dispose
     widget.textController.dispose();
     super.dispose();
-  }
+  }*/
 
 
   @override
@@ -64,7 +64,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
             fillColor: AppTheme().lightGreyColor,
             prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
           ),
-          onChanged: widget.onChanged,
+          onFieldSubmitted: widget.onChanged,
         ),
       ),
     );

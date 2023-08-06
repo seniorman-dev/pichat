@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pichat/api/api.dart';
 
 
 
@@ -233,7 +234,7 @@ class ChatServiceController extends ChangeNotifier {
   /////////////////////////////////////////////////////////////////////
   
   //(to be placed inside "sendDirectMessages" function)//
-  Future<void> addUserToRecentChats({required String receiverId, required String receiverName, required String receiverPhoto, required String lastMessage, required Timestamp timestamp}) async{
+  Future<void> addUserToRecentChats({required String receiverId, required String receiverName, required String receiverPhoto, required String lastMessage, required Timestamp timestamp, required String sentBy}) async{
     //do this if you want to get any logged in user property 
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
     .collection('users')
@@ -255,6 +256,7 @@ class ChatServiceController extends ChangeNotifier {
       'id': receiverId,
       'photo': receiverPhoto,
       'lastMessage': lastMessage,
+      'sentBy': sentBy,
       'timestamp': timestamp
     });
 
@@ -268,6 +270,7 @@ class ChatServiceController extends ChangeNotifier {
       'id': userId,
       'photo': userPhoto,
       'lastMessage': lastMessage,
+      'sentBy': sentBy,
       'timestamp': timestamp,
     });
   }
@@ -331,11 +334,30 @@ class ChatServiceController extends ChangeNotifier {
     .doc(messageId)
     .get();
     String lastMessageSent = snapshot.get('message');
+    String sentBy = snapshot.get('senderId');
     Timestamp timeofLastMessageSnet = snapshot.get('timestamp');
     /////////////////////////////////////////////
+    //did this to get the FCM Token of the receiver 
+    DocumentSnapshot receiverSnapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(receiverId)
+    .get();
+    String FCMToken = receiverSnapshot.get('FCMToken');
+    /////////////////////////////////////////////
+    ///
+    DocumentSnapshot senderSnapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(auth.currentUser!.uid)
+    .get();
+    String name = senderSnapshot.get('name');
 
     //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
-    addUserToRecentChats(timestamp: timeofLastMessageSnet, lastMessage: lastMessageSent, receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto);
+    addUserToRecentChats(timestamp: timeofLastMessageSnet, lastMessage: lastMessageSent, receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy);
+    //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
+    API().sendPushNotificationWithFirebaseAPI(content: lastMessageSent, receiverFCMToken: FCMToken, title: name);
+    
+    // Scroll to the newly added message to make it visible.
+    messageController.jumpTo(messageController.position.maxScrollExtent);
   }
   
   //delete direct message when texting

@@ -88,15 +88,22 @@ class FriendsList extends StatelessWidget {
                         String userName = snapshot.get('name');
                         String userId = snapshot.get('id');
                         ////////////////////////
+                        //did this to retrieve logged in user information
+                        DocumentSnapshot snapshotForUser = await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(data['id'])
+                        .get();
+                        bool isChatBuddyOnline = snapshotForUser.get('isOnline');
+                        ///////////////////////
 
                         Get.to(() => DMScreen(
-                          isOnline: data['isOnline'],
+                          isOnline: isChatBuddyOnline,
                           receiverProfilePic: data['photo'],
                           receiverID: data['id'],
                           receiverName: data['name'], 
                           senderName: userName, 
                           senderId: userId, 
-                          lastActive: "${formatTime(timestamp: data['lastActive'])} on ${formatDate(timestamp: data['lastActive'])}",
+                          //lastActive: "${formatTime(timestamp: data['lastActive'])} on ${formatDate(timestamp: data['lastActive'])}",
                         ));
                         //chatServiceController.updateisSeenStatus(isSeen: true, receiverId: data['id'],);
                         //chatServiceController.updateOnlineStatus(isOnline: true);

@@ -102,6 +102,7 @@ class _AllUsersListState extends State<AllUsersList> {
                   setState(() {
                     chatServiceController.isSearchingForUsers = true;
                     chatServiceController.allUsersTextEditingController.text = value;
+                    debugPrint("Value: $value");
                   });
                 },
               ),

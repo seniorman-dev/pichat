@@ -13,11 +13,11 @@ import 'package:pichat/user/chat/widget/chat_list.dart';
 
 
 class DMScreen extends StatefulWidget {
-  const DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName, required this.senderId, required this.lastActive});
+  const DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName, required this.senderId,});
   final String receiverProfilePic;
   final String receiverName;
   final String receiverID;
-  final String lastActive;
+  //final String lastActive;
   final String senderName;
   final String senderId;
   final bool isOnline;
@@ -104,7 +104,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                     ),
                     SizedBox(height: 2.h,),
                     Text(
-                      widget.isOnline ? 'online' : widget.lastActive,  //'offline',
+                      widget.isOnline ? 'online' : 'offline',
                       style: GoogleFonts.poppins(
                         color: widget.isOnline? AppTheme().greenColor : AppTheme().darkGreyColor,
                         fontSize: 12.sp,

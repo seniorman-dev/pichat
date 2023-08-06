@@ -285,15 +285,16 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(
-                          CupertinoIcons.app_badge,
+                          CupertinoIcons.smallcircle_fill_circle,
+                          size: 20.r,
                           color: AppTheme().blackColor,
                         ),
-                        SizedBox(width: 2.w,),
+                        SizedBox(width: 5.w,),
                         Text(
                           _isOnline ? 'online' : 'offline',
                           style: GoogleFonts.poppins(
                             color: AppTheme().greenColor,
-                            fontSize: 14.sp,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
                             textStyle: const TextStyle(
                               overflow: TextOverflow.ellipsis
@@ -424,12 +425,13 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
 
               //search for recent chats
               SearchTextField(
-                textController: chatServiceontroller.allUsersTextEditingController,
+                textController: chatServiceontroller.recentChatsTextController,
                 onChanged: (value) {
                   setState(() {
                     isLoading = true;
                     chatServiceontroller.isSearchingRecentChats = true;
-                    chatServiceontroller.allUsersTextEditingController.text = value;
+                    chatServiceontroller.recentChatsTextController.text = value;
+                    debugPrint("Value: $value");
                   });
                 }, 
                 hintText: 'Search recent messages...',

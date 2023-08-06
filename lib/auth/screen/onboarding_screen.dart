@@ -69,7 +69,7 @@ class OnboardingScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment. center,
             children: [           
               //SizedBox(height: 500.h,),
-              SizedBox(height: 80.h,),
+              SizedBox(height: 90.h,),
               Image.asset('asset/img/nice.jpg'),
               SizedBox(height: 70.h,),            
               Text(

@@ -36,17 +36,16 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
 
-  Timestamp? previousTimestamp;
 
   //it makes messages list automatically scroll up after a message has been sent
-  final ScrollController messageController = ScrollController();
+  /*final ScrollController messageController = ScrollController();
 
   @override
   void dispose() {
     // TODO: implement dispose
     messageController.dispose();
     super.dispose();
-  }
+  }*/
 
 
   @override
@@ -121,7 +120,7 @@ class _ChatListState extends State<ChatList> {
                 horizontal: 10.w, //20.w
                 vertical: 10.h  //20.h
               ),
-              controller: messageController,
+              controller: chatServiceController.messageController,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
@@ -129,25 +128,8 @@ class _ChatListState extends State<ChatList> {
               itemCount: snapshot.data!.docs.length,
               itemBuilder: 
                 (context, index, ) {
-      
-                          //leave this stuff hear to avoid crashing
-                //it makes the messages list automatically scroll up after a message has been sent
-                /*SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                  messageController.jumpTo(messageController.position.maxScrollExtent);
-                });*/
                 
                 var data = snapshot.data!.docs[index];
-                
-                //to get time interval of messages
-                Timestamp currentTimestamp = data['timestamp'];
-                bool showInterval = false;
-                if (index > 0) {
-                  Timestamp previousSenderTimestamp = snapshot.data!.docs[index - 1]['timestamp'];
-                  showInterval = data['senderId'] != snapshot.data!.docs[index - 1]['senderId'];
-                  if (showInterval) {
-                    previousTimestamp = previousSenderTimestamp;
-                  }
-                }
 
       
                 return Dismissible(
@@ -164,29 +146,18 @@ class _ChatListState extends State<ChatList> {
                              
                              /*to show messages time intervals*/
                         //this is how you write conditional statements in flutter widget trees
-                        if (showInterval)
-                          Container(
-                            decoration: BoxDecoration(
-                              color: AppTheme().lightGreyColor,
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 10.h, //15.h
-                              horizontal: 10.w  //15.h
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              chatServiceController.formatChatInterval(previousTimestamp!, currentTimestamp),
-                              style: GoogleFonts.poppins(
-                                color: AppTheme().blackColor,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
-                                /*textStyle: TextStyle(
-                                  overflow: TextOverflow.ellipsis
-                                )*/
-                              )
-                            ),
+                        /*Text(
+                          formatDate(timestamp: data['timestamp']),
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            textStyle: const TextStyle(
+                              overflow: TextOverflow.ellipsis
+                            )
                           ),
+                        ),*/
+                      
 
                         Container(
                           alignment: Alignment.centerLeft,
@@ -224,13 +195,15 @@ class _ChatListState extends State<ChatList> {
                           ),
                         ),
                         SizedBox(height: 5.h,),
+
+                        
                         //Time and isSeen icon feature
                         Row(
                           mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.end : MainAxisAlignment.start,  //tweak this also
                           children: [
                 
                             Text(
-                              "${formatDate(timestamp: data['timestamp'])} - ${formatTime(timestamp: data['timestamp'])}",
+                              "${formatTime(timestamp: data['timestamp'])}",
                               style: GoogleFonts.poppins(
                                 color: Colors.grey,
                                 fontSize: 12.sp,
