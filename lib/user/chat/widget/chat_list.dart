@@ -134,8 +134,17 @@ class _ChatListState extends State<ChatList> {
       
                 return Dismissible(
                   key: UniqueKey(),
-                  direction: DismissDirection.startToEnd,
+                  direction: data['senderId'] == authController.userID ? DismissDirection.endToStart : DismissDirection.endToStart,
                   onDismissed: (direction) => chatServiceController.deleteDirectMessages(messageId: data['messageId'], receiverId: widget.receiverId),
+                  background: Row(
+                    mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.end : MainAxisAlignment.end,
+                    children: [
+                      Icon(
+                        CupertinoIcons.delete_simple,
+                        color: AppTheme().redColor                     
+                      )
+                    ]
+                  ),
                   child: InkWell(
                     onLongPress: () {
                       //show message info or message statistics alert dialog
