@@ -37,17 +37,6 @@ class ChatList extends StatefulWidget {
 class _ChatListState extends State<ChatList> {
 
 
-  //it makes messages list automatically scroll up after a message has been sent
-  /*final ScrollController messageController = ScrollController();
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    messageController.dispose();
-    super.dispose();
-  }*/
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -121,6 +110,7 @@ class _ChatListState extends State<ChatList> {
                 vertical: 10.h  //20.h
               ),
               controller: chatServiceController.messageController,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
@@ -130,8 +120,21 @@ class _ChatListState extends State<ChatList> {
                 (context, index, ) {
                 
                 var data = snapshot.data!.docs[index];
+                
+                //to check if message is seen
+                bool isSeen = data['isSeen'] ?? false; // Default to false if not present;
+                
+                // Check if the current message's date is different from the previous message's date
+                bool showDateHeader = true;
+                if (index > 0) {
+                  var previousData = snapshot.data!.docs[index - 1];
+                  var currentDate = formatDate(timestamp: data['timestamp']);
+                  var previousDate = formatDate(timestamp: previousData['timestamp']);
+                  showDateHeader = currentDate != previousDate;
+                  chatServiceController.markMessageAsSeen(messageId: data['messageId'], receiverId: widget.receiverId);
+                }
+                
 
-      
                 return Dismissible(
                   key: UniqueKey(),
                   direction: data['senderId'] == authController.userID ? DismissDirection.endToStart : DismissDirection.endToStart,
@@ -146,27 +149,55 @@ class _ChatListState extends State<ChatList> {
                     ]
                   ),
                   child: InkWell(
+                    /*onTap: () {
+                      chatServiceController.markMessageAsSeen(messageId: data['messageId'], receiverId: widget.receiverId);
+                    },*/
                     onLongPress: () {
                       //show message info or message statistics alert dialog
                     },
                     child: Column(
                       crossAxisAlignment: data['senderId'] == authController.userID ? CrossAxisAlignment.end : CrossAxisAlignment.start,  ///tweak this instead to suit the chatters
                       children: [
-                             
-                             /*to show messages time intervals*/
-                        //this is how you write conditional statements in flutter widget trees
-                        /*Text(
-                          formatDate(timestamp: data['timestamp']),
-                          style: GoogleFonts.poppins(
-                            color: Colors.grey,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            textStyle: const TextStyle(
-                              overflow: TextOverflow.ellipsis
-                            )
+                          
+                        // Show the date header if needed
+                        if (showDateHeader)
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 30.h, 
+                                horizontal: 120.w
+                              ),
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 30.h,
+                                //width: 150.w,
+                                padding: EdgeInsets.symmetric(
+                                  //vertical: 0.h, //20.h
+                                  horizontal: 5.w  //15.h
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppTheme().lightGreyColor,
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  /*boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      //color: AppTheme().lightGreyColor,
+                                      spreadRadius: 0.1.r,
+                                      blurRadius: 8.0.r,
+                                    )
+                                  ],*/
+                                ),
+                                child: Text(
+                                  formatDate(timestamp: data['timestamp']),
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.grey,
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),*/
-                      
 
                         Container(
                           alignment: Alignment.centerLeft,
@@ -212,7 +243,7 @@ class _ChatListState extends State<ChatList> {
                           children: [
                 
                             Text(
-                              "${formatTime(timestamp: data['timestamp'])}",
+                              formatTime(timestamp: data['timestamp']),
                               style: GoogleFonts.poppins(
                                 color: Colors.grey,
                                 fontSize: 12.sp,
@@ -223,18 +254,19 @@ class _ChatListState extends State<ChatList> {
                               ),
                             ),
                 
-                            //SizedBox(width: 3.w,),
-                
-                            /*data['isSeen'] && data['senderId'] == authController.userID
-                            ?Icon(
-                              Icons.done_all_rounded,
-                              color: Colors.grey,
-                            )
-                            : SizedBox()
-                            const Icon(
-                              CupertinoIcons.checkmark_alt,
-                              color: Colors.grey,
-                            ),*/
+                            SizedBox(width: 3.w,),
+                            
+                            // Display ticks based on the 'isSeen' status
+                            if(data['senderId'] == authController.userID)
+                              isSeen
+                              ?Icon(
+                                Icons.done_all_rounded,
+                                color: Colors.grey,
+                              )
+                              :Icon(
+                                CupertinoIcons.checkmark_alt,
+                                color: Colors.grey,
+                              ),
                 
                           ],
                         )

@@ -386,33 +386,21 @@ class ChatServiceController extends ChangeNotifier {
     .doc(messageId)
     .delete();
   }
-
-  //to check if a message sent by a user is seen by the opposite or not
-  Future<void> updateisSeenStatus({required bool isSeen, required String receiverId,}) async{
-    await firestore.collection('users')
-    .doc(receiverId)
-    .collection('recent_chats')
-    .doc(auth.currentUser!.uid)
-    .collection('messages')
-    .doc()
-    .update({"isSeen": isSeen});
-  }
-
-
-  // Function to format the chat interval between two timestamps
-  String formatChatInterval(Timestamp previousTimestamp, Timestamp currentTimestamp) {
-    DateTime previousDateTime = previousTimestamp.toDate();
-    DateTime currentDateTime = currentTimestamp.toDate();
   
-    Duration interval = currentDateTime.difference(previousDateTime);
-    if (interval.inDays > 0) {
-      return '${interval.inDays}d ago';
-    } else if (interval.inHours > 0) {
-      return '${interval.inHours}h ago';
-    } else if (interval.inMinutes > 0) {
-      return '${interval.inMinutes}m ago';
-    } else {
-      return 'Just now';
+  //mark message as seen or read
+  Future<void> markMessageAsSeen({required String messageId, required String receiverId}) async {
+    try {
+      /////////////////////////////////////////////
+      await firestore
+        .collection('users')
+        .doc(receiverId)
+        .collection('recent_chats')
+        .doc(auth.currentUser!.uid)
+        .collection('messages')
+        .doc(messageId)
+        .update({'isSeen': true});
+    } catch (error) {
+      print('Error marking message as seen: $error');
     }
   }
   

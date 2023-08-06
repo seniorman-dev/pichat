@@ -159,7 +159,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
               child: BottomEngine(
                 receiverName: widget.receiverName, 
                 receiverId: widget.receiverID, 
-                receiverPhoto: widget.receiverProfilePic
+                receiverPhoto: widget.receiverProfilePic,
               ),
             ),
           ],

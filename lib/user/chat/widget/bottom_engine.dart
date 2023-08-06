@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 
 class BottomEngine extends StatelessWidget {
-  BottomEngine({super.key, required this.receiverName, required this.receiverId, required this.receiverPhoto});
+  BottomEngine({super.key, required this.receiverName, required this.receiverId, required this.receiverPhoto,});
   final String receiverName;
   final String receiverId;
   final String receiverPhoto;
@@ -94,10 +94,7 @@ class BottomEngine extends StatelessWidget {
             SizedBox(width: 5.w,),
             Expanded(
               child: TextFormField(   
-                onTap: ()async{
-                  //await Future.delayed(const Duration(milliseconds: 500));
-                  //Scrollable.ensureVisible(globalKey.currentContext!, duration: const Duration(milliseconds: 500));
-                },       
+                onTap: () async{},       
                 scrollPhysics: const BouncingScrollPhysics(),
                 scrollController: ScrollController(),
                 textInputAction: TextInputAction.newline,
