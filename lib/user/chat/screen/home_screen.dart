@@ -153,10 +153,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
 
   void updateUserOnlineStatus(bool isOnline) {
     final userRef = FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid);
-    userRef.set({
+    userRef.update({
       'isOnline': isOnline,
       'lastActive': FieldValue.serverTimestamp()
-    }, SetOptions(merge: true));
+    },);
   }
 
   void listenToUserOnlineStatus() {
@@ -246,16 +246,31 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                                     )
                                   ),
                                 ),
-                                //notification  icon
-                                IconButton(
-                                  icon: Icon(
-                                    CupertinoIcons.bell,
-                                    color: AppTheme().blackColor,
-                                    size: 30.r,
-                                  ),
-                                  onPressed: () {
-                                    Get.to(() => const NotificationScreen());
-                                  },          
+
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        CupertinoIcons.app_badge,
+                                        color: AppTheme().blackColor,
+                                        size: 30.r,
+                                      ),
+                                      onPressed: () {
+                                        Get.to(() => const FriendsRequestList());
+                                      },          
+                                    ),
+                                    //SizedBox(width: 2.w,),
+                                    IconButton(
+                                      icon: Icon(
+                                        CupertinoIcons.bell,
+                                        color: AppTheme().blackColor,
+                                        size: 30.r,
+                                      ),
+                                      onPressed: () {
+                                        Get.to(() => const NotificationScreen());
+                                      },          
+                                    ),
+                                  ],
                                 ),
                               ],
                             );
@@ -285,7 +300,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(
-                          CupertinoIcons.dot_radiowaves_left_right,  //.chevron_up_circle_fill,
+                          CupertinoIcons.chevron_up_circle_fill,
                           size: 20.r,
                           color: AppTheme().blackColor,
                         ),
@@ -349,79 +364,66 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                 ),
               ),
 
-              SizedBox(height: 5.h,),
+              SizedBox(height: 10.h,), //20.h
 
-              //find connects button
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    //find connects button
-                    SizedBox(
-                      height: 40.h,
-                      //width: 120.w,
-                      child: ElevatedButton( 
-                        onPressed: () {
-                          Get.to(() => const AllUsersList());
-                        },
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          backgroundColor: AppTheme().lightestOpacityBlue,
-                          minimumSize: Size.copy(Size(100.w, 50.h)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.r),
-                          )
-                        ), 
-                        child: Text(
-                          'find connects',
-                          style: TextStyle(
-                            color: AppTheme().mainColor,  //.blackColor,
-                            fontSize: 12.sp,
+              //list of friends & add friend/connect button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  //Add Connect button
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 20.h
+                    ),
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Get.to(() => const AllUsersList());
+                          },
+                          child: CircleAvatar(
+                            radius: 40.r,
+                            backgroundColor: AppTheme().lightGreyColor, //.opacityBlue,
+                            child: CircleAvatar(
+                              radius: 38.r,
+                              backgroundColor: AppTheme().lightGreyColor,
+                              child: Icon(    ////data['photo']
+                                CupertinoIcons.add,
+                                color: AppTheme().blackColor,
+                                size: 40.r,
+                             ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Text(
+                          'Add',
+                          style: GoogleFonts.poppins(
+                            color: AppTheme().blackColor,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w500
                           ),
                         ),
-                      ),     
+                        SizedBox(height: 8.5.h),
+                      ],
                     ),
-                    //connect requests button
-                    SizedBox(
-                      height: 40.h,
-                      //width: 190.w,
-                      child: ElevatedButton( 
-                        onPressed: () {
-                          Get.to(() => const FriendsRequestList());
-                        },
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          backgroundColor: AppTheme().lightestOpacityBlue,
-                          minimumSize: Size.copy(Size(100.w, 50.h)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.r),
-                          )
-                        ), 
-                        child: Text(
-                          'connect requests',
-                          style: TextStyle(
-                            color: AppTheme().mainColor,  //.blackColor,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500
-                          ),
-                        ),
-                      ),     
-                    ),
-                  ],
-                ),
+                  ),
+                  //SizedBox(width: 20.w,),
+                  Expanded(child: FriendsList())
+                ],
               ),
 
-              SizedBox(height: 10.h,), //20.h
+              //SizedBox(height: 10.h,), //20.h
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20.w,
+                  vertical: 20.h,
+                ),
+                child: Divider(color: AppTheme().darkGreyColor, thickness: 1,),
+              ),
 
-              //list of friends
-              const FriendsList(),
-
-              SizedBox(height: 10.h,), //20.h
-
-              Divider(color: AppTheme().darkGreyColor, thickness: 1,),
-
-              SizedBox(height: 10.h,), //20.h
+              //SizedBox(height: 10.h,), //20.h
 
               //search for recent chats
               SearchTextField(
@@ -437,7 +439,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                 hintText: 'Search recent messages...',
               ),
 
-              SizedBox(height: 10.h,), //20.h
+              SizedBox(height: 20.h,), //20.h
 
               //recent chats stream
               RecentChats(),

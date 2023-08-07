@@ -186,9 +186,9 @@ class AuthController extends ChangeNotifier{
   //SIGN OUT METHOD
   Future<void> signOut() async {
     try {
+      await firestore.collection('users').doc(userID).update({"isOnline": false});
       await firebase.signOut()
-      .then((value) => firestore.collection('users').doc(userID).update({"isOnline": false}))
-      .then((value) => Get.offAll(() => LoginScreen()));
+      .whenComplete(() => Get.offAll(() => LoginScreen()));
     } on FirebaseAuthException catch (e) {
       customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }

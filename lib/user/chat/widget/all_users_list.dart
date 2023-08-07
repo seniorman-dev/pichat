@@ -38,7 +38,7 @@ class _AllUsersListState extends State<AllUsersList> {
   //for loading animation
   bool isLoading = false;
 
-  Stream<QuerySnapshot>? userStream;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? userStream;
 
   @override
   void initState() {
@@ -111,7 +111,7 @@ class _AllUsersListState extends State<AllUsersList> {
 
               //user stream
               StreamBuilder(
-                stream: userStream ,
+                stream: userStream,
                 builder: (context, snapshot) {
 
                   //filtered list. shown when a logged in user is trying to search for a user to connect with
