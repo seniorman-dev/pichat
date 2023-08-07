@@ -285,7 +285,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(
-                          CupertinoIcons.smallcircle_fill_circle,
+                          CupertinoIcons.dot_radiowaves_left_right,  //.chevron_up_circle_fill,
                           size: 20.r,
                           color: AppTheme().blackColor,
                         ),

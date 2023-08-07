@@ -39,7 +39,6 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
 
 
 
-
   @override
   Widget build(BuildContext context) {
 
