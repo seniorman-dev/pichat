@@ -409,7 +409,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                       ],
                     ),
                   ),
-                  //SizedBox(width: 20.w,),
+                  //SizedBox(width: 0.w,),
+                  //FriendsList()
                   Expanded(child: FriendsList())
                 ],
               ),
