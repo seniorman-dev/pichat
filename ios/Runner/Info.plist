@@ -65,11 +65,17 @@
     </array>
     <!-- End of the Google Sign-in Section -->
      
-	 <!-- for geolocator -->
+	<!-- for geolocator -->
 	<key>NSLocationWhenInUseUsageDescription</key>
     <string>This app needs access to location when open.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>This app needs access to location when in the background.</string>
+    
+	<!-- for call engine -->
+	<key>NSMicrophoneUsageDescription</key>
+    <string>This app needs access to device mic</string>
+	<key>NSCameraUsageDescription</key>
+    <string>This app needs access to device camera</string>
 
 </dict>
 </plist>

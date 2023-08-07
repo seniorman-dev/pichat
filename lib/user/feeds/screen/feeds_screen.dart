@@ -241,12 +241,13 @@ class FeedScreen extends StatelessWidget {
                                 onTap: () => controller.likeAPost(postId: data['postId']),
                                 onTapCancel: () => controller.unLikeAPost(postId: data['postId']),
                                 child: Icon(
+                                  //////check for error
                                   data['userLiked'] ? CupertinoIcons.heart_fill : CupertinoIcons.heart, //heart,,
                                   size: 30.r,
                                   color: AppTheme().mainColor,  //.darkGreyColor,
                                 ),
                               ),
-                              
+
                               SizedBox(width: 5.w,),
                               IconButton(
                                 icon: Icon(
@@ -274,6 +275,7 @@ class FeedScreen extends StatelessWidget {
                                 },
                                 onTapCancel: () => controller.deleteRepost(postId: data['postId']),
                                 child: Icon(
+                                  //check for error
                                   data['isReposted'] ? CupertinoIcons.arrow_counterclockwise_circle_fill : CupertinoIcons.arrow_counterclockwise_circle,
                                   size: 30.r,
                                   color: AppTheme().mainColor,  //.darkGreyColor,
