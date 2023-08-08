@@ -56,11 +56,11 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
           // Show a loading indicator while waiting for data
           return const Loader();
         } 
-        else if (snapshot.hasError) {
+        if (snapshot.hasError) {
           // Handle error if any
           return const ErrorLoader();
         }
-        else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) { //!snapshot.hasData || snapshot.data!.docs.isEmpty
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) { //!snapshot.hasData || snapshot.data!.docs.isEmpty
           return Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 25.w,
@@ -95,7 +95,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
             ),
           );
         }
-        else {
+        
           return SizedBox(
             height: 250.h,
             child: ListView.builder(
@@ -275,7 +275,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
               }
             ),
           );
-        }
+  
       }
     );
   }
