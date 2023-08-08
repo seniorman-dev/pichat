@@ -50,7 +50,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
       builder: (context, snapshot) {
 
         //filtered list
-        var filteredList = snapshot.data!.docs.where((element) => element['name'].toString().contains(chatServiceController.recentChatsTextController.text)).toList();
+        //var filteredList = snapshot.data!.docs.where((element) => element['name'].toString().contains(chatServiceController.recentChatsTextController.text)).toList();
 
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for data
@@ -103,12 +103,12 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               //separatorBuilder: (context, index) => SizedBox(height: 0.h,), 
-              itemCount: chatServiceController.isSearchingRecentChats ? filteredList.length : snapshot.data!.docs.length,  //filteredList.length,
+              itemCount: snapshot.data!.docs.length,  //filteredList.length,
               itemBuilder: (context, index) {
 
                 var data2 = snapshot.data!.docs[index];  //normal list
 
-                var data = filteredList[index];  //filtered list
+                //var data = filteredList[index];  //filtered list
           
                 return Dismissible(
                   key: UniqueKey(),
@@ -123,7 +123,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                     ]
                   ),
                   onDismissed: (direction) {
-                    chatServiceController.deleteUserFromRecentChats(friendId: chatServiceController.isSearchingRecentChats ? data['id'] : data2['id']);
+                    chatServiceController.deleteUserFromRecentChats(friendId: data2['id']);
                   },
                   child: InkWell(
                     onTap: () async{
@@ -138,16 +138,16 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                       //did this to retrieve logged in user information
                       DocumentSnapshot snapshotForUser = await FirebaseFirestore.instance
                       .collection('users')
-                      .doc(chatServiceController.isSearchingRecentChats ? data['id'] : data2['id'],)
+                      .doc(data2['id'],)
                       .get();
                       bool isChatBuddyOnline = snapshotForUser.get('isOnline');
                       ///////////////////////
 
                       Get.to(() => DMScreen(
                         isOnline: isChatBuddyOnline, 
-                        receiverName: chatServiceController.isSearchingRecentChats ? data['name'] : data2['name'],
-                        receiverProfilePic: chatServiceController.isSearchingRecentChats ? data['photo'] : data2['photo'],
-                        receiverID: chatServiceController.isSearchingRecentChats ? data['id'] : data2['id'], 
+                        receiverName: data2['name'],
+                        receiverProfilePic: data2['photo'],
+                        receiverID: data2['id'], 
                         senderName: userName,
                         senderId: userId, 
                         //lastActive: chatServiceController.isSearchingRecentChats ? "${formatTime(timestamp: data['lastActive'])} on ${formatDate(timestamp: data['lastActive'])}" : "${formatTime(timestamp: data2['lastActive'])} on ${formatDate(timestamp: data2['lastActive'])}",
@@ -199,7 +199,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        chatServiceController.isSearchingRecentChats ? data['name'] : data2['name'],
+                                        data2['name'],
                                         style: GoogleFonts.poppins(
                                           color: AppTheme().blackColor,
                                           fontSize: 14.sp,
@@ -207,7 +207,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                         ),
                                       ),
                                       Text(
-                                        chatServiceController.isSearchingRecentChats ? "${formatTime(timestamp: data['timestamp'])}" : "${formatTime(timestamp: data2['timestamp'])}",
+                                        formatTime(timestamp: data2['timestamp']),
                                         style: GoogleFonts.poppins(
                                           color: AppTheme().darkGreyColor,
                                           fontSize: 12.sp,
@@ -225,7 +225,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                       //figure this out
                                       //show when a receiver sends a new message then disappear when the current user taps on it
                                       Text(
-                                        chatServiceController.isSearchingRecentChats ? data['lastMessage'] : data2['lastMessage'],
+                                        data2['lastMessage'],
                                         style: GoogleFonts.poppins(
                                           color: AppTheme().darkGreyColor,
                                           fontSize: 12.sp,
@@ -235,17 +235,8 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                           )
                                         ),
                                       ),
-                                       
-                                      chatServiceController.isSearchingRecentChats 
-                                      ? data['sentBy'] == chatServiceController.auth.currentUser!.uid  //sentby
-                                      ? SizedBox()
-                                      //find a way to show this status bar when your chat partner sends you a message
-                                      :CircleAvatar(
-                                         backgroundColor: AppTheme().mainColor,
-                                         radius: 7.r,
-                                      )
                                       
-                                      : data2['sentBy'] == chatServiceController.auth.currentUser!.uid
+                                      data2['sentBy'] == chatServiceController.auth.currentUser!.uid
                                       ? SizedBox()
                                       //find a way to show this status bar when your chat partner sends you a message
                                       :CircleAvatar(

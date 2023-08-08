@@ -17,6 +17,75 @@ import 'package:pichat/main_page/screen/main_page.dart';
 
 
 class API {
+  
+
+  //REST API GET request to generate token from my heroku server for agora voice/video call
+
+  //In the end, this is how your url should lok like if you want to see the token on your browser => https://agora-token-server-l2yj.onrender.com/rtc/MyChannel/1/uid/1/?expiry=300
+  //Note: follow the agora implementation to create your token server
+  
+  String token = "";
+  int tokenRole = 1; // use 1 for Host/Broadcaster, 2 for Subscriber/Audience
+  String serverUrl = ""; // The base URL to your token server, for example "https://agora-token-service-production-92ff.up.railway.app"
+  int tokenExpireTime = 45; // Expire time in Seconds.
+  bool isTokenExpiring = false; // Set to true when the token is about to expire
+  final channelTextController = TextEditingController(text: ''); // To access the TextField
+  
+  //call this when you want to join a voice call
+  /*void setToken(String newToken) async {
+    token = newToken;
+
+    if (isTokenExpiring) {
+      // Renew the token
+      agoraEngine.renewToken(token);
+      isTokenExpiring = false;
+      showMessage("Token renewed");
+    } 
+    else {
+      /// Join a channel.
+      // showMessage("Token received, joining a channel...");
+      await agoraEngine.joinChannel(
+        token: token,
+        channelId: channelName,
+        info: '',
+        uid: uid,
+      );
+    }
+  }*/
+
+  //this function generates token when a user want to make a call or join a channel.
+  Future<String> fetchToken({required int uid, required String channelName, required int tokenRole}) async {
+    
+    // Prepare the Url
+    String url = '$serverUrl/rtc/$channelName/${tokenRole.toString()}/uid/${uid.toString()}?expiry=${tokenExpireTime.toString()}';
+
+    // Send the request
+    final response = await http.get(Uri.parse(url));
+    
+    // Check the request response status
+    if (response.statusCode == 200) {
+        // If the server returns an OK response, then parse the JSON.
+        Map<String, dynamic> json = jsonDecode(response.body);
+        String newToken = json['rtcToken'];
+        debugPrint('Token Received: $newToken');
+        return newToken;
+
+        // Use the token to join a channel or renew an expiring token
+        //setToken(newToken);
+    } else {
+        // If the server did not return an OK response,
+        // then throw an exception.
+        throw Exception(
+          'Failed to fetch a token. Make sure that your server URL is valid'
+        );
+    }
+  }
+
+
+
+
+
+
 
   Future<void> sendPushNotificationWithFirebaseAPI({required String receiverFCMToken, required String title, required String content}) async {
   //TODO: make the notification display in foreground

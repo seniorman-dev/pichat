@@ -430,12 +430,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
               SearchTextField(
                 textController: chatServiceontroller.recentChatsTextController,
                 onChanged: (value) {
-                  setState(() {
-                    isLoading = true;
-                    chatServiceontroller.isSearchingRecentChats = true;
+                  /*setState(() {
                     chatServiceontroller.recentChatsTextController.text = value;
+                    chatServiceontroller.isSearchingRecentChats = true;
                     debugPrint("Value: $value");
-                  });
+                  });*/
                 }, 
                 hintText: 'Search recent messages...',
               ),

@@ -99,11 +99,11 @@ class _AllUsersListState extends State<AllUsersList> {
                 textController: chatServiceController.allUsersTextEditingController, 
                 hintText: 'Search for connects',
                 onChanged: (value) {
-                  setState(() {
+                  /*setState(() {
                     chatServiceController.isSearchingForUsers = true;
                     chatServiceController.allUsersTextEditingController.text = value;
                     debugPrint("Value: $value");
-                  });
+                  });*/
                 },
               ),
 
@@ -115,7 +115,7 @@ class _AllUsersListState extends State<AllUsersList> {
                 builder: (context, snapshot) {
 
                   //filtered list. shown when a logged in user is trying to search for a user to connect with
-                  var filteredList = snapshot.data!.docs.where((element) => element['name'].toString().contains(chatServiceController.allUsersTextEditingController.text)).toList();
+                  //var filteredList = snapshot.data!.docs.where((element) => element['name'].toString().contains(chatServiceController.allUsersTextEditingController.text)).toList();
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Show a loading indicator while waiting for data
@@ -167,12 +167,12 @@ class _AllUsersListState extends State<AllUsersList> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       separatorBuilder: (context, index) => SizedBox(height: 0.h,), 
-                      itemCount: chatServiceController.isSearchingForUsers ? filteredList.length : snapshot.data!.docs.length,
+                      itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
 
                         var data2 = snapshot.data!.docs[index];  //normal list
 
-                        var data = filteredList[index];  //filtered list
+                        //var data = filteredList[index];  //filtered list
                          
                         return Padding(
                           padding: EdgeInsets.symmetric(
@@ -219,7 +219,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            chatServiceController.isSearchingForUsers ? data['name'] : data2['name'],
+                                            data2['name'],
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().blackColor,
                                               fontSize: 14.sp,
@@ -234,9 +234,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                chatServiceController.isSearchingForUsers
-                                                ? data['isOnline'] ? 'online' : 'offline'
-                                                : data2['isOnline'] ? 'online' : 'offline',
+                                                data2['isOnline'] ? 'online' : 'offline',
                                                 style: GoogleFonts.poppins(
                                                   color: AppTheme().darkGreyColor, //specify color when user is online or offline
                                                   fontSize: 14.sp, //14.sp
@@ -248,10 +246,10 @@ class _AllUsersListState extends State<AllUsersList> {
                                               ),
                                               //connect button
                                               SendOrCancelRequestButton(
-                                                receiverName: chatServiceController.isSearchingForUsers ? data['name'] : data2['name'],                                       
-                                                receiverID: chatServiceController.isSearchingForUsers ? data['id'] : data2['id'], 
+                                                receiverName: data2['name'],                                       
+                                                receiverID: data2['id'], 
                                                 isSelected: true, 
-                                                FCMToken: chatServiceController.isSearchingForUsers ? data['FCMToken'] : data2['FCMToken'],  
+                                                FCMToken: data2['FCMToken'],  
                                               )                            
                                             ]
                                           )

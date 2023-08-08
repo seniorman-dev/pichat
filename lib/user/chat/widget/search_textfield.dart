@@ -64,7 +64,8 @@ class _SearchTextFieldState extends State<SearchTextField> {
             fillColor: AppTheme().lightGreyColor,
             prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
           ),
-          onFieldSubmitted: widget.onChanged,
+          //onFieldSubmitted: widget.onChanged,
+          onChanged: widget.onChanged,
         ),
       ),
     );
