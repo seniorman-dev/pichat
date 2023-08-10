@@ -31,6 +31,14 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
   double keyboardHeight = 0;
   double keyboardTop = 0;
 
+  double calculateBottomPadding(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double minPadding = 0;
+    double maxPadding = screenHeight * 0.41; // Adjust the value as needed (0.15 is an example)
+
+    return keyboardHeight > MediaQuery.of(context).padding.bottom + 10 ? maxPadding : minPadding;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -150,11 +158,12 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
             ),
             Padding(
               padding: EdgeInsets.only(
-                top: keyboardTop,
+                /*top: keyboardTop,
                 //bottom: keyboardHeight - MediaQuery.of(context).padding.bottom,
                 bottom: keyboardHeight > MediaQuery.of(context).padding.bottom + 10
-                ? keyboardHeight - MediaQuery.of(context).padding.bottom - 260 //250
-                : 0,
+                ? keyboardHeight - MediaQuery.of(context).padding.bottom - 550 //260
+                : 0,*/
+                bottom: calculateBottomPadding(context)
               ),
               child: BottomEngine(
                 receiverName: widget.receiverName, 

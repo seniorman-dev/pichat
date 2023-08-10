@@ -195,7 +195,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 30.h,),   
+                    SizedBox(height: 20.h,),   
                     //to get logged in user's name
                     StreamBuilder(
                       stream: controller.firestore.collection('users').doc(controller.userID).snapshots(),
@@ -241,7 +241,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                                   style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
                                       color: AppTheme().darkGreyColor,
-                                      fontSize: 14.sp, //12.sp
+                                      fontSize: 13.sp, //12.sp
                                       fontWeight: FontWeight.w500
                                     )
                                   ),
@@ -249,6 +249,16 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
 
                                 Row(
                                   children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        CupertinoIcons.person_add,
+                                        color: AppTheme().blackColor,
+                                        size: 30.r,
+                                      ),
+                                      onPressed: () {
+                                        Get.to(() => const AllUsersList());
+                                      },          
+                                    ),
                                     IconButton(
                                       icon: Icon(
                                         CupertinoIcons.app_badge,
@@ -280,7 +290,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                             style: GoogleFonts.poppins(
                               textStyle: TextStyle(
                                 color: AppTheme().darkGreyColor,
-                                fontSize: 14.sp,  //12.sp
+                                fontSize: 13.sp,  //12.sp
                                 fontWeight: FontWeight.w500
                               )
                             ),
@@ -293,23 +303,23 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                       }
                     ),
         
-                    SizedBox(height: 5.h,),
+                    SizedBox(height: 0.h,),
                     
                     //online status of logged in user
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(
+                        /*Icon(
                           CupertinoIcons.chevron_up_circle_fill,
                           size: 20.r,
                           color: AppTheme().blackColor,
                         ),
-                        SizedBox(width: 5.w,),
+                        SizedBox(width: 5.w,),*/
                         Text(
-                          _isOnline ? 'online' : 'offline',
+                          'Pichat message',
                           style: GoogleFonts.poppins(
-                            color: AppTheme().greenColor,
-                            fontSize: 13.sp,
+                            color: AppTheme().blackColor,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w500,
                             textStyle: const TextStyle(
                               overflow: TextOverflow.ellipsis
@@ -367,55 +377,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
               SizedBox(height: 10.h,), //20.h
 
               //list of friends & add friend/connect button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  //Add Connect button
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 20.h
-                    ),
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Get.to(() => const AllUsersList());
-                          },
-                          child: CircleAvatar(
-                            radius: 40.r,
-                            backgroundColor: AppTheme().lightGreyColor, //.opacityBlue,
-                            child: CircleAvatar(
-                              radius: 38.r,
-                              backgroundColor: AppTheme().lightGreyColor,
-                              child: Icon(    ////data['photo']
-                                CupertinoIcons.add,
-                                color: AppTheme().blackColor,
-                                size: 40.r,
-                             ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10.h),
-                        Text(
-                          'Add',
-                          style: GoogleFonts.poppins(
-                            color: AppTheme().blackColor,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500
-                          ),
-                        ),
-                        SizedBox(height: 8.5.h),
-                      ],
-                    ),
-                  ),
-                  //SizedBox(width: 0.w,),
-                  //FriendsList()
-                  Expanded(child: FriendsList())
-                ],
-              ),
+              FriendsList(),
 
-              //SizedBox(height: 10.h,), //20.h
+              SizedBox(height: 10.h,), //20.h
+
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 20.w,

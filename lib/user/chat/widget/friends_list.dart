@@ -14,6 +14,8 @@ import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
 
+import 'all_users_list.dart';
+
 
 
 
@@ -75,7 +77,9 @@ class FriendsList extends StatelessWidget {
               separatorBuilder: (context, index) => SizedBox(width: 20.w),
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
+
                 var data = snapshot.data!.docs[index];
+                      
                 return Column(
                   children: [
                     InkWell(

@@ -97,7 +97,7 @@ class _AllUsersListState extends State<AllUsersList> {
               //search for users
               SearchTextField(
                 textController: chatServiceController.allUsersTextEditingController, 
-                hintText: 'Search for connects',
+                hintText: 'Find connects',
                 onChanged: (value) {
                   /*setState(() {
                     chatServiceController.isSearchingForUsers = true;

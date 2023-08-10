@@ -16,17 +16,16 @@ import 'package:provider/provider.dart';
 
 
 
-class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({super.key});
+
+class NotificationScreenForProfile extends StatefulWidget {
+  const NotificationScreenForProfile({super.key});
 
   @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
+  State<NotificationScreenForProfile> createState() => _NotificationScreenForProfileState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> {
-
+class _NotificationScreenForProfileState extends State<NotificationScreenForProfile> {
   bool showDateHeader = true;
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -123,7 +122,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              
+              ///SizedBox(height: 10.h,),
               ListView.separated(
                 scrollDirection: Axis.vertical,
                 physics: const BouncingScrollPhysics(),
@@ -135,6 +134,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 itemBuilder: (context, index) {
 
                   var data = snapshot.data!.docs[index];
+
                   // Check if the current message's date is different from the previous message's date
                   if (index > 0) {
                     var previousData = snapshot.data!.docs[index - 1];
@@ -142,7 +142,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     var previousDate = formatDate(timestamp: previousData['timestamp']);
                     showDateHeader = currentDate != previousDate;
                   }
-
+                  
                   return Column(
                     children: [
                       //Show the date header if needed
@@ -184,6 +184,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             ),
                           ),
                         ),
+
+                      SizedBox(height: 10.h),
                       //
                       Container(
                         padding: EdgeInsets.symmetric(
@@ -214,7 +216,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 horizontal: 18.w
                               ),*/
                               decoration: BoxDecoration(
-                                color: AppTheme().lightestOpacityBlue, //.withOpacity(0.3),
+                                color: AppTheme().opacityBlue.withOpacity(0.3),
                                 borderRadius: BorderRadius.circular(15.r),
                               ),
                               child: Icon(
