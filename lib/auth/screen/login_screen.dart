@@ -75,13 +75,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           SizedBox(height: 10.h,),
-          CustomTextField(
+          EmailFieldLogin(
             textController: controller.loginEmailController, 
             onSaved: (val) {
               controller.loginEmailController.text = val!;
             }, 
             hintText: 'johndoe@example.com', 
-            validator: controller.validateEmail
+            //validator: controller.validateEmail
           ),
           SizedBox(height: 20.h),
           Text(
@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           SizedBox(height: 10.h,),
-          CustomTextField2(
+          PasswordFieldLogin(
             textController: controller.loginPasswordController, 
             onSaved: (val) {
               controller.loginPasswordController.text = val!;

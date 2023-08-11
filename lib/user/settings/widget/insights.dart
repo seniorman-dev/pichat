@@ -59,15 +59,15 @@ import 'package:pichat/theme/app_theme.dart';
                       ),
                     ],
                   ),
-                  SizedBox(height: 20.h,),
+                  SizedBox(height: 30.h,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Explore detailed statistics of you\naccount as it thrives.      \n(Coming Soon...👌)',
+                        'Explore detailed statistics of your\naccount as it thrives.\n              (Coming Soon👌)',
                         style: TextStyle(
                           color: AppTheme().blackColor, //.normalGreyColor,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           fontSize: 15.sp
                         ),
                       ),

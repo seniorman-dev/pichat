@@ -94,7 +94,7 @@ import 'package:pichat/utils/snackbar.dart';
                         'Are you sure you want to logout?',
                         style: TextStyle(
                           color: AppTheme().blackColor, //.normalGreyColor,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           fontSize: 15.sp
                         ),
                       ),

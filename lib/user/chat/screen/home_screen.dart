@@ -125,7 +125,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
   void initState() {
     // TODO: implement initState
     WidgetsBinding.instance.addObserver(this);
-    listenToUserOnlineStatus();
+    //listenToUserOnlineStatus();
     seekPermission();
     super.initState();
   }
@@ -159,7 +159,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
     },);
   }
 
-  void listenToUserOnlineStatus() {
+  /*void listenToUserOnlineStatus() {
     final userRef = FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid);
 
     userRef.snapshots().listen((snapshot) {
@@ -168,7 +168,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
         _isOnline = onlineStatus;
       });
     });
-  }
+  }*/
 
 
 

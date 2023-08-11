@@ -18,6 +18,9 @@ import 'package:pichat/utils/snackbar.dart';
 
 
 class AuthController extends ChangeNotifier{
+  
+  //locage storage courtesy of GetX, used to persist little amount of data
+  final box = GetStorage();
 
 
   final FirebaseAuth firebase = FirebaseAuth.instance;
@@ -32,25 +35,23 @@ class AuthController extends ChangeNotifier{
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   
 
+
+
   ///FOR REGISTERATION SCREEN
   final TextEditingController registerNameController = TextEditingController();
   final TextEditingController registerEmailController = TextEditingController();
   final TextEditingController registerPasswordController = TextEditingController();
   final TextEditingController registerConfirmPasswordController = TextEditingController();
-  String? validateEmail(String? value) {
-    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
-      r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
-      r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
-      r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
-      r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
-      r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
-      r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
-    final regex = RegExp(pattern);
+  
 
-    return value!.isNotEmpty && !regex.hasMatch(value)
-    ? 'Enter a valid email address'
-    : null;
-  }
+  //for textformfields to perform validation operations
+  final formKey = GlobalKey<FormState>();
+
+  //for registration textformfields to automatically scroll to the next seamlessly
+  final List<FocusNode> focusNodes = List.generate(4, (index) => FocusNode());
+
+  //for login textformfields to automatically scroll to the next seamlessly
+  final List<FocusNode> focusNodesForLogin = List.generate(2, (index) => FocusNode());
 
   bool isChecked = false;
   bool blindText1 = false;
@@ -59,32 +60,30 @@ class AuthController extends ChangeNotifier{
   
 
 
+
+
   ///FOR LOGIN SCREEN
   final TextEditingController loginEmailController = TextEditingController();
   final TextEditingController loginPasswordController = TextEditingController();
-
-  String? validateEmailForLogin(String? value) {
-    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
-      r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
-      r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
-      r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
-      r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
-      r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
-      r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
-    final regex = RegExp(pattern);
-
-    return value!.isNotEmpty && !regex.hasMatch(value)
-    ? 'Enter a valid email address'
-    : null;
-  }
   bool blindText3 = false;
+
+
 
   ///FOR RESET PASSWORD SCREEN
   final TextEditingController resetPasswordController = TextEditingController();
   
+
   ///dispose all
   @override
   void dispose() {
+    //dispose the 4 focusNodes for the register textformfields
+    for (var focusNode in focusNodes) {
+      focusNode.dispose();
+    }
+    //dispose the 2 focusNodes for the login textformfields
+    for (var focusNode in focusNodesForLogin) {
+      focusNode.dispose();
+    }
     // TODO: implement dispose
     registerNameController.dispose();
     registerEmailController.dispose();
@@ -98,6 +97,7 @@ class AuthController extends ChangeNotifier{
 
 
 
+
   //SIGN UP / REGISTER METHOD
   Future signUp() async {
     try {
@@ -106,11 +106,12 @@ class AuthController extends ChangeNotifier{
       if(registerNameController.text.isNotEmpty && registerEmailController.text.isNotEmpty && registerPasswordController.text == registerConfirmPasswordController.text && isChecked == true) {
         UserCredential userCredential = await firebase.createUserWithEmailAndPassword(email: registerEmailController.text, password: registerPasswordController.text);
         if(userCredential.user != null) {
+
           //save these data of the current user so that you can persist data with get storage
-          final box = GetStorage();
           box.write('name', registerNameController.text);
+          box.write('email', userCredential.user!.email);
           box.write('id', userCredential.user!.uid);
-          debugPrint("My Name: ${box.read('name')}");
+          debugPrint("My Details: ${box.read('name')} ${box.read('email')} ${box.read('id')}");
 
           //call firestore to add the new user
           await firestore.collection('users')
@@ -160,6 +161,18 @@ class AuthController extends ChangeNotifier{
         UserCredential userCredential = await firebase.signInWithEmailAndPassword(email: loginEmailController.text, password: loginPasswordController.text);
         if(userCredential.user != null) {
 
+          //do this if you want to get any logged in user property 
+          DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userID)
+          .get();
+          String userName = snapshot.get('name');
+          
+          //save these data of the current user so that you can persist data with get storage
+          box.write('name', userName);
+          box.write('email', userEmail);
+          box.write('id', userID);
+          debugPrint("My Details: ${box.read('name')} ${box.read('email')} ${box.read('id')}");
           
           await firestore.collection('users').doc(userCredential.user!.uid).update({"isOnline": true});
           //always update fcm_token
@@ -186,6 +199,13 @@ class AuthController extends ChangeNotifier{
   //SIGN OUT METHOD
   Future<void> signOut() async {
     try {
+      //delete the data of the exiting user so that you create room to persist data for the next user
+      final box = GetStorage();
+      box.remove('name');
+      box.remove('email');
+      box.remove('id');
+      debugPrint("My Details: ${box.read('name')} ${box.read('email')} ${box.read('id')}");
+
       await firestore.collection('users').doc(userID).update({"isOnline": false});
       await firebase.signOut()
       .whenComplete(() => Get.offAll(() => LoginScreen()));

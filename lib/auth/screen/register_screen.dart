@@ -99,7 +99,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller.registerEmailController.text = val!;
             }, 
             hintText: 'johndoe@example.com', 
-            validator: controller.validateEmail
           ),
           SizedBox(height: 20.h),
           Text(

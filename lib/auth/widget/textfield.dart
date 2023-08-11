@@ -13,21 +13,29 @@ import 'package:provider/provider.dart';
 
 //for email
 class CustomTextField extends StatelessWidget {
-  const CustomTextField({super.key, required this.textController, required this.onSaved, required this.hintText, required this.validator});
+  const CustomTextField({super.key, required this.textController, required this.onSaved, required this.hintText,});
   final TextEditingController textController;
   final void Function(String?)? onSaved;
   final String hintText;
-  final String? Function(String?)? validator;
+  //final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
+
+    var controller = Provider.of<AuthController>(context);
+
     return Container(
       decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(20.r)
       ),
-      height: 70.h,
+      //height: 70.h,
       width: double.infinity,
-      child: TextFormField(          
+      child: TextFormField(
+        focusNode: controller.focusNodes[1],
+        onEditingComplete: () {
+          FocusScope.of(context).requestFocus(controller.focusNodes[1]);
+        },
+        textCapitalization: TextCapitalization.sentences,          
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
         textInputAction: TextInputAction.next,
@@ -51,7 +59,7 @@ class CustomTextField extends StatelessWidget {
           //prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
         ),
         onSaved: onSaved,
-        validator: validator
+        //validator: validator
       ),
     );
   }
@@ -78,9 +86,14 @@ class _CustomTextField2State extends State<CustomTextField2> {
       decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(20.r)
       ),
-      height: 70.h,
+      //height: 70.h,
       width: double.infinity,
-      child: TextFormField(          
+      child: TextFormField(
+        focusNode: controller.focusNodes[2],
+        onEditingComplete: () {
+          FocusScope.of(context).requestFocus(controller.focusNodes[2]);
+        },      
+        textCapitalization: TextCapitalization.sentences,    
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
         obscureText: controller.blindText1,
@@ -141,9 +154,14 @@ class _CustomTextField3State extends State<CustomTextField3> {
       decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(20.r)
       ),
-      height: 70.h,
+      //height: 70.h,
       width: double.infinity,
-      child: TextFormField(          
+      child: TextFormField(
+        focusNode: controller.focusNodes[3],
+        onEditingComplete: () {
+          FocusScope.of(context).requestFocus(controller.focusNodes[3]);
+        },      
+        textCapitalization: TextCapitalization.sentences,              
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
         obscureText: controller.blindText2,
@@ -196,13 +214,19 @@ class CustomTextField4 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var controller = Provider.of<AuthController>(context);
     return Container(
       decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(20.r)
       ),
-      height: 70.h,
+      //height: 70.h,
       width: double.infinity,
-      child: TextFormField(          
+      child: TextFormField(
+        focusNode: controller.focusNodes[0],
+        onEditingComplete: () {
+          FocusScope.of(context).requestFocus(controller.focusNodes[0]);
+        },      
+        textCapitalization: TextCapitalization.sentences,              
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
         textInputAction: TextInputAction.next,
@@ -226,6 +250,134 @@ class CustomTextField4 extends StatelessWidget {
           //prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
         ),
         onSaved: onSaved,
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+//////////////////////////////////For Login Screen
+//for email
+class EmailFieldLogin extends StatelessWidget {
+  const EmailFieldLogin({super.key, required this.textController, required this.onSaved, required this.hintText,});
+  final TextEditingController textController;
+  final void Function(String?)? onSaved;
+  final String hintText;
+  //final String? Function(String?)? validator;
+
+  @override
+  Widget build(BuildContext context) {
+
+    var controller = Provider.of<AuthController>(context);
+
+    return Container(
+      decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20.r)
+      ),
+      //height: 70.h,
+      width: double.infinity,
+      child: TextFormField(
+        focusNode: controller.focusNodesForLogin[0],
+        onEditingComplete: () {
+          FocusScope.of(context).requestFocus(controller.focusNodesForLogin[0]);
+        },
+        textCapitalization: TextCapitalization.sentences,          
+        scrollPhysics: const BouncingScrollPhysics(),
+        scrollController: ScrollController(),
+        textInputAction: TextInputAction.next,
+        enabled: true,
+        controller: textController,
+        keyboardType: TextInputType.emailAddress,
+        autocorrect: true,
+        enableSuggestions: true,
+        enableInteractiveSelection: true,
+        cursorColor: AppTheme().blackColor,
+        style: GoogleFonts.poppins(color: AppTheme().blackColor),
+        decoration: InputDecoration(        
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.r),
+            borderSide: BorderSide.none
+          ),       
+          hintText: hintText,
+          hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 13.sp),              
+          filled: true,
+          fillColor: AppTheme().lightestOpacityBlue,
+          //prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
+        ),
+        onSaved: onSaved,
+        //validator: validator
+      ),
+    );
+  }
+}
+
+//for password
+class  PasswordFieldLogin extends StatefulWidget {
+  const PasswordFieldLogin({super.key, required this.textController, required this.onSaved, required this.hintText,});
+  final TextEditingController textController;
+  final void Function(String?)? onSaved;
+  final String hintText;
+
+  @override
+  State<PasswordFieldLogin> createState() => _PasswordFieldLoginState();
+}
+
+class _PasswordFieldLoginState extends State<PasswordFieldLogin> {
+  @override
+  Widget build(BuildContext context) {
+    var controller = Provider.of<AuthController>(context);
+    return Container(
+      decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20.r)
+      ),
+      //height: 70.h,
+      width: double.infinity,
+      child: TextFormField(
+        focusNode: controller.focusNodesForLogin[1],
+        onEditingComplete: () {
+          FocusScope.of(context).requestFocus(controller.focusNodesForLogin[1]);
+        },      
+        textCapitalization: TextCapitalization.sentences,              
+        scrollPhysics: const BouncingScrollPhysics(),
+        scrollController: ScrollController(),
+        obscureText: controller.blindText3,
+        textInputAction: TextInputAction.done,
+        enabled: true,
+        controller: widget.textController,
+        keyboardType: TextInputType.visiblePassword,
+        autocorrect: true,
+        enableSuggestions: true,
+        enableInteractiveSelection: true,
+        cursorColor: AppTheme().blackColor,
+        style: GoogleFonts.poppins(color: AppTheme().blackColor),
+        decoration: InputDecoration(        
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.r),
+            borderSide: BorderSide.none
+          ),       
+          hintText: widget.hintText,
+          hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 13.sp),              
+          filled: true,
+          fillColor: AppTheme().lightestOpacityBlue,
+          suffixIcon: InkWell(
+            onTap: () {
+              setState(() {
+                controller.blindText3 = !controller.blindText3;
+              });
+              debugPrint("${controller.blindText3}");
+            },
+            child: controller.blindText3
+            ?Icon(Icons.visibility_rounded, color: AppTheme().mainColor,) 
+            //SvgPicture.asset('assets/svg/visible.svg', height: 5, width: 5,) 
+            :Icon(Icons.visibility_off_rounded, color: AppTheme().mainColor,) 
+            //SvgPicture.asset('assets/svg/invisible.svg', height: 5, width: 5,),
+          ), 
+        ),
+        onSaved: widget.onSaved,
       ),
     );
   }

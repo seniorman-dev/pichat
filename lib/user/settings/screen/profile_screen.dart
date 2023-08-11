@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/user/feeds/controller/feeds_controller.dart';
 import 'package:pichat/user/settings/controller/profile_controller.dart';
 import 'package:pichat/user/settings/widget/connects.dart';
 import 'package:pichat/user/settings/widget/edit_profile_screen.dart';
@@ -15,10 +17,19 @@ import 'package:pichat/user/settings/widget/notifications_for_profile.dart';
 import 'package:pichat/user/settings/widget/posts.dart';
 import 'package:pichat/user/settings/widget/profile_item.dart';
 import 'package:pichat/user/settings/widget/re-posts.dart';
+import 'package:pichat/user/settings/widget/succesfully_uploaded_feed.dart';
 import 'package:pichat/user/settings/widget/view_posts.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/loader.dart';
+import 'package:pichat/utils/toast.dart';
 import 'package:provider/provider.dart';
+import '../widget/upload_post_page.dart';
+
+
+
+
+
+
 
 
 
@@ -47,9 +58,12 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context) {
+
     final size = MediaQuery.of(context).size;
     var authController = Provider.of<AuthController>(context);
     var profileController = Provider.of<ProfileController>(context);
+    var feedsController = Provider.of<FeedsController>(context);
+
 
     //Stream of the document snapshot for the current logged-in user
     Stream<DocumentSnapshot<Map<String, dynamic>>> snapshotStream =
@@ -86,8 +100,7 @@ class ProfileScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 90.h,),
-             
+              SizedBox(height: 90.h,),           
               //streambuilder for logged in user
               StreamBuilder(
                 stream: profileController.userSnapshot(),  //snapshotStream,
@@ -159,7 +172,25 @@ class ProfileScreen extends StatelessWidget {
                                 backgroundColor: AppTheme().opacityBlue,
                                 child: CircleAvatar(
                                   radius: 38.r,
-                                  backgroundColor: AppTheme().darkGreyColor,
+                                  backgroundColor: photo.isEmpty ? AppTheme().darkGreyColor : AppTheme().blackColor,
+                                  //backgroundColor: AppTheme().darkGreyColor,
+                                  child: photo.isEmpty 
+                                  ? null
+                                  :ClipRRect(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
+                                    clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
+                                    child: CachedNetworkImage(
+                                      imageUrl: photo,
+                                      width: 50.w,
+                                      height: 50.h,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Loader(),
+                                      errorWidget: (context, url, error) => Icon(
+                                        Icons.error,
+                                        color: AppTheme().lightestOpacityBlue,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                               SizedBox(width: 10.w,),
@@ -170,17 +201,84 @@ class ProfileScreen extends StatelessWidget {
                                     //1
                                     Column(
                                       children: [
-                                        Text(
-                                          //posts
-                                          '93330',
-                                          style: GoogleFonts.poppins(
-                                            color: AppTheme().greyColor,
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500,
-                                            textStyle: const TextStyle(
-                                              overflow: TextOverflow.ellipsis
-                                            )
-                                          ),
+                                        StreamBuilder(
+                                          stream: feedsController.getFeedsForUserProfile(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              // Show a loading indicator while waiting for data
+                                              return Text(
+                                                //posts
+                                                '....',
+                                                style: GoogleFonts.poppins(
+                                                  color: AppTheme().greyColor,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  textStyle: const TextStyle(
+                                                    overflow: TextOverflow.ellipsis
+                                                  )
+                                                ),
+                                              );
+                                            } 
+                                            if (snapshot.hasError) {
+                                              // Handle error if any
+                                              return Text(
+                                                //posts
+                                                '....',
+                                                style: GoogleFonts.poppins(
+                                                  color: AppTheme().redColor,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  textStyle: const TextStyle(
+                                                    overflow: TextOverflow.ellipsis
+                                                  )
+                                                ),
+                                              );
+                                            }
+                                            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                              return Text(
+                                                //posts
+                                                '....',
+                                                style: GoogleFonts.poppins(
+                                                  color: AppTheme().mainColor, //.lightestOpacityBlue,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  textStyle: const TextStyle(
+                                                    overflow: TextOverflow.ellipsis
+                                                  )
+                                                ),
+                                              );
+                                            }
+
+                                            int itemCount = snapshot.data!.docs.length;
+                                            //convert the length to string
+                                            String items = itemCount.toString();
+
+                                            return Text(
+                                              itemCount >= 0 && itemCount <= 999 
+                                              ? items
+                                              : itemCount >= 1000 && itemCount <= 9999
+                                              ? "${items[0]} K"
+                                              : itemCount >= 10000 && itemCount <= 99999 
+                                              ? "${items.substring(0, 2)} K"
+                                              : itemCount >= 100000 && itemCount >= 999999
+                                              ? "${items.substring(0, 3)} K"
+                                              : itemCount >= 1000000 && itemCount <= 9999999
+                                              ? "${items[0]}M"
+                                              : itemCount >= 10000000 && itemCount <= 99999999
+                                              ? "${items.substring(0, 2)} M"
+                                              : itemCount >= 100000000 && itemCount <= 999999999
+                                              ? "${items.substring(0, 3)} M"
+                                              : "1 B+",
+                                              style: GoogleFonts.poppins(
+                                                color: AppTheme().greyColor,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500,
+                                                textStyle: const TextStyle(
+                                                  overflow: TextOverflow.ellipsis
+                                                )
+                                              ),
+                                            );
+                                          }
                                         ),
                                         SizedBox(height: 10.h),
                                         Text(
@@ -196,17 +294,85 @@ class ProfileScreen extends StatelessWidget {
                                     //2
                                     Column(
                                       children: [
-                                        Text(
-                                          //reports
-                                          '93330',
-                                          style: GoogleFonts.poppins(
-                                            color: AppTheme().greyColor,
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500,
-                                            textStyle: const TextStyle(
-                                              overflow: TextOverflow.ellipsis
-                                            )
-                                          ),
+                                        StreamBuilder(
+                                          stream: feedsController.repostStreamForUserProfile(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              // Show a loading indicator while waiting for data
+                                              return Text(
+                                                //re-posts
+                                                '....',
+                                                style: GoogleFonts.poppins(
+                                                  color: AppTheme().greyColor,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  textStyle: const TextStyle(
+                                                    overflow: TextOverflow.ellipsis
+                                                  )
+                                                ),
+                                              );
+                                            } 
+                                            if (snapshot.hasError) {
+                                              // Handle error if any
+                                              return Text(
+                                                //posts
+                                                '....',
+                                                style: GoogleFonts.poppins(
+                                                  color: AppTheme().redColor,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  textStyle: const TextStyle(
+                                                    overflow: TextOverflow.ellipsis
+                                                  )
+                                                ),
+                                              );
+                                            }
+                                            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                              return Text(
+                                                //re-posts
+                                                '....',
+                                                style: GoogleFonts.poppins(
+                                                  color: AppTheme().mainColor, //.lightestOpacityBlue,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  textStyle: const TextStyle(
+                                                    overflow: TextOverflow.ellipsis
+                                                  )
+                                                ),
+                                              );
+                                            }
+
+                                            int itemCount = snapshot.data!.docs.length;
+                                            //convert the length to string
+                                            String items = itemCount.toString();
+                                            
+                                            return Text(
+                                              //re-posts
+                                              itemCount >= 0 && itemCount <= 999 
+                                              ? items
+                                              : itemCount >= 1000 && itemCount <= 9999
+                                              ? "${items[0]} K"
+                                              : itemCount >= 10000 && itemCount <= 99999 
+                                              ? "${items.substring(0, 2)} K"
+                                              : itemCount >= 100000 && itemCount >= 999999
+                                              ? "${items.substring(0, 3)} K"
+                                              : itemCount >= 1000000 && itemCount <= 9999999
+                                              ? "${items[0]}M"
+                                              : itemCount >= 10000000 && itemCount <= 99999999
+                                              ? "${items.substring(0, 2)} M"
+                                              : itemCount >= 100000000 && itemCount <= 999999999
+                                              ? "${items.substring(0, 3)} M"
+                                              : "1 B+",
+                                              style: GoogleFonts.poppins(
+                                                color: AppTheme().greyColor,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500,
+                                                textStyle: const TextStyle(
+                                                  overflow: TextOverflow.ellipsis
+                                                )
+                                              ),
+                                            );
+                                          }
                                         ),
                                         SizedBox(height: 10.h),
                                         Text(
@@ -223,16 +389,85 @@ class ProfileScreen extends StatelessWidget {
                                     Column(
                                       children: [
                                         //connects
-                                        Text(
-                                          '93330',
-                                          style: GoogleFonts.poppins(
-                                            color: AppTheme().greyColor,
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500,
-                                            textStyle: const TextStyle(
-                                              overflow: TextOverflow.ellipsis
-                                            )
-                                          ),
+                                        StreamBuilder(
+                                          stream: feedsController.userFriends(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              // Show a loading indicator while waiting for data
+                                              return Text(
+                                                //posts
+                                                '....',
+                                                style: GoogleFonts.poppins(
+                                                  color: AppTheme().greyColor,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  textStyle: const TextStyle(
+                                                    overflow: TextOverflow.ellipsis
+                                                  )
+                                                ),
+                                              );
+                                            } 
+                                            if (snapshot.hasError) {
+                                              // Handle error if any
+                                              return Text(
+                                                //posts
+                                                '....',
+                                                style: GoogleFonts.poppins(
+                                                  color: AppTheme().redColor,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  textStyle: const TextStyle(
+                                                    overflow: TextOverflow.ellipsis
+                                                  )
+                                                ),
+                                              );
+                                            }
+                                            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                              return Text(
+                                                //posts
+                                                '....',
+                                                style: GoogleFonts.poppins(
+                                                  color: AppTheme().mainColor, //.lightestOpacityBlue,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  textStyle: const TextStyle(
+                                                    overflow: TextOverflow.ellipsis
+                                                  )
+                                                ),
+                                              );
+                                            }
+
+                                            int itemCount = snapshot.data!.docs.length;
+                                            //convert the length to string
+                                            String items = itemCount.toString();
+
+                                            return Text(
+                                              //connects or friends
+                                              itemCount >= 0 && itemCount <= 999 
+                                              ? items
+                                              : itemCount >= 1000 && itemCount <= 9999
+                                              ? "${items[0]} K"
+                                              : itemCount >= 10000 && itemCount <= 99999 
+                                              ? "${items.substring(0, 2)} K"
+                                              : itemCount >= 100000 && itemCount >= 999999
+                                              ? "${items.substring(0, 3)} K"
+                                              : itemCount >= 1000000 && itemCount <= 9999999
+                                              ? "${items[0]}M"
+                                              : itemCount >= 10000000 && itemCount <= 99999999
+                                              ? "${items.substring(0, 2)} M"
+                                              : itemCount >= 100000000 && itemCount <= 999999999
+                                              ? "${items.substring(0, 3)} M"
+                                              : "1 B+",
+                                              style: GoogleFonts.poppins(
+                                                color: AppTheme().greyColor,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500,
+                                                textStyle: const TextStyle(
+                                                  overflow: TextOverflow.ellipsis
+                                                )
+                                              ),
+                                            );
+                                          }
                                         ),
                                         SizedBox(height: 10.h),
                                         Text(
@@ -320,7 +555,9 @@ class ProfileScreen extends StatelessWidget {
                                         email: email, 
                                         photo: photo, 
                                         dateOfBirth: myDOB, 
-                                        isProfileUpdated: isProfileUpdated,
+                                        isProfileUpdated: isProfileUpdated, 
+                                        bio: bioText, 
+                                        link: myLink,
                                       ));
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -349,7 +586,18 @@ class ProfileScreen extends StatelessWidget {
                                   height: 50.h,
                                   width: 100.w, //double.infinity,
                                   child: ElevatedButton( 
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Get.to(() => UploadPostPage(
+                                        onPressedForSavingEveryThing: () {
+                                          if(feedsController.postTextController.text.isNotEmpty && feedsController.contentFile != null) {
+                                            feedsController.uploadContentToDatbase(file: feedsController.contentFile).then((value) => Get.to(() => PostUpdatedSuccessScreen()));
+                                          }
+                                          else{
+                                            getToast(text: 'Something went wrong', context: context);
+                                          }
+                                        },
+                                      ));
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       elevation: 0,
                                       backgroundColor: AppTheme().lightGreyColor,
@@ -359,7 +607,7 @@ class ProfileScreen extends StatelessWidget {
                                       )
                                     ), 
                                     child: Text(
-                                      'Post',
+                                      'Upload Post',
                                       style: GoogleFonts.poppins(  //urbanist
                                         color: AppTheme().blackColor,
                                         fontSize: 14.sp,
@@ -424,6 +672,14 @@ class ProfileScreen extends StatelessWidget {
                           Get.to(() => ViewPostsScreen());
                         }, 
                         title: 'View Posts',
+                      ),
+                      SizedBox(height: 20.h,),
+                      ProfileItem(
+                        icon: CupertinoIcons.person_3, 
+                        onPressed: () {
+                          //Get.to(() => CreateGroupScreen());
+                        }, 
+                        title: 'Create Group',
                       ),
                       SizedBox(height: 20.h,),
                       ProfileItem(

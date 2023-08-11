@@ -1,8 +1,15 @@
+import 'dart:io';
 import 'dart:math';
-
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:pichat/theme/app_theme.dart';
+import 'package:provider/provider.dart';
+
+import '../../settings/controller/profile_controller.dart';
 
 
 
@@ -26,10 +33,32 @@ class FeedsController extends ChangeNotifier {
   //controller for commenting on a post
   final TextEditingController commentTextController = TextEditingController();
 
+  //global key for form field
+  GlobalKey formKey = GlobalKey<FormState>();
+  //for post textformfield
+  FocusNode focusNode = FocusNode(); //for keyboard
+  //for commenting textformfield
+  FocusNode focusNodeForCommentTextfield = FocusNode(); //for keyboard
+
+  //picked content (wether image or video)
+  File? contentFile;
+
+  ////check if the image is taken from gallery or not
+  bool isImageSelectedFromGallery = false;
+  /// check if any image is selected at all
+  bool isAnyImageSelected = false;
+  //check if it is a video or picture content that wants to be uploaded
+  bool isContentImage = false;
+
+
+
+
   @override
   void dispose() {
     // TODO: implement dispose
     commentTextController.dispose();
+    focusNode.dispose();
+    focusNodeForCommentTextfield.dispose();
     postTextController.dispose();
     super.dispose();
   }
@@ -37,7 +66,7 @@ class FeedsController extends ChangeNotifier {
 
 
 
-
+  
 
 
 
@@ -78,8 +107,21 @@ class FeedsController extends ChangeNotifier {
     .snapshots();
   }
 
-  // Add a post to the timeline
-  Future<void> uploadFeed() async{
+  // Fetch logged-in user's connects to be displayed on his/her profile
+  Stream<QuerySnapshot<Map<String, dynamic>>> userFriends() async* {
+    yield* firestore
+    .collection('users')
+    .doc(userID)
+    .collection('friends')
+    //.orderBy('timestamp', descending: true)
+    .snapshots();
+  }
+
+
+  
+  //uploads the image, video & other contents to the cloud and the stores the image url to firestore database
+  Future<void> uploadContentToDatbase({required File? file,}) async {
+    
     //post id
     var postId = (Random().nextInt(100000)).toString();
 
@@ -91,41 +133,91 @@ class FeedsController extends ChangeNotifier {
     String userName = snapshot.get('name');
     String userId = snapshot.get('id');
     String userPhoto = snapshot.get('photo');
-    bool userOnline = snapshot.get('isOnline');
-    //////////////////////////////////
+    //bool userOnline = snapshot.get('isOnline');
+    
+    //name of the folder we are first storing the file to
+    String? folderName = userEmail;
+    //name the file we are sending to firebase cloud storage
+    String fileName = "${DateTime.now().millisecondsSinceEpoch}post";
+    //set the storage reference as "users_photos" and the "filename" as the image reference
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('$folderName/$fileName');
+    //upload the image to the cloud storage
+    firebase_storage.UploadTask uploadTask = ref.putFile(file!);
+    //call the object and then show that it has already been uploaded to the cloud storage or bucket
+    firebase_storage.TaskSnapshot taskSnapshot = 
+    await uploadTask
+    .whenComplete(() => debugPrint("image uploaded succesfully to fire storage"));
+    //get the imageUrl from the above taskSnapshot
+    String contentUrl = await taskSnapshot.ref.getDownloadURL();
     
     //post the feed to the general TL (where the logged in user and his friends can see the post)
-    await firestore
-    .collection('feeds')
-    .doc(postId)
-    .set({
-      'postId': postId,
-      'posterId': userId,
-      'posterName': userName,
-      'posterPhoto': userPhoto,
-      'postTitle': postTextController.text,
-      'postContent': 'imageUrl or videoURL or text or File',
-      //'repostedBy': 'nobody',
-      'timestamp': Timestamp.now()
-    });
+    if(isContentImage) {
+      await firestore
+      .collection('feeds')
+      .doc(postId)
+      .set({
+        'postId': postId,
+        'posterId': userId,
+        'posterName': userName,
+        'posterPhoto': userPhoto,
+        'postTitle': postTextController.text,
+        'postContent': contentUrl,
+        'timestamp': Timestamp.now()
+      });
 
-    //post the feed to the poster's profile
-    await firestore
-    .collection('users')
-    .doc(userId)
-    .collection('posts')
-    .doc(postId)
-    .set({
-      'postId': postId,
-      'posterId': userId,
-      'posterName': userName,
-      'posterPhoto': userPhoto,
-      'postTitle': postTextController.text,
-      'postContent': 'imageUrl or videoURL or text or File',
-      'timestamp': Timestamp.now()
-    });
+      //post the feed to the poster's profile (this one catch)
+      await firestore
+      .collection('users')
+      .doc(userID)
+      .collection('posts')
+      .doc(postId)
+      .set({
+        'postId': postId,
+        'posterId': userId,
+        'posterName': userName,
+        'posterPhoto': userPhoto,
+        'postTitle': postTextController.text,
+        'postContent': contentUrl,
+        'timestamp': Timestamp.now()
+      });
 
+    }
+    //video content
+    else {
+      await firestore
+      .collection('feeds')
+      .doc(postId)
+      .set({
+        'postId': postId,
+        'posterId': userId,
+        'posterName': userName,
+        'posterPhoto': userPhoto,
+        'postTitle': postTextController.text,
+        'postContent': contentUrl,
+        'timestamp': Timestamp.now()
+      });
+
+      //post the feed to the poster's profile
+      await firestore
+      .collection('users')
+      .doc(userID)
+      .collection('posts')
+      .doc(postId)
+      .set({
+        'postId': postId,
+        'posterId': userId,
+        'posterName': userName,
+        'posterPhoto': userPhoto,
+        'postTitle': postTextController.text,
+        'postContent': contentUrl,
+        'timestamp': Timestamp.now()
+      });
+    }
+    
+    // to see what the url looks like
+    debugPrint("ContentURL: $contentUrl");
   }
+
 
 
 
