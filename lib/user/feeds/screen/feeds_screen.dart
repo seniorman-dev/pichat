@@ -300,41 +300,34 @@ class FeedScreen extends StatelessWidget {
                                     StreamBuilder(
                                       stream: controller.postLikes(postId: data['postId']),
                                       builder: (context, snapshot) {
-                                        return ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
-                                          itemCount: snapshot.data!.docs.length ,
-                                          itemBuilder: (context, index) {
-                                            //get the document for the document snapshot
-                                            int likes = snapshot.data!.docs.length;
-                                            //convert the length to string
-                                            String likesToString = likes.toString();
-                                            return Text(
-                                              likes >= 0 && likes <= 999 
-                                              ? likesToString
-                                              :likes >= 1000 && likes <= 9999
-                                              ? "${likesToString[0]}K"
-                                              : likes >= 10000 && likes <= 99999 
-                                              ? "${likesToString.substring(0, 2)}K"
-                                              : likes >= 100000 && likes >= 999999
-                                              ? "${likesToString.substring(0, 3)}K"
-                                              : likes >= 1000000 && likes <= 9999999
-                                              ? "${likesToString[0]}M"
-                                              : likes >= 10000000 && likes <= 99999999
-                                              ? "${likesToString.substring(0, 2)}M"
-                                              : likes >= 100000000 && likes <= 999999999
-                                              ? "${likesToString.substring(0, 3)}M"
-                                              : "1 B+",
-                                              style: GoogleFonts.poppins(
-                                                color: AppTheme().greyColor,
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w500,
-                                                textStyle: const TextStyle(
-                                                  overflow: TextOverflow.ellipsis
-                                                )
-                                              ),
-                                            );
-                                          }
+                                        //get the document for the document snapshot
+                                        int likes = snapshot.data!.docs.length;
+                                        //convert the length to string
+                                        String likesToString = likes.toString();
+                                        return Text(
+                                          likes >= 0 && likes <= 999 
+                                          ? likesToString
+                                          :likes >= 1000 && likes <= 9999
+                                          ? "${likesToString[0]}K"
+                                          : likes >= 10000 && likes <= 99999 
+                                          ? "${likesToString.substring(0, 2)}K"
+                                          : likes >= 100000 && likes >= 999999
+                                          ? "${likesToString.substring(0, 3)}K"
+                                          : likes >= 1000000 && likes <= 9999999
+                                          ? "${likesToString[0]}M"
+                                          : likes >= 10000000 && likes <= 99999999
+                                          ? "${likesToString.substring(0, 2)}M"
+                                          : likes >= 100000000 && likes <= 999999999
+                                          ? "${likesToString.substring(0, 3)}M"
+                                          : "1 B+",
+                                          style: GoogleFonts.poppins(
+                                            color: AppTheme().greyColor,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                            textStyle: const TextStyle(
+                                              overflow: TextOverflow.ellipsis
+                                            )
+                                          ),
                                         );
                                       }
                                     ),
@@ -360,41 +353,34 @@ class FeedScreen extends StatelessWidget {
                                     StreamBuilder(
                                       stream: controller.postComments(postId: data['postId']),
                                       builder: (context, snapshot) {
-                                        return ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
-                                          itemCount: snapshot.data!.docs.length ,
-                                          itemBuilder: (context, index) {
-                                            //get the document for the document snapshot
-                                            int comments = snapshot.data!.docs.length;
-                                            //convert the length to string
-                                            String commentsToString = comments.toString();
-                                            return Text(
-                                              comments >= 0 && comments <= 999 
-                                              ? commentsToString
-                                              : comments >= 1000 && comments <= 9999
-                                              ? "${commentsToString[0]}K"
-                                              : comments >= 10000 && comments <= 99999 
-                                              ? "${commentsToString.substring(0, 2)}K"
-                                              : comments >= 100000 && comments >= 999999
-                                              ? "${commentsToString.substring(0, 3)}K"
-                                              : comments >= 1000000 && comments <= 9999999
-                                              ? "${commentsToString[0]}M"
-                                              : comments >= 10000000 && comments <= 99999999
-                                              ? "${commentsToString.substring(0, 2)}M"
-                                              : comments >= 100000000 && comments <= 999999999
-                                              ? "${commentsToString.substring(0, 3)}M"
-                                              : "1 B+",
-                                              style: GoogleFonts.poppins(
-                                                color: AppTheme().greyColor,
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w500,
-                                                textStyle: const TextStyle(
-                                                  overflow: TextOverflow.ellipsis
-                                                )
-                                              ),
-                                            );
-                                          }
+                                        //get the document for the document snapshot
+                                        int comments = snapshot.data!.docs.length;
+                                        //convert the length to string
+                                        String commentsToString = comments.toString();
+                                        return Text(
+                                          comments >= 0 && comments <= 999 
+                                          ? commentsToString
+                                          : comments >= 1000 && comments <= 9999
+                                          ? "${commentsToString[0]}K"
+                                          : comments >= 10000 && comments <= 99999 
+                                          ? "${commentsToString.substring(0, 2)}K"
+                                          : comments >= 100000 && comments >= 999999
+                                          ? "${commentsToString.substring(0, 3)}K"
+                                          : comments >= 1000000 && comments <= 9999999
+                                          ? "${commentsToString[0]}M"
+                                          : comments >= 10000000 && comments <= 99999999
+                                          ? "${commentsToString.substring(0, 2)}M"
+                                          : comments >= 100000000 && comments <= 999999999
+                                          ? "${commentsToString.substring(0, 3)}M"
+                                          : "1 B+",
+                                          style: GoogleFonts.poppins(
+                                            color: AppTheme().greyColor,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                            textStyle: const TextStyle(
+                                              overflow: TextOverflow.ellipsis
+                                            )
+                                          ),
                                         );
                                       }
                                     ),
@@ -420,41 +406,33 @@ class FeedScreen extends StatelessWidget {
                                     StreamBuilder(
                                       stream: controller.repostStream(postId: data['postId']),
                                       builder: (context, snapshot) {
-                                        return ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
-                                          itemCount: snapshot.data!.docs.length ,
-                                          itemBuilder: (context, index) {
-                                            //get the document for the document snapshot
-                                            int reposts = snapshot.data!.docs.length;
-                                            //convert the length to string
-                                            String repostsToString = reposts.toString();
-                                            return Text(
-                                              reposts >= 0 && reposts <= 999 
-                                              ? repostsToString
-                                              : reposts >= 1000 && reposts <= 9999
-                                              ? "${repostsToString[0]}K"
-                                              : reposts >= 10000 && reposts <= 99999 
-                                              ? "${repostsToString.substring(0, 2)}K"
-                                              : reposts >= 100000 && reposts >= 999999
-                                              ? "${repostsToString.substring(0, 3)}K"
-                                              : reposts >= 1000000 && reposts <= 9999999
-                                              ? "${repostsToString[0]}M"
-                                              : reposts >= 10000000 && reposts <= 99999999
-                                              ? "${repostsToString.substring(0, 2)}M"
-                                              : reposts >= 100000000 && reposts <= 999999999
-                                              ? "${repostsToString.substring(0, 3)}M"
-                                              : "1 B+",
-                                              style: GoogleFonts.poppins(
-                                                color: AppTheme().greyColor,
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w500,
-                                                textStyle: const TextStyle(
-                                                  overflow: TextOverflow.ellipsis
-                                                )
-                                              ),
-                                            );
-                                          }
+                                        //get the document for the document snapshot
+                                        int reposts = snapshot.data!.docs.length;
+                                        String repostsToString = reposts.toString();
+                                        return Text(
+                                          reposts >= 0 && reposts <= 999 
+                                          ? repostsToString
+                                          : reposts >= 1000 && reposts <= 9999
+                                          ? "${repostsToString[0]}K"
+                                          : reposts >= 10000 && reposts <= 99999 
+                                          ? "${repostsToString.substring(0, 2)}K"
+                                          : reposts >= 100000 && reposts >= 999999
+                                          ? "${repostsToString.substring(0, 3)}K"
+                                          : reposts >= 1000000 && reposts <= 9999999
+                                          ? "${repostsToString[0]}M"
+                                          : reposts >= 10000000 && reposts <= 99999999
+                                          ? "${repostsToString.substring(0, 2)}M"
+                                          : reposts >= 100000000 && reposts <= 999999999
+                                          ? "${repostsToString.substring(0, 3)}M"
+                                          : "1 B+",
+                                          style: GoogleFonts.poppins(
+                                            color: AppTheme().greyColor,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                            textStyle: const TextStyle(
+                                              overflow: TextOverflow.ellipsis
+                                            )
+                                          ),
                                         );
                                       }
                                     ),

@@ -9,21 +9,21 @@ import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/feeds/controller/feeds_controller.dart';
 import 'package:pichat/user/settings/controller/profile_controller.dart';
-import 'package:pichat/user/settings/widget/connects.dart';
-import 'package:pichat/user/settings/widget/edit_profile_screen.dart';
-import 'package:pichat/user/settings/widget/insights.dart';
-import 'package:pichat/user/settings/widget/logout_dialogue_box.dart';
-import 'package:pichat/user/settings/widget/notifications_for_profile.dart';
-import 'package:pichat/user/settings/widget/posts.dart';
-import 'package:pichat/user/settings/widget/profile_item.dart';
-import 'package:pichat/user/settings/widget/re-posts.dart';
-import 'package:pichat/user/settings/widget/succesfully_uploaded_feed.dart';
-import 'package:pichat/user/settings/widget/view_posts.dart';
+import 'package:pichat/user/settings/widget/activities/connects.dart';
+import 'package:pichat/user/settings/widget/action_screens/edit_profile_screen.dart';
+import 'package:pichat/user/settings/widget/helper_widgets/insights.dart';
+import 'package:pichat/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
+import 'package:pichat/user/settings/widget/helper_widgets/notifications_for_profile.dart';
+import 'package:pichat/user/settings/widget/activities/posts.dart';
+import 'package:pichat/user/settings/widget/helper_widgets/profile_item.dart';
+import 'package:pichat/user/settings/widget/activities/re-posts.dart';
+import 'package:pichat/user/settings/widget/success_screens/succesfully_uploaded_feed.dart';
+import 'package:pichat/user/settings/widget/helper_widgets/view_posts.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:pichat/utils/toast.dart';
 import 'package:provider/provider.dart';
-import '../widget/upload_post_page.dart';
+import '../widget/action_screens/upload_post_page.dart';
 
 
 
@@ -60,17 +60,10 @@ class ProfileScreen extends StatelessWidget {
   Widget buildBody(BuildContext context) {
 
     final size = MediaQuery.of(context).size;
-    var authController = Provider.of<AuthController>(context);
+    //var authController = Provider.of<AuthController>(context);
     var profileController = Provider.of<ProfileController>(context);
     var feedsController = Provider.of<FeedsController>(context);
 
-
-    //Stream of the document snapshot for the current logged-in user
-    Stream<DocumentSnapshot<Map<String, dynamic>>> snapshotStream =
-    authController.firestore
-    .collection('users')
-    .doc(authController.userID)
-    .snapshots();
 
     return Stack(
       children: [
@@ -590,10 +583,10 @@ class ProfileScreen extends StatelessWidget {
                                       Get.to(() => UploadPostPage(
                                         onPressedForSavingEveryThing: () {
                                           if(feedsController.postTextController.text.isNotEmpty && feedsController.contentFile != null) {
-                                            feedsController.uploadContentToDatbase(file: feedsController.contentFile).then((value) => Get.to(() => PostUpdatedSuccessScreen()));
+                                            feedsController.uploadContentToDatbase(file: feedsController.contentFile, context: context).then((value) => Get.to(() => PostUpdatedSuccessScreen()));
                                           }
                                           else{
-                                            getToast(text: 'Something went wrong', context: context);
+                                            getToast(text: 'Incomplete Credentials', context: context);
                                           }
                                         },
                                       ));

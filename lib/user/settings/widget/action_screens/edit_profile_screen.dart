@@ -10,11 +10,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/settings/controller/profile_controller.dart';
-import 'package:pichat/user/settings/widget/upload_photo_bottom_sheet.dart';
+import 'package:pichat/user/settings/widget/helper_widgets/upload_photo_bottom_sheet.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:pichat/utils/toast.dart';
 import 'package:provider/provider.dart';
-import 'successful_profile_update_screen.dart';
+import '../success_screens/successful_profile_update_screen.dart';
 
 
 

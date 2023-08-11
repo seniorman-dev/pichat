@@ -84,8 +84,8 @@ class _UploadPostPageState extends State<UploadPostPage> {
 
             //image (remove sizedbox later)
             SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,  //double.infinity,
+              height: feedsController.contentFile != null ? MediaQuery.of(context).size.height : null,
+              width: feedsController.contentFile != null ? MediaQuery.of(context).size.width : null,  //double.infinity,
               child: Card(
                 color: AppTheme().darkGreyColor,
                 semanticContainer: true,

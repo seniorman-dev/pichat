@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/utils/toast.dart';
 import 'package:provider/provider.dart';
 
 import '../../settings/controller/profile_controller.dart';
@@ -120,102 +121,124 @@ class FeedsController extends ChangeNotifier {
 
   
   //uploads the image, video & other contents to the cloud and the stores the image url to firestore database
-  Future<void> uploadContentToDatbase({required File? file,}) async {
-    
-    //post id
-    var postId = (Random().nextInt(100000)).toString();
+  Future<void> uploadContentToDatbase({required File? file, required BuildContext context}) async {
+    try {
+      //post id
+      var postId = (Random().nextInt(100000)).toString();
 
-    //do this if you want to get any logged in user property 
-    DocumentSnapshot snapshot = await firestore
-    .collection('users')
-    .doc(userID)
-    .get();
-    String userName = snapshot.get('name');
-    String userId = snapshot.get('id');
-    String userPhoto = snapshot.get('photo');
-    //bool userOnline = snapshot.get('isOnline');
+      //do this if you want to get any logged in user property 
+      DocumentSnapshot snapshot = await firestore
+      .collection('users')
+      .doc(userID)
+      .get();
+      String userName = snapshot.get('name');
+      String userId = snapshot.get('id');
+      String userPhoto = snapshot.get('photo');
+      //bool userOnline = snapshot.get('isOnline');
     
-    //name of the folder we are first storing the file to
-    String? folderName = userEmail;
-    //name the file we are sending to firebase cloud storage
-    String fileName = "${DateTime.now().millisecondsSinceEpoch}post";
-    //set the storage reference as "users_photos" and the "filename" as the image reference
-    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('$folderName/$fileName');
-    //upload the image to the cloud storage
-    firebase_storage.UploadTask uploadTask = ref.putFile(file!);
-    //call the object and then show that it has already been uploaded to the cloud storage or bucket
-    firebase_storage.TaskSnapshot taskSnapshot = 
-    await uploadTask
-    .whenComplete(() => debugPrint("image uploaded succesfully to fire storage"));
-    //get the imageUrl from the above taskSnapshot
-    String contentUrl = await taskSnapshot.ref.getDownloadURL();
+      //name of the folder we are first storing the file to
+      String? folderName = userEmail;
+      //name the file we are sending to firebase cloud storage
+      String fileName = "${DateTime.now().millisecondsSinceEpoch}post";
+      //set the storage reference as "users_photos" and the "filename" as the image reference
+      firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('$folderName/$fileName');
+      //upload the image to the cloud storage
+      firebase_storage.UploadTask uploadTask = ref.putFile(file!);
+      //call the object and then show that it has already been uploaded to the cloud storage or bucket
+      firebase_storage.TaskSnapshot taskSnapshot = 
+      await uploadTask
+      .whenComplete(() => debugPrint("image uploaded succesfully to fire storage"));
+      //get the imageUrl from the above taskSnapshot
+      String contentUrl = await taskSnapshot.ref.getDownloadURL();
     
-    //post the feed to the general TL (where the logged in user and his friends can see the post)
-    if(isContentImage) {
+      //check if the content about to be posted is an image or not, then post to general feeds
+      if(isContentImage) {
+        await firestore
+        .collection('feeds')
+        .doc(postId)
+        .set({
+          'postId': postId,
+          'posterId': userId,
+          'posterName': userName,
+          'posterPhoto': userPhoto,
+          'postTitle': postTextController.text,
+          'postContent': contentUrl,
+          'timestamp': Timestamp.now()
+        });
+
+        //post the feed to the poster's profile (this one catch)
+        await firestore
+        .collection('users')
+        .doc(userID)
+        .collection('posts')
+        .doc(postId)
+        .set({
+          'postId': postId,
+          'posterId': userId,
+          'posterName': userName,
+          'posterPhoto': userPhoto,
+          'postTitle': postTextController.text,
+          'postContent': contentUrl,
+          'timestamp': Timestamp.now()
+        });
+
+      }
+      //video content
+      else {
+        await firestore
+        .collection('feeds')
+        .doc(postId)
+        .set({
+          'postId': postId,
+          'posterId': userId,
+          'posterName': userName,
+          'posterPhoto': userPhoto,
+          'postTitle': postTextController.text,
+          'postContent': contentUrl,
+          'timestamp': Timestamp.now()
+        });
+
+        //post the feed to the poster's profile
+        await firestore
+        .collection('users')
+        .doc(userID)
+        .collection('posts')
+        .doc(postId)
+        .set({
+          'postId': postId,
+          'posterId': userId,
+          'posterName': userName,
+          'posterPhoto': userPhoto,
+          'postTitle': postTextController.text,
+          'postContent': contentUrl,
+          'timestamp': Timestamp.now()
+        });
+      }
+      // to see what the url looks like
+      debugPrint("ContentURL: $contentUrl");
+    }
+    catch(e) {
+      getToast(context: context, text:"Error: $e" );
+    }
+  }
+
+  Future<void> letPosterDeletePost({required BuildContext context, required String postId,}) async{
+    try {
       await firestore
       .collection('feeds')
       .doc(postId)
-      .set({
-        'postId': postId,
-        'posterId': userId,
-        'posterName': userName,
-        'posterPhoto': userPhoto,
-        'postTitle': postTextController.text,
-        'postContent': contentUrl,
-        'timestamp': Timestamp.now()
-      });
-
-      //post the feed to the poster's profile (this one catch)
+      .delete();
+      //
       await firestore
       .collection('users')
       .doc(userID)
       .collection('posts')
       .doc(postId)
-      .set({
-        'postId': postId,
-        'posterId': userId,
-        'posterName': userName,
-        'posterPhoto': userPhoto,
-        'postTitle': postTextController.text,
-        'postContent': contentUrl,
-        'timestamp': Timestamp.now()
-      });
-
+      .delete();
     }
-    //video content
-    else {
-      await firestore
-      .collection('feeds')
-      .doc(postId)
-      .set({
-        'postId': postId,
-        'posterId': userId,
-        'posterName': userName,
-        'posterPhoto': userPhoto,
-        'postTitle': postTextController.text,
-        'postContent': contentUrl,
-        'timestamp': Timestamp.now()
-      });
-
-      //post the feed to the poster's profile
-      await firestore
-      .collection('users')
-      .doc(userID)
-      .collection('posts')
-      .doc(postId)
-      .set({
-        'postId': postId,
-        'posterId': userId,
-        'posterName': userName,
-        'posterPhoto': userPhoto,
-        'postTitle': postTextController.text,
-        'postContent': contentUrl,
-        'timestamp': Timestamp.now()
-      });
+    catch (e) {
+      getToast(context: context, text:"Error: $e" );
     }
-    
-    // to see what the url looks like
-    debugPrint("ContentURL: $contentUrl");
   }
 
 
@@ -223,7 +246,10 @@ class FeedsController extends ChangeNotifier {
 
 
 
-
+  //check is a post is liked
+  bool isPostLiked = false;
+  //check if a post is re-posted
+  bool isPostReposted = false;
 
   //Like a post function
   Future<void> likeAPost({required String postId}) async{
@@ -249,18 +275,59 @@ class FeedsController extends ChangeNotifier {
       'userId': userId,
       'userName': userName,
       'userPhoto': userPhoto,
-      'userLiked': true,
+      'isLiked': true,
       'timestamp': Timestamp.now()
     });
+    
+    //this is what we will show in the user profile
+    await firestore
+    .collection('users')
+    .doc(userID)
+    .collection('posts')
+    .doc(postId)
+    .collection('likes')
+    .doc(userId)
+    .set({
+      'postId': postId,
+      'userId': userId,
+      'userName': userName,
+      'userPhoto': userPhoto,
+      'isLiked': true,
+      'timestamp': Timestamp.now()
+    });
+
   }
 
-  //stream of users that liked a post uniquely
+  //stream of users that liked a post uniquely (for feeds screen)
   Stream<QuerySnapshot<Map<String, dynamic>>> postLikes({required String postId}) async* {
     yield* firestore
     .collection('feeds')
     .doc(postId)
     .collection('likes')
     .orderBy('timestamp', descending: true)
+    .snapshots();
+  }
+
+  //for user profile
+  Stream<QuerySnapshot<Map<String, dynamic>>> postLikesForUserProfile({required String postId}) async* {
+    yield* firestore
+    .collection('users')
+    .doc(userID)
+    .collection('posts')
+    .doc(postId)
+    .collection('likes')
+    .orderBy('timestamp', descending: true)
+    .snapshots();
+  }
+  /////////////for liking and unliking icon
+  Stream<DocumentSnapshot<Map<String, dynamic>>> postLikesForUserProfileDoc({required String postId}) async* {
+    yield* firestore
+    .collection('users')
+    .doc(userID)
+    .collection('posts')
+    .doc(postId)
+    .collection('likes')
+    .doc(userID)
     .snapshots();
   }
 
@@ -292,6 +359,27 @@ class FeedsController extends ChangeNotifier {
     .collection('likes')
     .doc(userId)
     .delete();
+
+    ///update 'userLiked' to false
+    await firestore
+    .collection('users')
+    .doc(userID)
+    .collection('posts')
+    .doc(postId)
+    .collection('likes')
+    .doc(userId)
+    .update({     
+      'userLiked': false,
+    });
+
+    ////delete the whole thing (unlike)
+    await firestore
+    .collection('users')
+    .doc(userID)
+    .collection('posts')
+    .doc(postId)
+    .collection('likes')
+    .doc(userId).delete();
   }
 
 
@@ -311,7 +399,7 @@ class FeedsController extends ChangeNotifier {
     String userPhoto = snapshot.get('photo');
     bool userOnline = snapshot.get('isOnline');
     //////////////////////////////////
-    
+    var newId = (Random().nextInt(1000000)).toString();
 
     /*await firestore
     .collection('feeds')
@@ -323,9 +411,9 @@ class FeedsController extends ChangeNotifier {
     //repost the post on the general TL
     await firestore
     .collection('feeds')
-    .doc(postId)
-    .update({
-      'postId': postId,
+    .doc(newId)
+    .set({
+      'postId': newId,
       'posterId': posterId,
       'posterName': postName,
       'posterPhoto': posterPhoto,
@@ -345,7 +433,7 @@ class FeedsController extends ChangeNotifier {
     .collection('reposts')
     .doc(userId)
     .set({
-      'postId': postId,
+      'postId': newId,
       'posterId': posterId,
       'posterName': postName,
       'posterPhoto': posterPhoto,
@@ -358,7 +446,7 @@ class FeedsController extends ChangeNotifier {
       'timestamp': Timestamp.now()
     });
 
-    //re-post the feed to the re-poster's profile page
+    //re-post the feed to the re-poster's profile page or wall
     await firestore
     .collection('users')
     .doc(userId)
@@ -396,6 +484,16 @@ class FeedsController extends ChangeNotifier {
     .doc(userID)
     .collection('reposts')
     .orderBy('timestamp', descending: true)
+    .snapshots();
+  }
+
+  /////////////for re-posting icon(to do and undo)
+  Stream<DocumentSnapshot<Map<String, dynamic>>> repostLikesForUserProfileDoc({required String postId}) async* {
+    yield* firestore
+    .collection('users')
+    .doc(userID)
+    .collection('reposts')
+    .doc(postId)
     .snapshots();
   }
 
@@ -488,9 +586,33 @@ class FeedsController extends ChangeNotifier {
       'commenterId': userId,
       'commenterName': userName,
       'commenterPhoto': userPhoto,
+      'userCommented': true,
       'timestamp': Timestamp.now()
     }).whenComplete(() => commentTextController.clear());
+    
+    //call this stream in logged in user profile
+    await firestore
+    .collection('users')
+    .doc(userID)
+    .collection('posts')
+    .doc(postId)
+    .collection('comments')
+    .doc(commentId)
+    .set({
+      'postId': postId,
+      'comment': commentTextController.text,
+      'commentId': commentId,
+      'commenterId': userId,
+      'commenterName': userName,
+      'commenterPhoto': userPhoto,
+      'userCommented': true,
+      'timestamp': Timestamp.now()
+    });
+
   }
+
+
+
 
   //function that allows the commenter to edit his response on the post (make it mandatory in the ui that only if the "commenterId" matches the currently logged-in user id, will the function execute)
   Future<void> makeCommenterEditHisResponseOnAPost({required String postId, required String commentId}) async{
@@ -510,6 +632,19 @@ class FeedsController extends ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>> postComments({required String postId}) async* {
     yield* firestore
     .collection('feeds')
+    .doc(postId)
+    .collection('comments')
+    .orderBy('timestamp', descending: true)
+    .snapshots();
+  }
+
+  //stream of users that commeted a post uniquely(for user profile)
+  Stream<QuerySnapshot<Map<String, dynamic>>> postCommentsForUserProfile({required String postId}) async* {
+    yield*
+    firestore
+    .collection('users')
+    .doc(userID)
+    .collection('posts')
     .doc(postId)
     .collection('comments')
     .orderBy('timestamp', descending: true)
@@ -548,8 +683,43 @@ class FeedsController extends ChangeNotifier {
     String userId = snapshot.get('id');
     //////////////////////////////////
     
+    ///update userComment boolean to false
     await firestore
     .collection('feeds')
+    .doc(postId)
+    .collection('comments')
+    .doc(commentId)
+    .update({
+      'userCommented': false,
+    });
+
+    //then delete the whole thing
+    await firestore
+    .collection('feeds')
+    .doc(postId)
+    .collection('comments')
+    .doc(commentId)
+    .delete();
+
+
+
+    ///update 'userCommented' to false (we will call this stream in the user profile)
+    await firestore
+    .collection('users')
+    .doc(userID)
+    .collection('posts')
+    .doc(postId)
+    .collection('comments')
+    .doc(commentId)
+    .update({     
+      'userCommented': false,
+    });
+
+    ////delete the whole thing (unlike)
+    await firestore
+    .collection('users')
+    .doc(userID)
+    .collection('posts')
     .doc(postId)
     .collection('comments')
     .doc(commentId)

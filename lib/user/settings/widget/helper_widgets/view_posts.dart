@@ -1,6 +1,6 @@
-import 'package:pichat/user/settings/widget/connects.dart';
-import 'package:pichat/user/settings/widget/posts.dart';
-import 'package:pichat/user/settings/widget/re-posts.dart';
+import 'package:pichat/user/settings/widget/activities/connects.dart';
+import 'package:pichat/user/settings/widget/activities/posts.dart';
+import 'package:pichat/user/settings/widget/activities/re-posts.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +59,7 @@ class _ViewPostsScreenState extends State<ViewPostsScreen> with SingleTickerProv
           ),
         ),
         body: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(), //BouncingScrollPhysics(),
+          physics: BouncingScrollPhysics(),
           child: buildBody(context),
         ),
       ),
