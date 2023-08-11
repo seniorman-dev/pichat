@@ -59,7 +59,7 @@ class _ViewPostsScreenState extends State<ViewPostsScreen> with SingleTickerProv
           ),
         ),
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(), //BouncingScrollPhysics(),
           child: buildBody(context),
         ),
       ),

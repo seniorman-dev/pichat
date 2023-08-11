@@ -258,6 +258,151 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
 
             SizedBox(height: 20.h),
+            
+            //Select Gender
+            Text(
+              //posts
+              'Gender',
+              style: GoogleFonts.poppins(
+                color: AppTheme().blackColor,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                textStyle: const TextStyle(
+                  overflow: TextOverflow.ellipsis
+                )
+              ),
+            ),
+            SizedBox(height: 10.h,),
+            //Select Gender
+            Row(
+              children: [
+                //male radio widget
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.r),
+                      color: AppTheme().lightGreyColor
+                    ),
+                    alignment: Alignment.centerLeft,
+                    height: 68.h, //70.h,
+                    //padding: EdgeInsets.all(10),
+                    //width: 100.w,
+                    child: RadioListTile(
+                      toggleable: true,
+                      tileColor: AppTheme().lightGreyColor,
+                      activeColor: AppTheme().blackColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0.r)
+                        )
+                      ),
+                      value: 'Male', 
+                      groupValue: controller.gender, 
+                      onChanged: (value) {
+                        setState(() {
+                          controller.gender = value.toString();
+                          controller.isActivated = true;
+                        });
+                        debugPrint('Male');
+                        debugPrint("User selected ${controller.gender}");
+                      },
+                      title: Text(
+                        'Male',
+                        style: GoogleFonts.poppins(
+                          color: AppTheme().blackColor,
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    )             
+                  ),
+                ),
+
+                SizedBox(width: 15.w,),
+
+                //female radio widget
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.r),
+                      color: AppTheme().lightGreyColor
+                    ),
+                    alignment: Alignment.centerLeft,
+                    height: 68.h, //70.h,
+                    //padding: EdgeInsets.all(15),
+                    //width: 100.w,
+                    child: RadioListTile(
+                      toggleable: true,
+                      tileColor: AppTheme().lightGreyColor,
+                      activeColor: AppTheme().blackColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0.r)
+                        )
+                      ),
+                      value: 'Female', 
+                      groupValue: controller.gender, 
+                      onChanged: (value) {
+                        setState(() {
+                          controller.gender = value.toString();
+                          controller.isActivated = true;
+                        });
+                        debugPrint('Female');
+                        debugPrint("User selected ${controller.gender}");
+                      },
+                      title: Text(
+                        'Female',
+                        style: GoogleFonts.poppins(
+                          color: AppTheme().blackColor,
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    )             
+                  ),
+                ),
+
+              ],
+            ),
+
+            SizedBox(height: 20.h,),
+
+            //country///////////
+            Text(
+              //posts
+              'Country',
+              style: GoogleFonts.poppins(
+                color: AppTheme().blackColor,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                textStyle: const TextStyle(
+                  overflow: TextOverflow.ellipsis
+                )
+              ),
+            ),
+            SizedBox(height: 10.h,),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.r),
+                color: AppTheme().lightGreyColor
+              ),
+              alignment: Alignment.centerLeft,
+              height: 68.h, //70.h,
+              padding: EdgeInsets.all(10),
+              //width: 100.w,
+              child: Text(
+                '+234        Nigeria',
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    color: AppTheme().blackColor,
+                    fontSize: 13.sp
+                  )
+                ),
+              ),
+            ),
+            //////////////////////////////
+            
+            SizedBox(height: 20.h,),
 
             //bio field
             Text(
@@ -492,7 +637,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               width: double.infinity,
               child: ElevatedButton( 
                 onPressed: () {
-                  if(controller.formKey.currentState!.validate() && widget.name.isNotEmpty && widget.email.isNotEmpty && controller.userBio.text.isNotEmpty && controller.userLink.text.isNotEmpty) {
+                  if(controller.formKey.currentState!.validate() && controller.gender != null && widget.name.isNotEmpty && widget.email.isNotEmpty && controller.userBio.text.isNotEmpty && controller.userLink.text.isNotEmpty) {
                     ////set 'isProfileUpdated' to true and update necessary things
                     controller.updateUserProfile(
                       name: widget.name, 

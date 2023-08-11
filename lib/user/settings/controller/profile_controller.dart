@@ -22,7 +22,11 @@ class ProfileController extends ChangeNotifier {
   User? get user => firebase.currentUser;
   String get userID => firebase.currentUser!.uid;
   String? get userEmail => firebase.currentUser!.email;
-  bool isLoading = false;
+  bool isLoading = false; 
+
+  //for radio widget for selecting gender when a user is trying to edit and update
+  bool isActivated = false;
+  String? gender; //save to db
   
   
   //for textformfields to perform validation operations
@@ -119,6 +123,7 @@ class ProfileController extends ChangeNotifier {
         'bio': biography,
         'link': url,
         'dob': dob,
+        'gender': gender, //male or female
         'isProfileUpdated': isProfileUpdated
       });
     }

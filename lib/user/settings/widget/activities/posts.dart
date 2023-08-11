@@ -5,11 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/feeds/controller/feeds_controller.dart';
+import 'package:pichat/user/settings/widget/video_player_widget.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../utils/error_loader.dart';
+
+
 
 
 
@@ -59,7 +61,7 @@ class _MyPostsState extends State<MyPosts> {
                     radius: 100.r,
                     backgroundColor: AppTheme().lightestOpacityBlue,
                     child: Icon(
-                      CupertinoIcons.chart_pie,
+                      CupertinoIcons.arrow_up_circle,
                       color: AppTheme().mainColor,
                       size: 70.r,
                     ),
@@ -79,10 +81,10 @@ class _MyPostsState extends State<MyPosts> {
           );
         }
         return ListView.separated(
-          physics: NeverScrollableScrollPhysics(), //const BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          separatorBuilder: (context, index) => SizedBox(height: 30.h,),  //20.h
+          separatorBuilder: (context, index) => SizedBox(height: 10.h,),  //20.h
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, index) {
 
@@ -276,7 +278,7 @@ class _MyPostsState extends State<MyPosts> {
                                 borderRadius: BorderRadius.circular(30.0.r), //20.r
                               ),
                               elevation: 0,
-                              child: CachedNetworkImage(
+                              child: data['isImage'] ? CachedNetworkImage(
                                 imageUrl: data['postContent'],
                                 //width: 50.w,
                                 //height: 50.h,
@@ -286,10 +288,12 @@ class _MyPostsState extends State<MyPosts> {
                                   Icons.error,
                                   color: AppTheme().lightestOpacityBlue,
                                 ),
-                              ),
+                              ) : VideoPlayerWidget(videoUrl: data['postContent'],),
                             ),
                           ),
                           SizedBox(height: 5.h,),
+
+                          /////////////////////////////////
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -374,7 +378,7 @@ class _MyPostsState extends State<MyPosts> {
                               SizedBox(width: 5.w,),
 
                               StreamBuilder(
-                                stream: feedsController.repostLikesForUserProfileDoc(postId: data['postId']),
+                                stream: feedsController.repostForUserProfileDoc(postId: data['postId']),
                                 builder: (context, snapshot) {
                                   //var data = snapshot.data!.data();  //how to call document snapshots
                                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -420,9 +424,9 @@ class _MyPostsState extends State<MyPosts> {
                                           posterPhoto: data['posterPhoto']
                                         );
                                       },
-                                      onTapCancel: () => feedsController.unLikeAPost(postId: data['postId']),
+                                      onTapCancel: () => feedsController.deleteRepost(postId: data['postId']),
                                       child: Icon(
-                                        docData['isReposted'] ? CupertinoIcons.smallcircle_circle_fill : CupertinoIcons.smallcircle_circle,
+                                        docData['isReposted'] ? CupertinoIcons.arrow_2_circlepath_circle_fill : CupertinoIcons.arrow_2_circlepath,
                                         size: 30.r,
                                         color: docData['isReposted'] ? AppTheme().mainColor : AppTheme().darkGreyColor,
                                       ),
@@ -444,7 +448,7 @@ class _MyPostsState extends State<MyPosts> {
                               /////////////////////////
                               
                               StreamBuilder(
-                                stream: feedsController.repostLikesForUserProfileDoc(postId: data['postId']),
+                                stream: feedsController.repostForUserProfileDoc(postId: data['postId']),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData && snapshot.data!.exists) {
                                     // Access the data using snapshot.data
@@ -460,9 +464,9 @@ class _MyPostsState extends State<MyPosts> {
                                           posterPhoto: data['posterPhoto']
                                         );
                                       },
-                                      onTapCancel: () => feedsController.unLikeAPost(postId: data['postId']),
+                                      onTapCancel: () => feedsController.deleteRepost(postId: data['postId']),
                                       child: Icon(
-                                        docData['isReposted'] ? CupertinoIcons.smallcircle_circle_fill : CupertinoIcons.smallcircle_circle,
+                                        docData['isReposted'] ? CupertinoIcons.arrow_2_circlepath_circle_fill : CupertinoIcons.arrow_2_circlepath,
                                         size: 30.r,
                                         color: docData['isReposted'] ? AppTheme().mainColor : AppTheme().darkGreyColor,
                                       ),
@@ -474,6 +478,9 @@ class _MyPostsState extends State<MyPosts> {
                           ],
                         ),
                         SizedBox(height: 5.h,),
+                        
+                        //2
+                        ///////////////////////////////////////////////////////////////////////////
                         
                         //wrap with padding /////////check this thing well for null errors
                         Padding(
@@ -780,6 +787,7 @@ class _MyPostsState extends State<MyPosts> {
                     ),
                   ),
                 ),
+                //SizedBox(height: 20.h,)
               ],
             );
           }

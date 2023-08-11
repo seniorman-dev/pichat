@@ -67,33 +67,13 @@ class FeedsController extends ChangeNotifier {
 
 
 
-  
 
-
-
-  Future<List<String>> fetchFriendList() async {
-
-    final friendsCollection = await firestore
-    .collection('users') // Assuming 'users' is the collection containing user documents
-    .doc(userID)
-    .collection('friends') // Assuming 'friends' is the sub-collection of the user document
-    .get();
-
-    // Extract the friend IDs from the documents in the 'friends' sub-collection
-    final friendList = friendsCollection.docs.map((doc) => doc.id).toList();
-
-    // Add the current user's ID to the friend list so their own posts will also be included
-    friendList.add(userID);
-
-    return friendList;
-  }
 
   // Fetch feeds from Firestore using the friend list (feeds for the timeline)
   Stream<QuerySnapshot<Map<String, dynamic>>> getFeeds() async*{
-    final friendList = await fetchFriendList();
+    //final friendList = await fetchFriendList();
     yield* firestore
     .collection('feeds')
-    .where('id', whereIn: friendList)
     .orderBy('timestamp', descending: true)
     .snapshots();
   }
@@ -153,6 +133,7 @@ class FeedsController extends ChangeNotifier {
     
       //check if the content about to be posted is an image or not, then post to general feeds
       if(isContentImage) {
+        //(this one is not catching catch)
         await firestore
         .collection('feeds')
         .doc(postId)
@@ -163,6 +144,7 @@ class FeedsController extends ChangeNotifier {
           'posterPhoto': userPhoto,
           'postTitle': postTextController.text,
           'postContent': contentUrl,
+          'isImage':true,
           'timestamp': Timestamp.now()
         });
 
@@ -179,6 +161,7 @@ class FeedsController extends ChangeNotifier {
           'posterPhoto': userPhoto,
           'postTitle': postTextController.text,
           'postContent': contentUrl,
+          'isImage':true,
           'timestamp': Timestamp.now()
         });
 
@@ -195,6 +178,7 @@ class FeedsController extends ChangeNotifier {
           'posterPhoto': userPhoto,
           'postTitle': postTextController.text,
           'postContent': contentUrl,
+          'isImage': false,
           'timestamp': Timestamp.now()
         });
 
@@ -211,6 +195,7 @@ class FeedsController extends ChangeNotifier {
           'posterPhoto': userPhoto,
           'postTitle': postTextController.text,
           'postContent': contentUrl,
+          'isImage': false,
           'timestamp': Timestamp.now()
         });
       }
@@ -386,7 +371,7 @@ class FeedsController extends ChangeNotifier {
 
 
 
-
+  ////////////////////////////////////////////////////////////////////////////////////////////
   //repost a post function
   Future<void> rePostAPost({required String postId, required String posterId, required String postName, required String posterPhoto, required String postTitle, required String postContent}) async{
     //do this if you want to get any logged in user property 
@@ -488,7 +473,7 @@ class FeedsController extends ChangeNotifier {
   }
 
   /////////////for re-posting icon(to do and undo)
-  Stream<DocumentSnapshot<Map<String, dynamic>>> repostLikesForUserProfileDoc({required String postId}) async* {
+  Stream<DocumentSnapshot<Map<String, dynamic>>> repostForUserProfileDoc({required String postId}) async* {
     yield* firestore
     .collection('users')
     .doc(userID)
