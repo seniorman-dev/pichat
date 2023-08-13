@@ -397,7 +397,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               alignment: Alignment.centerLeft,
               height: 68.h, //70.h,
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(8),
               //width: 100.w,
               child: Row(
                 children: [
@@ -674,7 +674,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   controller.selectedDate!.isEmpty ? checkDate : controller.selectedDate!,
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(
-                      color: controller.selectedDate!.isEmpty ? AppTheme().darkGreyColor : AppTheme().blackColor,
+                      color: controller.selectedDate!.isEmpty ? AppTheme().greyColor : AppTheme().blackColor,
                       fontSize: 13.sp
                     )
                   ),
@@ -781,7 +781,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       final pickedImage = await ImagePicker().pickImage(source: ImageSource.camera);
       if (pickedImage != null) {
         setState(() {
-          profileController.imageFromGallery = File(pickedImage.path);
+          profileController.imageFromCamera = File(pickedImage.path);
           profileController.isImageSelectedFromGallery = false;
           profileController.isAnyImageSelected = true;
         });

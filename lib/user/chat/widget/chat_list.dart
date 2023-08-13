@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
@@ -35,6 +34,34 @@ class ChatList extends StatefulWidget {
 }
 
 class _ChatListState extends State<ChatList> {
+
+  /*final ScrollController messageController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // After the widget is built, scroll to the last message.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollToLastMessage();
+    });
+  }
+
+  // Function to scroll to the last message.
+  void scrollToLastMessage() {
+    messageController.animateTo(
+      messageController.position.maxScrollExtent,
+      duration: Duration(milliseconds: 20), 
+      curve: Curves.bounceIn
+    );
+  }
+
+  @override
+  void dispose() {
+    messageController.dispose();
+    super.dispose();
+  }*/
+
+
   
 
   @override

@@ -35,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
         //appBar: CustomAppBar(title: 'Created Events'),
         body: controller.isLoading ? const Loader() : SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
+          controller: controller.scrollControllerForLogin,
           child: buildBody(context),
         ),
       ),

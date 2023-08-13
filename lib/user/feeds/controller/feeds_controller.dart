@@ -239,6 +239,9 @@ class FeedsController extends ChangeNotifier {
   //check if a post is re-posted
   bool isPostReposted = false;
 
+
+  //list to store all the indices of reposted post liked
+  List<int> selectedIndicesForLikes= [];
   //Like a post function
   Future<void> likeAPost({required String postId}) async{
     //do this if you want to get any logged in user property 
@@ -373,7 +376,8 @@ class FeedsController extends ChangeNotifier {
 
 
 
-
+  //list to store all the indices of reposted post liked
+  List<int> selectedIndicesForReposts= [];
   ////////////////////////////////////////////////////////////////////////////////////////////
   //repost a post function
   Future<void> rePostAPost({required bool isImage, required String postId, required String posterId, required String posterName, required String posterPhoto, required String postTitle, required String postContent}) async{
@@ -616,6 +620,8 @@ class FeedsController extends ChangeNotifier {
   
 
 
+  //list to store all the indices of comments liked
+  List<int> selectedItems = [];
 
   ////boolean affiliated to this function below
   bool isCommentLiked = false;
@@ -743,6 +749,15 @@ class FeedsController extends ChangeNotifier {
     .collection('comments')
     .doc(commentId)
     .delete();
+
+    await firestore
+    .collection('users')
+    .doc(userID)
+    .collection('posts')
+    .doc(postId)
+    .collection('comments')
+    .doc(commentId)
+    .delete();
   }
 
   //delete a particular comment from a post function (make it mandatory in the ui that unless the currently logged-in user id matches the "commenterId", this function will not execute)
@@ -798,6 +813,7 @@ class FeedsController extends ChangeNotifier {
     .collection('comments')
     .doc(commentId)
     .delete();
+
   }
   
 

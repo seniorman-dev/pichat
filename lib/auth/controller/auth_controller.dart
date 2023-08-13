@@ -20,7 +20,7 @@ import 'package:pichat/utils/snackbar.dart';
 class AuthController extends ChangeNotifier{
   
   //locage storage courtesy of GetX, used to persist little amount of data
-  final box = GetStorage();
+  final box = GetStorage('auth');
 
 
   final FirebaseAuth firebase = FirebaseAuth.instance;
@@ -48,10 +48,17 @@ class AuthController extends ChangeNotifier{
   final formKey = GlobalKey<FormState>();
 
   //for registration textformfields to automatically scroll to the next seamlessly
-  final List<FocusNode> focusNodes = List.generate(4, (index) => FocusNode());
+  final List<FocusNode> focusNodesForRegisteration = List.generate(4, (index) => FocusNode());
+  final ScrollController scrollControllerForRegisteration = ScrollController();
 
   //for login textformfields to automatically scroll to the next seamlessly
   final List<FocusNode> focusNodesForLogin = List.generate(2, (index) => FocusNode());
+  final ScrollController scrollControllerForLogin = ScrollController();
+
+  //for reset piassword textformfields to automatically scroll to the next seamlessly
+  final FocusNode focusNodesForResetPasswordPage = FocusNode();
+  final ScrollController scrollControllerForResetPasswordPage = ScrollController();
+
 
   bool isChecked = false;
   bool blindText1 = false;
@@ -77,7 +84,7 @@ class AuthController extends ChangeNotifier{
   @override
   void dispose() {
     //dispose the 4 focusNodes for the register textformfields
-    for (var focusNode in focusNodes) {
+    for (var focusNode in focusNodesForLogin) {
       focusNode.dispose();
     }
     //dispose the 2 focusNodes for the login textformfields

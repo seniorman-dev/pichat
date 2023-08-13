@@ -34,6 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         //appBar: CustomAppBar(title: 'Created Events'),
         body: controller.isLoading ? const Loader() : SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
+          controller: controller.scrollControllerForRegisteration,
           child: buildBody(context),
         ),
       ),

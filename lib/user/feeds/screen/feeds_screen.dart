@@ -355,19 +355,20 @@ class _FeedScreenState extends State<FeedScreen> {
                                     InkWell(
                                       onTap: () {
                                         setState(() {
-                                          controller.likeAPost(postId: data['postId']);
-                                          controller.isLiked = true;
-                                        });
-                                      },
-                                      onDoubleTap: () {
-                                        setState(() {
-                                          controller.unLikeAPost(postId: data['postId']);
-                                          controller.isLiked = false;
+                                          if (controller.selectedIndicesForLikes.contains(index)){
+                                            controller.unLikeAPost(postId: data['postId']);
+                                            controller.selectedIndicesForLikes.remove(index);
+                                            controller.isLiked = false;
+                                          } else {
+                                            controller.likeAPost(postId: data['postId']);
+                                            controller.selectedIndicesForLikes.add(index);
+                                            controller.isLiked = true;
+                                          }
                                         });
                                       },
                                       child: Icon(
-                                        controller.isLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                                        color: controller.isLiked ? AppTheme().mainColor: AppTheme().darkGreyColor,
+                                        controller.selectedIndicesForLikes.contains(index) ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                                        color: controller.selectedIndicesForLikes.contains(index) ? AppTheme().mainColor: AppTheme().darkGreyColor,
                                         size: 30.r,
                                       ),
                                     ),
@@ -378,7 +379,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                     InkWell(
                                       onTap: () {
                                         //open bottom sheet that enables commenting features like textfield and the likes
-                                        Get.to(() => CommentsScreen(postId: data['postId'], posterName: data['posterName'],));
+                                        Get.to(() => CommentsScreen(postId: data['postId'], posterName: data['posterName'], posterId: data['posterId'],));
                                       },
                                       child: Icon(
                                         CupertinoIcons.chat_bubble,
@@ -394,6 +395,27 @@ class _FeedScreenState extends State<FeedScreen> {
                                     //repost button
                                     InkWell(
                                       onTap: () {
+
+                                        setState(() {
+                                        if (controller.selectedIndicesForReposts.contains(index)){
+                                          controller.deleteRepost(postId: data['postId']);
+                                          controller.selectedIndicesForReposts.remove(index);
+                                          controller.isReposted = false;
+                                        } else {
+                                          controller.rePostAPost(
+                                            postId: data['postId'], 
+                                            postContent: data['postContent'], 
+                                            posterName: data['posterName'], 
+                                            postTitle: data['postTitle'], 
+                                            posterId:  data['posterId'], 
+                                            posterPhoto: data['posterPhoto'], 
+                                            isImage: data['isImage']
+                                          );  
+                                          controller.selectedIndicesForReposts.add(index);
+                                          controller.isReposted = true;
+                                          }
+                                        });
+
                                         setState(() {
                                           controller.isReposted = true;
                                         });
@@ -408,15 +430,9 @@ class _FeedScreenState extends State<FeedScreen> {
                                           isImage: data['isImage']
                                         );
                                       },
-                                      onDoubleTap: () {
-                                        setState(() {
-                                          controller.isReposted = false;
-                                        });
-                                        controller.deleteRepost(postId: data['postId']);
-                                      },
                                       child: Icon(
-                                        data['posterId'] != controller.userID && controller.isReposted ? CupertinoIcons.arrow_2_circlepath_circle_fill : CupertinoIcons.arrow_2_circlepath,
-                                        color: data['posterId'] != controller.userID && controller.isReposted ? AppTheme().mainColor: AppTheme().darkGreyColor,
+                                        controller.selectedIndicesForReposts.contains(index) ? CupertinoIcons.arrow_2_circlepath_circle_fill : CupertinoIcons.arrow_2_circlepath,
+                                        color: controller.selectedIndicesForReposts.contains(index) ? AppTheme().mainColor: AppTheme().darkGreyColor,
                                         size: 30.r,
                                       ),
                                     )
@@ -432,15 +448,13 @@ class _FeedScreenState extends State<FeedScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-
-                                    ////#1
+                                    ////#1                                                              
                                     StreamBuilder(
                                       stream: controller.postLikes(postId: data['postId']),
                                       builder: (context, snapshot) {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
                                           // Show a loading indicator while waiting for data
                                           return Text(
-                                            //posts
                                             '...',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().greyColor,
@@ -468,7 +482,6 @@ class _FeedScreenState extends State<FeedScreen> {
                                         }
                                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                                           return Text(
-                                            //posts
                                             '...',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().mainColor, //.lightestOpacityBlue,
@@ -484,8 +497,8 @@ class _FeedScreenState extends State<FeedScreen> {
                                         int likes = snapshot.data!.docs.length;
                                         //convert the length to string
                                         String likesToString = likes.toString();
+                                        
                                         return Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Text(
                                               likes >= 0 && likes <= 999 
@@ -514,7 +527,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                             ),
                                             SizedBox(width: 5.w,),
                                             Text(
-                                              likes >= 0 && likes <=1 ? 'like' : 'likes',
+                                              likes >= 0 && likes <= 1 ? 'like': 'likes', 
                                               style: GoogleFonts.poppins(
                                                 color: AppTheme().blackColor,
                                                 fontSize: 12.sp,
@@ -530,14 +543,15 @@ class _FeedScreenState extends State<FeedScreen> {
                                     ),
 
                                     SizedBox(width: 10.w,),
-
-                                    //#2
+                                    
+                                    //#2                                
                                     StreamBuilder(
                                       stream: controller.postComments(postId: data['postId']),
                                       builder: (context, snapshot) {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
                                           // Show a loading indicator while waiting for data
                                           return Text(
+                                            //posts
                                             '...',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().greyColor,
@@ -552,6 +566,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                         if (snapshot.hasError) {
                                           // Handle error if any
                                           return Text(
+                                            //posts
                                             '...',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().redColor,
@@ -565,6 +580,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                         }
                                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                                           return Text(
+                                            //posts
                                             '...',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().mainColor, //.lightestOpacityBlue,
@@ -576,14 +592,12 @@ class _FeedScreenState extends State<FeedScreen> {
                                             ),
                                           );
                                         }
-
                                         //get the document for the document snapshot
                                         int comments = snapshot.data!.docs.length;
                                         //convert the length to string
                                         String commentsToString = comments.toString();
 
                                         return Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Text(
                                               comments >= 0 && comments <= 999 
@@ -609,10 +623,10 @@ class _FeedScreenState extends State<FeedScreen> {
                                                   overflow: TextOverflow.ellipsis
                                                 )
                                               ),
-                                            ),    
+                                            ),
                                             SizedBox(width: 5.w,),
                                             Text(
-                                              comments >= 0 && comments <=1 ? 'comment' : 'comments',
+                                              comments >= 0 && comments <= 1 ?'comment' : 'comments',
                                               style: GoogleFonts.poppins(
                                                 color: AppTheme().blackColor,
                                                 fontSize: 12.sp,
@@ -622,25 +636,21 @@ class _FeedScreenState extends State<FeedScreen> {
                                                 )
                                               ),
                                             ),
-                                
                                           ],
                                         );
                                       }
                                     ),
 
                                     SizedBox(width: 10.w,),
-
-                                    //to check if the feed shown was "reposted".
-                                    //data['reposters'] == null ? SizedBox() :
-
+                                    
                                     //#3
                                     StreamBuilder(
                                       stream: controller.repostStream(postId: data['postId']),
                                       builder: (context, snapshot) {
-
                                         if (snapshot.connectionState == ConnectionState.waiting) {
                                           // Show a loading indicator while waiting for data
                                           return Text(
+                                            //posts
                                             '...',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().greyColor,
@@ -655,6 +665,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                         if (snapshot.hasError) {
                                           // Handle error if any
                                           return Text(
+                                            //posts
                                             '...',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().redColor,
@@ -668,6 +679,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                         }
                                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                                           return Text(
+                                            //posts
                                             '...',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().mainColor, //.lightestOpacityBlue,
@@ -682,11 +694,8 @@ class _FeedScreenState extends State<FeedScreen> {
                                         //get the document for the document snapshot
                                         int reposts = snapshot.data!.docs.length;
                                         String repostsToString = reposts.toString();
-
                                         return Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
-                                            //SizedBox(width: 10.w,),
                                             Text(
                                               reposts >= 0 && reposts <= 999 
                                               ? repostsToString
@@ -711,10 +720,10 @@ class _FeedScreenState extends State<FeedScreen> {
                                                   overflow: TextOverflow.ellipsis
                                                 )
                                               ),
-                                            ),                                   
+                                            ),
                                             SizedBox(width: 5.w,),
                                             Text(
-                                              reposts >= 0 && reposts <=1 ? 'repost' : 'repost',
+                                              reposts >= 0 && reposts <= 1 ? 're-post' : 're-posts',
                                               style: GoogleFonts.poppins(
                                                 color: AppTheme().blackColor,
                                                 fontSize: 12.sp,
@@ -724,11 +733,12 @@ class _FeedScreenState extends State<FeedScreen> {
                                                 )
                                               ),
                                             ),
-
                                           ],
                                         );
                                       }
-                                    ),
+                                    ),   
+                                    //end
+
                                   ]
                                 ),
                               )

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/user/notifications/controller/notifications_controller.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
@@ -67,7 +68,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Widget buildBody(BuildContext context) {
+
     var authController = Provider.of<AuthController>(context);
+    var notificationsCntroller = Provider.of<NotificationsController>(context);
+
     return StreamBuilder(
       stream: authController.firestore.collection('users').doc(authController.userID).collection('notifications').snapshots(),
       builder: (context, snapshot) {
@@ -133,7 +137,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 },
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
-
+          
                   var data = snapshot.data!.docs[index];
                   // Check if the current message's date is different from the previous message's date
                   if (index > 0) {
@@ -142,7 +146,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     var previousDate = formatDate(timestamp: previousData['timestamp']);
                     showDateHeader = currentDate != previousDate;
                   }
-
+          
                   return Column(
                     children: [
                       //Show the date header if needed
@@ -184,84 +188,101 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             ),
                           ),
                         ),
-                      //
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 15.h, //15.h
-                          horizontal: 15.w, //21.w
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xffD3C2C2).withOpacity(0.5),
-                              spreadRadius: 0.1.r,
-                              blurRadius: 10.0.r,
+
+                      //the real list gan gan
+                      Dismissible(
+                        key: UniqueKey(),
+                        direction: DismissDirection.endToStart,
+                        background: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(
+                              CupertinoIcons.delete_simple,
+                              color: AppTheme().redColor,
                             )
                           ],
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            //icon
-                            Container(
-                              height: 50.h,
-                              width: 40.w,
-                              alignment: Alignment.center,
-                              /*padding: EdgeInsets.symmetric(
-                                vertical: 18.h,                  
-                                horizontal: 18.w
-                              ),*/
-                              decoration: BoxDecoration(
-                                color: AppTheme().lightestOpacityBlue, //.withOpacity(0.3),
-                                borderRadius: BorderRadius.circular(15.r),
+                        onDismissed: (direction) {
+                          notificationsCntroller.deleteNotification();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15.h, //15.h
+                            horizontal: 15.w, //21.w
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xffD3C2C2).withOpacity(0.5),
+                                spreadRadius: 0.1.r,
+                                blurRadius: 10.0.r,
+                              )
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              //icon
+                              Container(
+                                height: 50.h,
+                                width: 40.w,
+                                alignment: Alignment.center,
+                                /*padding: EdgeInsets.symmetric(
+                                  vertical: 18.h,                  
+                                  horizontal: 18.w
+                                ),*/
+                                decoration: BoxDecoration(
+                                  color: AppTheme().lightestOpacityBlue, //.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(15.r),
+                                ),
+                                child: Icon(
+                                  CupertinoIcons.bell_fill,
+                                  color: AppTheme().mainColor,
+                                )                   
                               ),
-                              child: Icon(
-                                CupertinoIcons.bell_fill,
-                                color: AppTheme().mainColor,
-                              )                   
-                            ),
-                            SizedBox(width: 15.w),  //just incase it's needed
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                //title
-                                Text(
-                                  data['title'],
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppTheme().blackColor
+                              SizedBox(width: 15.w),  //just incase it's needed
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //title
+                                  Text(
+                                    data['title'],
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppTheme().blackColor
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 10.h),
-                                //subtitle
-                                Text(
-                                  data['body'],
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 12.sp,
-                                    //fontWeight: FontWeight.w500,
-                                    color: AppTheme().blackColor,
-                                    textStyle: const TextStyle(
-                                      overflow: TextOverflow.ellipsis
-                                    )
+                                  SizedBox(height: 10.h),
+                                  //subtitle
+                                  Text(
+                                    data['body'],
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12.sp,
+                                      //fontWeight: FontWeight.w500,
+                                      color: AppTheme().blackColor,
+                                      textStyle: const TextStyle(
+                                        overflow: TextOverflow.ellipsis
+                                      )
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 6.h),
-                                //date & time 
-                                Text(
-                                  formatTime(timestamp: data['timestamp']),
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.normal,
-                                    color: AppTheme().darkGreyColor
+                                  SizedBox(height: 6.h),
+                                  //date & time 
+                                  Text(
+                                    formatTime(timestamp: data['timestamp']),
+                                    style: TextStyle(
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.normal,
+                                      color: AppTheme().darkGreyColor
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )
-                          ]
-                        )
+                                ],
+                              )
+                            ]
+                          )
+                        ),
                       ),
                     ],
                   );
@@ -269,7 +290,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               ),
             ]
           )
-        );
+                );
         }
       }
     );

@@ -100,7 +100,6 @@ class BottomEngine extends StatelessWidget {
                 scrollController: ScrollController(),
                 textInputAction: TextInputAction.done,
                 textCapitalization: TextCapitalization.sentences,
-                //focusNode: focusNode,
                 minLines: 1,
                 maxLines: 10,
                 enabled: true,

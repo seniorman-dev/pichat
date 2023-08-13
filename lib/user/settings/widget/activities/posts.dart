@@ -291,195 +291,9 @@ class _MyPostsState extends State<MyPosts> {
                               ) : VideoPlayerWidget(videoUrl: data['postContent'],),
                             ),
                           ),
-                          SizedBox(height: 5.h,),
+                          SizedBox(height: 15.h,),
 
-                          /////////////////////////////////
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-
-                              StreamBuilder(
-                                stream: feedsController.postLikesForUserProfileDoc(postId: data['postId']),
-                                builder: (context, snapshot) {
-                                  //var data = snapshot.data!.data();  //how to call document snapshots
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    // Show a loading indicator while waiting for data
-                                    return Text(
-                                      '...',
-                                      style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                          color: AppTheme().darkGreyColor,
-                                          fontSize: 14.sp, //12.sp
-                                          fontWeight: FontWeight.w500
-                                        )
-                                      ),
-                                    );
-                                  } 
-                                  if (snapshot.hasError) {
-                                    // Handle error if any
-                                    return Text(
-                                      'Error: ${snapshot.error}',
-                                      style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                          color: AppTheme().darkGreyColor,
-                                          fontSize: 14.sp, //12.sp
-                                          fontWeight: FontWeight.w500
-                                        )
-                                      ),
-                                    );
-                                  }
-
-                                  if (snapshot.hasData) {
-                                    // Check if the snapshot has data before accessing it
-                                    var docData = snapshot.data!.data(); 
-                                    if (docData != null) {
-                                      // Access the data using snapshot.data                 
-                                      return InkWell(
-                                        onTap: () {
-                                          feedsController.likeAPost(postId: data['postId']);
-                                        },
-                                        onTapCancel: () => feedsController.unLikeAPost(postId: data['postId']),
-                                        child: Icon(
-                                          docData['isLiked'] ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                                          size: 30.r,
-                                          color: docData['isLiked'] ? AppTheme().mainColor : AppTheme().darkGreyColor,
-                                        ),
-                                      );
-                                    }
-                                  }
-                                  return Text(
-                                    '!',
-                                    style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                        color: AppTheme().darkGreyColor,
-                                        fontSize: 13.sp,  //12.sp
-                                        fontWeight: FontWeight.w500
-                                      )
-                                     ),
-                                  );
-                                }
-                              ),
-                  
-                              SizedBox(width: 5.w,),
-                              
-                              //no reactions here (we gonna keep it natural here)
-                              IconButton(
-                                icon: Icon(
-                                  CupertinoIcons.chat_bubble,
-                                ),
-                                iconSize: 30.r,
-                                //isSelected: true,
-                                color: AppTheme().darkGreyColor,
-                                onPressed: () {
-                                  //open a bottom sheet to comment and view peoples comment on the particular post
-                                }, 
-                              ),
-
-                              SizedBox(width: 5.w,),
-                            
-                              /*StreamBuilder(
-                                stream: feedsController.repostForUserProfileDoc(postId: data['postId']),
-                                builder: (context, snapshot) {
-                                  //var data = snapshot.data!.data();  //how to call document snapshots
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    // Show a loading indicator while waiting for data
-                                    return Text(
-                                      '...',
-                                      style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                          color: AppTheme().darkGreyColor,
-                                          fontSize: 14.sp, //12.sp
-                                          fontWeight: FontWeight.w500
-                                        )
-                                      ),
-                                    );
-                                  } 
-                                  if (snapshot.hasError) {
-                                    // Handle error if any
-                                    return Text(
-                                      'Error: ${snapshot.error}',
-                                      style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                          color: AppTheme().darkGreyColor,
-                                          fontSize: 14.sp, //12.sp
-                                          fontWeight: FontWeight.w500
-                                        )
-                                      ),
-                                    );
-                                  }
-
-                                  if (snapshot.hasData) {
-                                    // Check if the snapshot has data before accessing it
-                                    var docData = snapshot.data!.data(); 
-                                    if (docData != null) {
-                                      // Access the data using snapshot.data                 
-                                      return InkWell(
-                                      onTap: () {
-                                        feedsController.rePostAPost(
-                                          postId: data['postId'], 
-                                          postContent: data['postContent'], 
-                                          posterName: data['posterName'], 
-                                          postTitle: data['posterTitle'], 
-                                          posterId: data['posterId'], 
-                                          posterPhoto: data['posterPhoto'],
-                                          isImage: data['isImage']
-                                        );
-                                      },
-                                      onTapCancel: () => feedsController.deleteRepost(postId: data['postId']),
-                                      child: Icon(
-                                        docData['isReposted'] ? CupertinoIcons.arrow_2_circlepath_circle_fill : CupertinoIcons.arrow_2_circlepath,
-                                        size: 30.r,
-                                        color: docData['isReposted'] ? AppTheme().mainColor : AppTheme().darkGreyColor,
-                                      ),
-                                    );
-                                    }
-                                  }
-                                  return Text(
-                                    '!',
-                                    style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                        color: AppTheme().darkGreyColor,
-                                        fontSize: 13.sp,  //12.sp
-                                        fontWeight: FontWeight.w500
-                                      )
-                                     ),
-                                  );
-                                }
-                              ),*/
-                              /////////////////////////
-                              
-                              /*StreamBuilder(
-                                stream: feedsController.repostForUserProfileDoc(postId: data['postId']),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData && snapshot.data!.exists) {
-                                    // Access the data using snapshot.data
-                                    var docData = snapshot.data!.data()!;
-                                    return InkWell(
-                                      onTap: () {
-                                        feedsController.rePostAPost(
-                                          postId: data['postId'], 
-                                          postContent: data['postContent'], 
-                                          posterName: data['posterName'], 
-                                          postTitle: data['posterTitle'], 
-                                          posterId: data['posterId'], 
-                                          posterPhoto: data['posterPhoto'], 
-                                          isImage: data['isImage']
-                                        );
-                                      },
-                                      onTapCancel: () => feedsController.deleteRepost(postId: data['postId']),
-                                      child: Icon(
-                                        docData['isReposted'] ? CupertinoIcons.arrow_2_circlepath_circle_fill : CupertinoIcons.arrow_2_circlepath,
-                                        size: 30.r,
-                                        color: docData['isReposted'] ? AppTheme().mainColor : AppTheme().darkGreyColor,
-                                      ),
-                                  );
-                                }
-                                return SizedBox();
-                              }
-                            ),*/
-                          ],
-                        ),
-                        SizedBox(height: 5.h,),
+                        
                         
                         //2
                         ///////////////////////////////////////////////////////////////////////////
@@ -490,63 +304,60 @@ class _MyPostsState extends State<MyPosts> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                               children: [
+
                                 ////#1
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    //SizedBox(width: 10.w,),
-                                    StreamBuilder(
-                                      stream: feedsController.postLikesForUserProfile(postId: data['postId']),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState == ConnectionState.waiting) {
-                                          // Show a loading indicator while waiting for data
-                                          return Text(
-                                            //posts
-                                            '....',
-                                            style: GoogleFonts.poppins(
-                                              color: AppTheme().greyColor,
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                              textStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis
-                                              )
-                                            ),
-                                          );
-                                        } 
-                                        if (snapshot.hasError) {
-                                          // Handle error if any
-                                          return Text(
-                                            //posts
-                                            '....',
-                                            style: GoogleFonts.poppins(
-                                              color: AppTheme().redColor,
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                              textStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis
-                                              )
-                                            ),
-                                          );
-                                        }
-                                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                          return Text(
-                                            //posts
-                                            '....',
-                                            style: GoogleFonts.poppins(
-                                              color: AppTheme().mainColor, //.lightestOpacityBlue,
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                              textStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis
-                                              )
-                                            ),
-                                          );
-                                        }
-                                        //get the document for the document snapshot
-                                        int likes = snapshot.data!.docs.length;
-                                        //convert the length to string
-                                        String likesToString = likes.toString();
-                                        return Text(
+                                StreamBuilder(
+                                  stream: feedsController.postLikesForUserProfile(postId: data['postId']),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      // Show a loading indicator while waiting for data
+                                      return Text(
+                                        '...',
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().greyColor,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          textStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis
+                                          )
+                                        ),
+                                      );
+                                    } 
+                                    if (snapshot.hasError) {
+                                      // Handle error if any
+                                      return Text(
+                                        '...',
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().redColor,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          textStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis
+                                          )
+                                        ),
+                                      );
+                                    }
+                                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                      return Text(
+                                        '...',
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().mainColor, //.lightestOpacityBlue,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          textStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis
+                                          )
+                                        ),
+                                      );
+                                    }
+                                    //get the document for the document snapshot
+                                    int likes = snapshot.data!.docs.length;
+                                    //convert the length to string
+                                    String likesToString = likes.toString();
+                                    
+                                    return Row(
+                                      children: [
+                                        Text(
                                           likes >= 0 && likes <= 999 
                                           ? likesToString
                                           :likes >= 1000 && likes <= 9999
@@ -570,80 +381,79 @@ class _MyPostsState extends State<MyPosts> {
                                               overflow: TextOverflow.ellipsis
                                             )
                                           ),
-                                        );
-                                      }
-                                    ),
-                                    SizedBox(width: 5.w,),
-                                    Text(
-                                      'likes',
-                                      style: GoogleFonts.poppins(
-                                        color: AppTheme().blackColor,
-                                        fontSize: 12.sp,
-                                        //fontWeight: FontWeight.w500,
-                                        textStyle: const TextStyle(
-                                          overflow: TextOverflow.ellipsis
-                                        )
-                                      ),
-                                    ),
-                                  ],
+                                        ),
+                                        SizedBox(width: 5.w,),
+                                        Text(
+                                          likes >= 0 && likes <= 1 ? 'like' : 'likes',
+                                          style: GoogleFonts.poppins(
+                                            color: AppTheme().blackColor,
+                                            fontSize: 12.sp,
+                                            //fontWeight: FontWeight.w500,
+                                            textStyle: const TextStyle(
+                                              overflow: TextOverflow.ellipsis
+                                            )
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
                                 ),
+
+                                SizedBox(width: 10.w,),
+                                    
                                 //#2
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(width: 10.w,),
-                                    StreamBuilder(
-                                      stream: feedsController.postCommentsForUserProfile(postId: data['postId']),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState == ConnectionState.waiting) {
-                                          // Show a loading indicator while waiting for data
-                                          return Text(
-                                            //posts
-                                            '....',
-                                            style: GoogleFonts.poppins(
-                                              color: AppTheme().greyColor,
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                              textStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis
-                                              )
-                                            ),
-                                          );
-                                        } 
-                                        if (snapshot.hasError) {
-                                          // Handle error if any
-                                          return Text(
-                                            //posts
-                                            '....',
-                                            style: GoogleFonts.poppins(
-                                              color: AppTheme().redColor,
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                              textStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis
-                                              )
-                                            ),
-                                          );
-                                        }
-                                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                          return Text(
-                                            //posts
-                                            '....',
-                                            style: GoogleFonts.poppins(
-                                              color: AppTheme().mainColor, //.lightestOpacityBlue,
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                              textStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis
-                                              )
-                                            ),
-                                          );
-                                        }
-                                        //get the document for the document snapshot
-                                        int comments = snapshot.data!.docs.length;
-                                        //convert the length to string
-                                        String commentsToString = comments.toString();
-                                        return Text(
+                                StreamBuilder(
+                                  stream: feedsController.postCommentsForUserProfile(postId: data['postId']),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      // Show a loading indicator while waiting for data
+                                      return Text(
+                                        '...',
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().greyColor,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          textStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis
+                                          )
+                                        ),
+                                      );
+                                    } 
+                                    if (snapshot.hasError) {
+                                      // Handle error if any
+                                      return Text(
+                                        //posts
+                                        '...',
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().redColor,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          textStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis
+                                          )
+                                        ),
+                                      );
+                                    }
+                                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                      return Text(
+                                        '...',
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().mainColor, //.lightestOpacityBlue,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          textStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis
+                                          )
+                                        ),
+                                      );
+                                    }
+                                    //get the document for the document snapshot
+                                    int comments = snapshot.data!.docs.length;
+                                    //convert the length to string
+                                    String commentsToString = comments.toString();                                        
+                                    return Row(
+                                      children: [
+                                        Text(
                                           comments >= 0 && comments <= 999 
                                           ? commentsToString
                                           : comments >= 1000 && comments <= 9999
@@ -667,79 +477,77 @@ class _MyPostsState extends State<MyPosts> {
                                               overflow: TextOverflow.ellipsis
                                             )
                                           ),
-                                        );
-                                      }
-                                    ),
-                                    SizedBox(width: 5.w,),
-                                    Text(
-                                      'comments',
-                                      style: GoogleFonts.poppins(
-                                        color: AppTheme().blackColor,
-                                        fontSize: 12.sp,
-                                        //fontWeight: FontWeight.w500,
-                                        textStyle: TextStyle(
-                                          overflow: TextOverflow.ellipsis
-                                        )
-                                      ),
-                                    ),
-                                  ],
+                                        ),
+                                        SizedBox(width: 5.w,),
+                                        Text(
+                                          comments >= 0 && comments <= 1 ? 'comment' : 'comments',
+                                          style: GoogleFonts.poppins(
+                                            color: AppTheme().blackColor,
+                                            fontSize: 12.sp,
+                                            //fontWeight: FontWeight.w500,
+                                            textStyle: TextStyle(
+                                              overflow: TextOverflow.ellipsis
+                                            )
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
                                 ),
+
+                                SizedBox(width: 10.w,),
+                                    
                                 //#3
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(width: 10.w,),
-                                    StreamBuilder(
-                                      stream: feedsController.repostStreamForUserProfile(),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState == ConnectionState.waiting) {
-                                          // Show a loading indicator while waiting for data
-                                          return Text(
-                                            //posts
-                                            '....',
-                                            style: GoogleFonts.poppins(
-                                              color: AppTheme().greyColor,
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                              textStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis
-                                              )
-                                            ),
-                                          );
-                                        } 
-                                        if (snapshot.hasError) {
-                                          // Handle error if any
-                                          return Text(
-                                            //posts
-                                            '....',
-                                            style: GoogleFonts.poppins(
-                                              color: AppTheme().redColor,
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                              textStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis
-                                              )
-                                            ),
-                                          );
-                                        }
-                                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                          return Text(
-                                            //posts
-                                            '....',
-                                            style: GoogleFonts.poppins(
-                                              color: AppTheme().mainColor, //.lightestOpacityBlue,
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                              textStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis
-                                              )
-                                            ),
-                                          );
-                                        }
-                                        //get the document for the document snapshot
-                                        int reposts = snapshot.data!.docs.length;
-                                        String repostsToString = reposts.toString();
-                                        return Text(
+                                StreamBuilder(
+                                  stream: feedsController.repostStreamForUserProfile(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      // Show a loading indicator while waiting for data
+                                      return Text(
+                                        '...',
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().greyColor,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          textStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis
+                                          )
+                                        ),
+                                      );
+                                    } 
+                                    if (snapshot.hasError) {
+                                      // Handle error if any
+                                      return Text(
+                                        '...',
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().redColor,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          textStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis
+                                          )
+                                        ),
+                                      );
+                                    }
+                                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                      return Text(
+                                        '...',
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().mainColor, //.lightestOpacityBlue,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w500,
+                                          textStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis
+                                          )
+                                        ),
+                                      );
+                                    }
+                                    //get the document for the document snapshot
+                                    int reposts = snapshot.data!.docs.length;
+                                    String repostsToString = reposts.toString();
+                                    return Row(
+                                      children: [
+                                        Text(
                                           reposts >= 0 && reposts <= 999 
                                           ? repostsToString
                                           : reposts >= 1000 && reposts <= 9999
@@ -763,23 +571,24 @@ class _MyPostsState extends State<MyPosts> {
                                               overflow: TextOverflow.ellipsis
                                             )
                                           ),
-                                        );
-                                      }
-                                    ),
-                                    SizedBox(width: 5.w,),
-                                    Text(
-                                      're-posts',
-                                      style: GoogleFonts.poppins(
-                                        color: AppTheme().blackColor,
-                                        fontSize: 12.sp,
-                                        //fontWeight: FontWeight.w500,
-                                        textStyle: const TextStyle(
-                                          overflow: TextOverflow.ellipsis
-                                        )
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                        ),
+                                        SizedBox(width: 5.w,),
+                                        Text(
+                                          reposts >= 0 && reposts <= 1 ? 're-post' : 're-posts',
+                                          style: GoogleFonts.poppins(
+                                            color: AppTheme().blackColor,
+                                            fontSize: 12.sp,
+                                            //fontWeight: FontWeight.w500,
+                                            textStyle: const TextStyle(
+                                              overflow: TextOverflow.ellipsis
+                                            )
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                ),                     
+                                //end
                               ]
                             ),
                           )

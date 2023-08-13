@@ -10,6 +10,7 @@ import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/extract_firstname.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
+import 'package:pichat/utils/toast.dart';
 import 'package:provider/provider.dart';
 
 
@@ -20,9 +21,10 @@ import 'package:provider/provider.dart';
 
 
 class CommentsScreen extends StatefulWidget {
-  const CommentsScreen({super.key, required this.postId, required this.posterName});
+  const CommentsScreen({super.key, required this.postId, required this.posterName, required this.posterId});
   final String postId;
   final String posterName;
+  final String posterId;
 
   @override
   State<CommentsScreen> createState() => _CommentsScreenState();
@@ -197,7 +199,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                               Center(
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(
-                                    vertical: 30.h, 
+                                    vertical: 20.h, 
                                     horizontal: 120.w
                                   ),
                                   child: Container(
@@ -223,214 +225,246 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                   ),
                                 ),
                               ),
-
+                        
                             //the comment list gan gan
-                            Container(
-                              //height: 100.h,
-                              //width: 200.w,
-                              padding: EdgeInsets.symmetric(
-                                vertical: 15.h, //20.h
-                                horizontal: 15.w  //15.w
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTheme().whiteColor,
-                                borderRadius: BorderRadius.circular(40.r),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.2),
-                                    spreadRadius: 0.1.r,
-                                    blurRadius: 8.0.r,
-                                  )
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                            Dismissible(
+                              key: UniqueKey(),
+                              direction: DismissDirection.endToStart,
+                              background: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-
-                                  //profile of the commenter
-                                  CircleAvatar(
-                                    radius: 38.r,
-                                    backgroundColor: AppTheme().opacityBlue,
-                                    child: CircleAvatar(
-                                      radius: 36.r,
-                                      backgroundColor: data['commenterPhoto'] == null ? AppTheme().darkGreyColor : AppTheme().blackColor,
-                                      //backgroundColor: AppTheme().darkGreyColor,
-                                      child: data['commenterPhoto'] == null 
-                                      ?null
-                                      :ClipRRect(
-                                        borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
-                                        clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
-                                        child: CachedNetworkImage(
-                                          imageUrl: data['commenterPhoto'],
-                                          width: 50.w,
-                                          height: 50.h,
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) => Loader(),
-                                          errorWidget: (context, url, error) => Icon(
-                                            Icons.error,
-                                            color: AppTheme().lightestOpacityBlue,
-                                          ),
-                                        ),
-                                      ),                         
-                                    ),
+                                  Icon(CupertinoIcons.delete_simple, color: AppTheme().redColor,)
+                                ]
+                              ),
+                              onDismissed: (direction) {
+                                if(widget.posterId == feedsController.userID) {
+                                  feedsController.makePosterDeleteCommentsFromPost(postId: widget.postId, commentId: data['commentId']);
+                                }
+                                else {
+                                  getToast(context: context, text: 'Only the owner of the post can delete comments here');
+                                }
+                              },
+                              child: InkWell(
+                                onLongPress: () {
+                                  if(data['commenterId'] == feedsController.userID) {
+                                    feedsController.makeCommenterDeleteCommentOnAPost(postId: widget.postId, commentId: data['commentId']);
+                                  }
+                                  else {
+                                    getToast(context: context, text: "You can not delete this person's comment");
+                                  }
+                                },
+                                child: Container(
+                                  //height: 100.h,
+                                  //width: 200.w,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 15.h, //20.h
+                                    horizontal: 15.w  //15.w
                                   ),
-                                            
-                                  SizedBox(width: 10.w,),
-                                            
-                                  //commenter name, timestamp and the comment
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        //commenter name and the time of comment
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              data['commenterName'],
-                                              style: GoogleFonts.poppins(
-                                                color: AppTheme().blackColor,
-                                                fontSize: 14.sp,
-                                                fontWeight: FontWeight.w500,
-                                                textStyle: TextStyle(
-                                                  overflow: TextOverflow.ellipsis
-                                                )
+                                  decoration: BoxDecoration(
+                                    color: AppTheme().whiteColor,
+                                    borderRadius: BorderRadius.circular(40.r),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.2),
+                                        spreadRadius: 0.1.r,
+                                        blurRadius: 8.0.r,
+                                      )
+                                    ],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                                            
+                                      //profile of the commenter
+                                      CircleAvatar(
+                                        radius: 38.r,
+                                        backgroundColor: AppTheme().opacityBlue,
+                                        child: CircleAvatar(
+                                          radius: 36.r,
+                                          backgroundColor: data['commenterPhoto'] == null ? AppTheme().darkGreyColor : AppTheme().blackColor,
+                                          //backgroundColor: AppTheme().darkGreyColor,
+                                          child: data['commenterPhoto'] == null 
+                                          ?null
+                                          :ClipRRect(
+                                            borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
+                                            clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
+                                            child: CachedNetworkImage(
+                                              imageUrl: data['commenterPhoto'],
+                                              width: 50.w,
+                                              height: 50.h,
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) => Loader(),
+                                              errorWidget: (context, url, error) => Icon(
+                                                Icons.error,
+                                                color: AppTheme().lightestOpacityBlue,
                                               ),
                                             ),
-                                            SizedBox(width: 10.w,),
+                                          ),                         
+                                        ),
+                                      ),
+                                                
+                                      SizedBox(width: 10.w,),
+                                                
+                                      //commenter name, timestamp and the comment
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            //commenter name and the time of comment
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  data['commenterName'],
+                                                  style: GoogleFonts.poppins(
+                                                    color: AppTheme().blackColor,
+                                                    fontSize: 14.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    textStyle: TextStyle(
+                                                      overflow: TextOverflow.ellipsis
+                                                    )
+                                                  ),
+                                                ),
+                                                //SizedBox(width: 10.w,),
+                                                Text(
+                                                  formatTime(timestamp: data['timestamp']),
+                                                  style: GoogleFonts.poppins(
+                                                    color: AppTheme().darkGreyColor,
+                                                    fontSize: 11.sp,
+                                                    fontWeight: FontWeight.normal,
+                                                    textStyle: TextStyle(
+                                                      overflow: TextOverflow.ellipsis
+                                                    )
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 1.h,),
+                                            //comment
                                             Text(
-                                              formatTime(timestamp: data['timestamp']),
+                                              data['comment'],
                                               style: GoogleFonts.poppins(
                                                 color: AppTheme().darkGreyColor,
-                                                fontSize: 10.sp,
-                                                fontWeight: FontWeight.normal,
-                                                textStyle: TextStyle(
-                                                  overflow: TextOverflow.ellipsis
-                                                )
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 1.h,),
-                                        //comment
-                                        Text(
-                                          data['comment'],
-                                          style: GoogleFonts.poppins(
-                                            color: AppTheme().darkGreyColor,
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.w500,
-                                            textStyle: TextStyle(
-                                              overflow: TextOverflow.visible //ellipsis
-                                            )
-                                          ),
-                                        ),
-                                        SizedBox(height: 1.h,),
-                                            
-                                        //create a stream for this (implementing soon)
-                                        //who liked
-                                        StreamBuilder(
-                                          stream: feedsController.usersWhoLikedACommentUnderAPostStream(postId: data['postId'], commentId: data['commentId']),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              // Show a loading indicator while waiting for data
-                                              return Text(
-                                                //posts
-                                                '...',
-                                                style: GoogleFonts.poppins(
-                                                  color: AppTheme().opacityBlue,
-                                                  fontSize: 13.sp,
-                                                  fontWeight: FontWeight.w500,
-                                                  textStyle: const TextStyle(
-                                                    overflow: TextOverflow.ellipsis
-                                                  )
-                                                ),
-                                              );
-                                            } 
-                                            if (snapshot.hasError) {
-                                              // Handle error if any
-                                              return Text(
-                                                '...',
-                                                style: GoogleFonts.poppins(
-                                                  color: AppTheme().redColor,
-                                                  fontSize: 13.sp,
-                                                  fontWeight: FontWeight.w500,
-                                                  textStyle: const TextStyle(
-                                                    overflow: TextOverflow.ellipsis
-                                                  )
-                                                ),
-                                              );
-                                            }
-                                            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                              return Text(
-                                                '...',
-                                                style: GoogleFonts.poppins(
-                                                  color: AppTheme().greyColor,
-                                                  fontSize: 13.sp,
-                                                  fontWeight: FontWeight.w500,
-                                                  textStyle: const TextStyle(
-                                                    overflow: TextOverflow.ellipsis
-                                                  )
-                                                ),
-                                              );
-                                            }
-                                            //get the document for the document snapshot
-                                            int likes = snapshot.data!.docs.length;
-                                            //convert the length to string
-                                            String likesToString = likes.toString();
-                                            return Text(
-                                              likes >= 0 && likes <=1 ?
-                                              '$likesToString like'
-                                              :likes >= 2 && likes <= 999 
-                                              ? "$likesToString likes"
-                                              :likes >= 1000 && likes <= 9999
-                                              ? "${likesToString[0]}k likes"
-                                              : likes >= 10000 && likes <= 99999 
-                                              ? "${likesToString.substring(0, 2)}k likes"
-                                              : likes >= 100000 && likes >= 999999
-                                              ? "${likesToString.substring(0, 3)}k likes"
-                                              : likes >= 1000000 && likes <= 9999999
-                                              ? "${likesToString[0]}m likes"
-                                              : likes >= 10000000 && likes <= 99999999
-                                              ? "${likesToString.substring(0, 2)}m likes"
-                                              : likes >= 100000000 && likes <= 999999999
-                                              ? "${likesToString.substring(0, 3)}m likes"
-                                              : "1 B+ likes",
-                                              style: GoogleFonts.poppins(
-                                                color: AppTheme().opacityBlue,
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w500,
                                                 textStyle: TextStyle(
-                                                  overflow: TextOverflow.ellipsis
+                                                  overflow: TextOverflow.visible //ellipsis
                                                 )
                                               ),
-                                            );
-                                          }
+                                            ),
+                                            SizedBox(height: 1.h,),
+                                                
+                                            //create a stream for this (implementing soon)
+                                            //who liked
+                                            StreamBuilder(
+                                              stream: feedsController.usersWhoLikedACommentUnderAPostStream(postId: data['postId'], commentId: data['commentId']),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  // Show a loading indicator while waiting for data
+                                                  return Text(
+                                                    //posts
+                                                    '...',
+                                                    style: GoogleFonts.poppins(
+                                                      color: AppTheme().opacityBlue,
+                                                      fontSize: 13.sp,
+                                                      fontWeight: FontWeight.w500,
+                                                      textStyle: const TextStyle(
+                                                        overflow: TextOverflow.ellipsis
+                                                      )
+                                                    ),
+                                                  );
+                                                } 
+                                                if (snapshot.hasError) {
+                                                  // Handle error if any
+                                                  return Text(
+                                                    '...',
+                                                    style: GoogleFonts.poppins(
+                                                      color: AppTheme().redColor,
+                                                      fontSize: 13.sp,
+                                                      fontWeight: FontWeight.w500,
+                                                      textStyle: const TextStyle(
+                                                        overflow: TextOverflow.ellipsis
+                                                      )
+                                                    ),
+                                                  );
+                                                }
+                                                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                                  return Text(
+                                                    '...',
+                                                    style: GoogleFonts.poppins(
+                                                      color: AppTheme().greyColor,
+                                                      fontSize: 13.sp,
+                                                      fontWeight: FontWeight.w500,
+                                                      textStyle: const TextStyle(
+                                                        overflow: TextOverflow.ellipsis
+                                                      )
+                                                    ),
+                                                  );
+                                                }
+                                                //get the document for the document snapshot
+                                                int likes = snapshot.data!.docs.length;
+                                                //convert the length to string
+                                                String likesToString = likes.toString();
+                                                return Text(
+                                                  likes >= 0 && likes <=1 ?
+                                                  '$likesToString like'
+                                                  :likes >= 2 && likes <= 999 
+                                                  ? "$likesToString likes"
+                                                  :likes >= 1000 && likes <= 9999
+                                                  ? "${likesToString[0]}k likes"
+                                                  : likes >= 10000 && likes <= 99999 
+                                                  ? "${likesToString.substring(0, 2)}k likes"
+                                                  : likes >= 100000 && likes >= 999999
+                                                  ? "${likesToString.substring(0, 3)}k likes"
+                                                  : likes >= 1000000 && likes <= 9999999
+                                                  ? "${likesToString[0]}m likes"
+                                                  : likes >= 10000000 && likes <= 99999999
+                                                  ? "${likesToString.substring(0, 2)}m likes"
+                                                  : likes >= 100000000 && likes <= 999999999
+                                                  ? "${likesToString.substring(0, 3)}m likes"
+                                                  : "1 B+ likes",
+                                                  style: GoogleFonts.poppins(
+                                                    color: AppTheme().opacityBlue,
+                                                    fontSize: 13.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    textStyle: TextStyle(
+                                                      overflow: TextOverflow.ellipsis
+                                                    )
+                                                  ),
+                                                );
+                                              }
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      SizedBox(width: 10.w,),
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {                   
+                                            if (feedsController.selectedItems.contains(index)){
+                                              feedsController.isCommentLiked = false;
+                                              feedsController.selectedItems.remove(index);
+                                              feedsController.unlikeACommentUnderAPost(postId: data['postId'], commentId: data['commentId'],);
+                                            } else {
+                                              feedsController.isCommentLiked = true;
+                                              feedsController.selectedItems.add(index);
+                                              feedsController.likeACommentUnderAPost(postId: data['postId'], commentId: data['commentId'],);
+                                            } 
+                                          });
+                                
+                                        }, 
+                                        child: Icon(
+                                          feedsController.selectedItems.contains(index) ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                                          size: 24.r,
+                                          color: feedsController.selectedItems.contains(index) ? AppTheme().mainColor: AppTheme().darkGreyColor,
+                                        )
+                                      )
+                                    ],
                                   ),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        feedsController.isCommentLiked = true;
-                                      });
-                                      feedsController.likeACommentUnderAPost(postId: data['postId'], commentId: data['commentId']);
-                                    },
-                                    onDoubleTap: () {
-                                      setState(() {
-                                        feedsController.isCommentLiked = false;
-                                      });
-                                      feedsController.unlikeACommentUnderAPost(postId: data['postId'], commentId: data['commentId']);
-                                    }, 
-                                    child: Icon(
-                                      feedsController.isCommentLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                                      size: 24.r,
-                                      color: feedsController.isCommentLiked? AppTheme().mainColor: AppTheme().darkGreyColor,
-                                    )
-                                  )
-                                ],
+                                ),
                               ),
                             ),
+                            SizedBox(height: 10.h,)
                           ],
                         );
                       },
