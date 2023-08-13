@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
@@ -26,7 +27,7 @@ import '../success_screens/successful_profile_update_screen.dart';
 
 
 class EditProfileScreen extends StatefulWidget {
-  EditProfileScreen({super.key, required this.isProfileUpdated, required this.name, required this.email, required this.photo, required this.dateOfBirth, required this.bio, required this.link,});
+  EditProfileScreen({super.key, required this.isProfileUpdated, required this.name, required this.email, required this.photo, required this.dateOfBirth, required this.bio, required this.link, required this.selectedCountry, required this.selectedGender,});
   final String name;
   final String email;
   final String photo;
@@ -34,6 +35,9 @@ class EditProfileScreen extends StatefulWidget {
   final String bio;
   final String link;
   final bool isProfileUpdated;
+  final String selectedCountry;
+  final String selectedGender;
+
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -85,9 +89,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     var controller = Provider.of<ProfileController>(context);
     var authController = Provider.of<AuthController>(context);
-    //check Date
+    //check if date is already selected
     String checkDate = widget.isProfileUpdated ? widget.dateOfBirth : 'Select Date';
-    
+    //check if country is selected
+    String checkCountry = widget.isProfileUpdated ? widget.selectedCountry : 'Select Country';
+    //check if gender is selected
+    //String checkGender = widget.isProfileUpdated ? widget.selectedGender : 'Select Gender';
+
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: 25.w,
@@ -108,10 +116,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 alignment: Alignment.center,
                 children: [
                   CircleAvatar(
-                    radius: 55.r,
-                    backgroundColor: AppTheme().mainColor,
+                    radius: 70.r,
+                    backgroundColor: AppTheme().opacityBlue,
                     child: CircleAvatar(
-                      radius: 53.r,
+                      radius: 68.r,
                       backgroundColor: controller.isAnyImageSelected ? AppTheme().blackColor : AppTheme().blackColor,
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
@@ -125,13 +133,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             controller.imageFromGallery!,
                             filterQuality: FilterQuality.high,
                             fit: BoxFit.cover, //.contain,
-                            width: 65.w,
-                            height: 80.h,
+                            width: 80.w,
+                            height: 90.h,
                           )
                         : CachedNetworkImage(
                             imageUrl: widget.photo,
-                            width: 65.w,
-                            height: 80.h,
+                            width: 80.w,
+                            height: 90.h,
                             fit: BoxFit.cover,
                             placeholder: (context, url) => Loader(),
                             errorWidget: (context, url, error) => Icon(
@@ -147,12 +155,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     right: 0,
                     child: FloatingActionButton.small(
                       enableFeedback: true,
-                      elevation: 0,
-                      backgroundColor: AppTheme().mainColor,
+                      elevation: 2,
+                      backgroundColor: AppTheme().whiteColor,
                       child: Icon(
                         size: 24.r,
                         CupertinoIcons.camera_fill, //camera_alt,
-                        color: AppTheme().whiteColor,
+                        color: AppTheme().blackColor,
                       ),
                       onPressed: () {
                         //Open bottom sheet to select image
@@ -283,11 +291,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       borderRadius: BorderRadius.circular(20.r),
                       color: AppTheme().lightGreyColor
                     ),
-                    alignment: Alignment.centerLeft,
-                    height: 68.h, //70.h,
+                    alignment: Alignment.center,
+                    height: 74.h, //68.h,
                     //padding: EdgeInsets.all(10),
                     //width: 100.w,
                     child: RadioListTile(
+                      enableFeedback: true,
                       toggleable: true,
                       tileColor: AppTheme().lightGreyColor,
                       activeColor: AppTheme().blackColor,
@@ -296,22 +305,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           Radius.circular(10.0.r)
                         )
                       ),
-                      value: 'Male', 
-                      groupValue: controller.gender, 
+                      value:  'Male',
+                      groupValue: controller.gender,
                       onChanged: (value) {
                         setState(() {
-                          controller.gender = value.toString();
+                          controller.gender = value; //.toString();
                           controller.isActivated = true;
                         });
-                        debugPrint('Male');
-                        debugPrint("User selected ${controller.gender}");
+                
+                        debugPrint("User selected $value");
                       },
                       title: Text(
                         'Male',
                         style: GoogleFonts.poppins(
                           color: AppTheme().blackColor,
                           fontSize: 15.sp,
-                          fontWeight: FontWeight.w500,
+                          //fontWeight: FontWeight.w500,
                         ),
                       ),
                     )             
@@ -327,11 +336,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       borderRadius: BorderRadius.circular(20.r),
                       color: AppTheme().lightGreyColor
                     ),
-                    alignment: Alignment.centerLeft,
-                    height: 68.h, //70.h,
+                    alignment: Alignment.center,
+                    height: 74.h, //68.h,
                     //padding: EdgeInsets.all(15),
                     //width: 100.w,
                     child: RadioListTile(
+                      enableFeedback: true,
                       toggleable: true,
                       tileColor: AppTheme().lightGreyColor,
                       activeColor: AppTheme().blackColor,
@@ -344,18 +354,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       groupValue: controller.gender, 
                       onChanged: (value) {
                         setState(() {
-                          controller.gender = value.toString();
+                          controller.gender = value;
                           controller.isActivated = true;
                         });
-                        debugPrint('Female');
-                        debugPrint("User selected ${controller.gender}");
+                        debugPrint("User selected $value");
                       },
                       title: Text(
                         'Female',
                         style: GoogleFonts.poppins(
                           color: AppTheme().blackColor,
                           fontSize: 15.sp,
-                          fontWeight: FontWeight.w500,
+                          //fontWeight: FontWeight.w500,
                         ),
                       ),
                     )             
@@ -390,14 +399,50 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               height: 68.h, //70.h,
               padding: EdgeInsets.all(10),
               //width: 100.w,
-              child: Text(
-                '+234        Nigeria',
-                style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                    color: AppTheme().blackColor,
-                    fontSize: 13.sp
+              child: Row(
+                children: [
+                  CountryCodePicker(
+                    flagDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    enabled: true,
+                    showFlagDialog: true,
+                    showFlagMain: true,
+                    showFlag: true,
+                    textStyle: GoogleFonts.poppins(),
+                    onChanged: (CountryCode countryCode) {
+                      setState(() {
+                        controller.selectedCountryCode = countryCode;
+                        controller.selectedCountry = controller.selectedCountryCode!.name;
+                      });
+                      debugPrint('Country Selected: ${controller.selectedCountry}');
+                    },
+                    initialSelection: 'NG', // You can set an initial country code
+                    favorite: const ['NG'], // Specify favorite country codes
+                    showCountryOnly: false, // Set to true to show only the country name
+                    showOnlyCountryWhenClosed: false, // Set to true to only show the country when closed
+                  ),
+                  SizedBox(width: 10.w,),
+                  controller.selectedCountryCode == null ?
+                  Text(
+                    checkCountry,
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                        color: AppTheme().blackColor,
+                        fontSize: 15.sp
+                      )
+                    ),
                   )
-                ),
+                  :Text(
+                    '${controller.selectedCountryCode!.name}',
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                        color: AppTheme().blackColor,
+                        fontSize: 15.sp
+                      )
+                    ),
+                  ),
+                ],
               ),
             ),
             //////////////////////////////
@@ -427,11 +472,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               //padding: EdgeInsets.all(8),
               //width: 100.w,
               child: TextFormField(
-                focusNode: controller.focusNodes[2],
-                onEditingComplete: () {
-                  FocusScope.of(context).requestFocus(controller.focusNodes[2]);
-                },
-                controller: controller.userBio,
+                autofocus: true,
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    color: AppTheme().blackColor,
+                    fontSize: 13.sp
+                  )
+                ),
+                initialValue: widget.bio,
                 spellCheckConfiguration: SpellCheckConfiguration(),
                 scrollPadding: EdgeInsets.symmetric(
                   horizontal: 10.h,
@@ -448,7 +496,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 enableInteractiveSelection: true,
                 cursorColor: AppTheme().blackColor,
                 cursorRadius: Radius.circular(10.r),
-                style: GoogleFonts.poppins(color: AppTheme().blackColor),
+                //style: GoogleFonts.poppins(color: AppTheme().blackColor),
                 decoration: InputDecoration(        
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.r),
@@ -458,10 +506,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 13.sp),              
                   filled: true,
                   fillColor: AppTheme().lightGreyColor,
-                  //prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
                 ),
                 validator: (value) {
-                  //https://www.t.ng
                   if(value!.isEmpty ) {
                     return "Empty field";
                   }
@@ -470,8 +516,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   }
                   return null;
                 },
-                //onFieldSubmitted: (value) {},
-                onChanged: (value) {},
+                onChanged: (value) {
+                  controller.userBio.text = value;
+                },
               ),
             ),
 
@@ -499,12 +546,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               //height: 65.h, //55.h,
               //padding: EdgeInsets.all(8),
               //width: 100.w,
-              child: TextFormField( 
-                focusNode: controller.focusNodes[3],
-                onEditingComplete: () {
-                  FocusScope.of(context).requestFocus(controller.focusNodes[3]);
-                },
-                controller: controller.userLink,
+              child: TextFormField(
+                autofocus: true,
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    color: AppTheme().blackColor,
+                    fontSize: 13.sp
+                  )
+                ),
+                initialValue: widget.link,
                 spellCheckConfiguration: SpellCheckConfiguration(),
                 scrollPadding: EdgeInsets.symmetric(
                   horizontal: 10.h,
@@ -512,7 +562,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),  //20        
                 scrollPhysics: const BouncingScrollPhysics(),
                 scrollController: ScrollController(),
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
                 enabled: true,
                 keyboardType: TextInputType.url,
                 autocorrect: true,
@@ -520,7 +570,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 enableInteractiveSelection: true,
                 cursorColor: AppTheme().blackColor,
                 cursorRadius: Radius.circular(10.r),
-                style: GoogleFonts.poppins(color: AppTheme().blackColor),
+                //style: GoogleFonts.poppins(color: AppTheme().blackColor),
                 decoration: InputDecoration(        
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.r),
@@ -545,7 +595,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   }
                   return null;
                 },
-                onChanged: (value) {},
+                onChanged: (value) {
+                  controller.userLink.text = value;
+                },
               ),
             ),
 
@@ -637,15 +689,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               width: double.infinity,
               child: ElevatedButton( 
                 onPressed: () {
-                  if(controller.formKey.currentState!.validate() && controller.gender != null && widget.name.isNotEmpty && widget.email.isNotEmpty && controller.userBio.text.isNotEmpty && controller.userLink.text.isNotEmpty) {
-                    ////set 'isProfileUpdated' to true and update necessary things
+                  if(controller.formKey.currentState!.validate()) {
+                    controller.formKey.currentState!.save();
                     controller.updateUserProfile(
                       name: widget.name, 
                       email: widget.email, 
                       biography: controller.userBio.text, 
                       url: controller.userLink.text, 
-                      dob: controller.selectedDate!, 
-                      //photo: widget.photo, 
+                      dob: controller.selectedDate!,
+                      gender: controller.gender!,
                       isProfileUpdated: true
                     ).then((value) => Get.to(() => ProfileUpdatedSuccessScreen()));
                   }
@@ -681,7 +733,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),     
             ),      
       
-            SizedBox(height: 40.h)
+            SizedBox(height: 50.h)
           ],
         ),
       )

@@ -31,10 +31,13 @@ class CustomTextField extends StatelessWidget {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodes[1],
-        onEditingComplete: () {
-          FocusScope.of(context).requestFocus(controller.focusNodes[1]);
-        },
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+            color: AppTheme().blackColor,
+            fontSize: 13.sp
+          )
+        ),
+        autofocus: true,
         textCapitalization: TextCapitalization.sentences,          
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -46,7 +49,7 @@ class CustomTextField extends StatelessWidget {
         enableSuggestions: true,
         enableInteractiveSelection: true,
         cursorColor: AppTheme().blackColor,
-        style: GoogleFonts.poppins(color: AppTheme().blackColor),
+        //style: GoogleFonts.poppins(color: AppTheme().blackColor),
         decoration: InputDecoration(        
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.r),
@@ -89,10 +92,13 @@ class _CustomTextField2State extends State<CustomTextField2> {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodes[2],
-        onEditingComplete: () {
-          FocusScope.of(context).requestFocus(controller.focusNodes[2]);
-        },      
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+            color: AppTheme().blackColor,
+            fontSize: 13.sp
+          )
+        ),
+        autofocus: true,      
         textCapitalization: TextCapitalization.sentences,    
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -105,7 +111,7 @@ class _CustomTextField2State extends State<CustomTextField2> {
         enableSuggestions: true,
         enableInteractiveSelection: true,
         cursorColor: AppTheme().blackColor,
-        style: GoogleFonts.poppins(color: AppTheme().blackColor),
+        //style: GoogleFonts.poppins(color: AppTheme().blackColor),
         decoration: InputDecoration(        
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.r),
@@ -157,10 +163,13 @@ class _CustomTextField3State extends State<CustomTextField3> {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodes[3],
-        onEditingComplete: () {
-          FocusScope.of(context).requestFocus(controller.focusNodes[3]);
-        },      
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+            color: AppTheme().blackColor,
+            fontSize: 13.sp
+          )
+        ),
+        autofocus: true,      
         textCapitalization: TextCapitalization.sentences,              
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -173,7 +182,7 @@ class _CustomTextField3State extends State<CustomTextField3> {
         enableSuggestions: true,
         enableInteractiveSelection: true,
         cursorColor: AppTheme().blackColor,
-        style: GoogleFonts.poppins(color: AppTheme().blackColor),
+        //style: GoogleFonts.poppins(color: AppTheme().blackColor),
         decoration: InputDecoration(        
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.r),
@@ -222,10 +231,13 @@ class CustomTextField4 extends StatelessWidget {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodes[0],
-        onEditingComplete: () {
-          FocusScope.of(context).requestFocus(controller.focusNodes[0]);
-        },      
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+            color: AppTheme().blackColor,
+            fontSize: 13.sp
+          )
+        ),
+        autofocus: true,     
         textCapitalization: TextCapitalization.sentences,              
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -237,7 +249,7 @@ class CustomTextField4 extends StatelessWidget {
         enableSuggestions: true,
         enableInteractiveSelection: true,
         cursorColor: AppTheme().blackColor,
-        style: GoogleFonts.poppins(color: AppTheme().blackColor),
+        //style: GoogleFonts.poppins(color: AppTheme().blackColor),
         decoration: InputDecoration(        
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.r),
@@ -281,10 +293,13 @@ class EmailFieldLogin extends StatelessWidget {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodesForLogin[0],
-        onEditingComplete: () {
-          FocusScope.of(context).requestFocus(controller.focusNodesForLogin[0]);
-        },
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+            color: AppTheme().blackColor,
+            fontSize: 13.sp
+          )
+        ),
+        autofocus: true,
         textCapitalization: TextCapitalization.sentences,          
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -296,7 +311,7 @@ class EmailFieldLogin extends StatelessWidget {
         enableSuggestions: true,
         enableInteractiveSelection: true,
         cursorColor: AppTheme().blackColor,
-        style: GoogleFonts.poppins(color: AppTheme().blackColor),
+        //style: GoogleFonts.poppins(color: AppTheme().blackColor),
         decoration: InputDecoration(        
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.r),
@@ -337,10 +352,13 @@ class _PasswordFieldLoginState extends State<PasswordFieldLogin> {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodesForLogin[1],
-        onEditingComplete: () {
-          FocusScope.of(context).requestFocus(controller.focusNodesForLogin[1]);
-        },      
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+            color: AppTheme().blackColor,
+            fontSize: 13.sp
+          )
+        ),
+        autofocus: true,      
         textCapitalization: TextCapitalization.sentences,              
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -353,7 +371,7 @@ class _PasswordFieldLoginState extends State<PasswordFieldLogin> {
         enableSuggestions: true,
         enableInteractiveSelection: true,
         cursorColor: AppTheme().blackColor,
-        style: GoogleFonts.poppins(color: AppTheme().blackColor),
+        //style: GoogleFonts.poppins(color: AppTheme().blackColor),
         decoration: InputDecoration(        
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.r),

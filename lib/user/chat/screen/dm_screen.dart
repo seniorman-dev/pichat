@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/widget/bottom_engine.dart';
 import 'package:pichat/user/chat/widget/chat_list.dart';
+import 'package:pichat/utils/loader.dart';
 
 
 
@@ -27,6 +29,7 @@ class DMScreen extends StatefulWidget {
 }
 
 class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
+
   
   double keyboardHeight = 0;
   double keyboardTop = 0;
@@ -34,7 +37,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
   double calculateBottomPadding(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double minPadding = 0;
-    double maxPadding = screenHeight * 0.41; // Adjust the value as needed (0.15 is an example)
+    double maxPadding = screenHeight * 0.37; // Adjust the value as needed (0.41 is an example)
 
     return keyboardHeight > MediaQuery.of(context).padding.bottom + 10 ? maxPadding : minPadding;
   }
@@ -92,7 +95,25 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                 backgroundColor: AppTheme().opacityBlue,
                 child: CircleAvatar(
                   radius: 28.r, 
-                  backgroundColor: AppTheme().darkGreyColor,  //receiverProfilePic
+                  backgroundColor: widget.receiverProfilePic == null ? AppTheme().darkGreyColor : AppTheme().blackColor,
+                  //backgroundColor: AppTheme().darkGreyColor,
+                  child: widget.receiverProfilePic == null 
+                  ?null
+                  :ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
+                    clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.receiverProfilePic,
+                      width: 40.w,
+                      height: 40.h,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Loader(),
+                      errorWidget: (context, url, error) => Icon(
+                        Icons.error,
+                        color: AppTheme().lightestOpacityBlue,
+                      ),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(width: 10.w,),
@@ -158,11 +179,6 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
             ),
             Padding(
               padding: EdgeInsets.only(
-                /*top: keyboardTop,
-                //bottom: keyboardHeight - MediaQuery.of(context).padding.bottom,
-                bottom: keyboardHeight > MediaQuery.of(context).padding.bottom + 10
-                ? keyboardHeight - MediaQuery.of(context).padding.bottom - 550 //260
-                : 0,*/
                 bottom: calculateBottomPadding(context)
               ),
               child: BottomEngine(
@@ -171,14 +187,11 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                 receiverPhoto: widget.receiverProfilePic,
               ),
             ),
+            //give it small height
+            SizedBox(height: 2.h,)
           ],
         )   
       ),   
     );
   }
 }
-
-//Future<bool> onBackPress() {
-    //Navigator.pop(context);
-    //return Future.value(false);
- //}

@@ -120,12 +120,13 @@ class AuthController extends ChangeNotifier{
             'name': registerNameController.text,
             'email': registerEmailController.text,
             'password': registerConfirmPasswordController.text,
-            'photo': 'photoURL', //put dummy image link pending when the user updates his/her photo
+            'photo': 'photo', //put dummy image link pending when the user updates his/her photo
             'id': userCredential.user!.uid,
             'isOnline': true,
             'isVerified': false,
             'location': 'location', //get from geolocator,
             'agreedToT&C': isChecked,
+            'isProfileUpdated': false,
             'timestamp': Timestamp.now()
           })
           .then((val) async => await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token}))

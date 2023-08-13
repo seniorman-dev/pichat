@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -185,7 +186,25 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                               backgroundColor: AppTheme().opacityBlue,
                               child: CircleAvatar(
                                 radius: 30.r,
-                                backgroundColor: AppTheme().darkGreyColor,
+                                backgroundColor: data2['photo'] == null ? AppTheme().darkGreyColor : AppTheme().blackColor,
+                                //backgroundColor: AppTheme().darkGreyColor,
+                                child: data2['photo'] == null 
+                                ?null
+                                :ClipRRect(
+                                  borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
+                                  clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
+                                  child: CachedNetworkImage(
+                                    imageUrl: data2['photo'],
+                                    width: 40.w,
+                                    height: 40.h,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Loader(),
+                                    errorWidget: (context, url, error) => Icon(
+                                      Icons.error,
+                                      color: AppTheme().lightestOpacityBlue,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                             SizedBox(width: 10.w,),

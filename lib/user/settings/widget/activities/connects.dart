@@ -57,7 +57,7 @@ class MyConnects extends StatelessWidget {
               ),
               SizedBox(width: 10.w),
               Text(
-                'Add connections to your list',
+                'No connections found',
                 style: GoogleFonts.poppins(
                   color: AppTheme().greyColor,
                   fontSize: 13.sp,
@@ -72,7 +72,7 @@ class MyConnects extends StatelessWidget {
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.vertical,
-            padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
+            //padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
             separatorBuilder: (context, index) => SizedBox(width: 20.w),
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
@@ -177,7 +177,7 @@ class MyConnects extends StatelessWidget {
                               ),
                               SizedBox(height: 10.h),
                               Text(
-                                data['id'],  //getFirstName(fullName: data['name']),
+                                'Tap to message',  //getFirstName(fullName: data['name']),
                                 style: GoogleFonts.poppins(
                                   color: AppTheme().darkGreyColor,
                                   fontSize: 14.sp,

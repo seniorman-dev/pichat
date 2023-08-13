@@ -49,7 +49,7 @@ import 'package:pichat/utils/snackbar.dart';
             vertical: 40.h, //50.h
           ),
           content: SizedBox(
-            height: 180.h,
+            height: 200.h, //180.h
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -110,7 +110,7 @@ import 'package:pichat/utils/snackbar.dart';
                       Expanded(
                         child: SizedBox(
                           height: 50,
-                          width: 100,
+                          //width: 100,
                           child: ElevatedButton(
                             onPressed: () {
                               signOut();
@@ -143,7 +143,7 @@ import 'package:pichat/utils/snackbar.dart';
                       Expanded(
                         child: SizedBox(
                           height: 50,
-                          width: 100,
+                          //width: 100,
                           child: ElevatedButton(
                             onPressed: () {
                               Get.back();

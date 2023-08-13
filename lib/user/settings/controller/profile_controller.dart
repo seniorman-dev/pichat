@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pichat/utils/snackbar.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
+import 'package:country_code_picker/country_code_picker.dart';
 
 
 
@@ -24,16 +25,21 @@ class ProfileController extends ChangeNotifier {
   String? get userEmail => firebase.currentUser!.email;
   bool isLoading = false; 
 
-  //for radio widget for selecting gender when a user is trying to edit and update
+  //for selecting country (save to db) //save to db
+  CountryCode? selectedCountryCode;
+  String? selectedCountry;
+
+  //for radio widget for selecting gender when a user is trying to edit and update profile
   bool isActivated = false;
   String? gender; //save to db
+
   
   
   //for textformfields to perform validation operations
   final formKey = GlobalKey<FormState>();
 
   //for textformfields to automatically scroll to the next seamlessly
-  final List<FocusNode> focusNodes = List.generate(4, (index) => FocusNode());
+  final List<FocusNode> focusNodes = List.generate(2, (index) => FocusNode());
 
 
   //final TextEditingController userNameTextController = TextEditingController();  
@@ -111,7 +117,7 @@ class ProfileController extends ChangeNotifier {
   }
   
   //update user prfile
-  Future<void> updateUserProfile({required String name, required String email, required String biography, required String url, required String dob, required bool isProfileUpdated}) async{
+  Future<void> updateUserProfile({required String gender, required String name, required String email, required String biography, required String url, required String dob, required bool isProfileUpdated}) async{
     try {
       await firestore
       .collection('users')
@@ -119,11 +125,11 @@ class ProfileController extends ChangeNotifier {
       .update({
         'name': name,
         'email': email,
-        //'photo': photo,
         'bio': biography,
         'link': url,
         'dob': dob,
         'gender': gender, //male or female
+        'country': selectedCountry,
         'isProfileUpdated': isProfileUpdated
       });
     }

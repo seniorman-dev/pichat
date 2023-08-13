@@ -99,6 +99,7 @@ class _ChatListState extends State<ChatList> {
               ),
             );
           }
+
           return Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 15.w, //20.w
@@ -110,7 +111,7 @@ class _ChatListState extends State<ChatList> {
                 vertical: 10.h  //20.h
               ),
               controller: chatServiceController.messageController,
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
@@ -204,8 +205,8 @@ class _ChatListState extends State<ChatList> {
                           //height: 80.h,
                           width: 200.w,
                           padding: EdgeInsets.symmetric(
-                            vertical: 15.h, //20.h
-                            horizontal: 15.w  //15.h
+                            vertical: 10.h, //15.h
+                            horizontal: 10.w  //15.h
                           ),
                           decoration: BoxDecoration(
                             color: data['senderId'] == authController.userID ? AppTheme().mainColor : AppTheme().lightGreyColor,  ///tweak this instead to suit the chatters
@@ -226,11 +227,11 @@ class _ChatListState extends State<ChatList> {
                             data['message'],
                             style: GoogleFonts.poppins(  //urbanist
                               color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
-                              fontSize: 12.sp,
+                              fontSize: 15.sp,
                               fontWeight: FontWeight.w500,
-                                /*textStyle: TextStyle(
-                                  overflow: TextOverflow.ellipsis
-                                )*/
+                              textStyle: TextStyle(
+                                overflow: TextOverflow.visible
+                              )
                             ),
                           ),
                         ),
@@ -262,10 +263,12 @@ class _ChatListState extends State<ChatList> {
                               ?Icon(
                                 Icons.done_all_rounded,
                                 color: Colors.grey,
+                                size: 20.r,
                               )
                               :Icon(
                                 CupertinoIcons.checkmark_alt,
                                 color: Colors.grey,
+                                size: 20.r,
                               ),
                 
                           ],

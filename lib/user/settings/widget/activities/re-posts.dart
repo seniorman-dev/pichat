@@ -67,7 +67,7 @@ class _RePostsState extends State<RePosts> {
                   ),
                   SizedBox(height: 50.h),
                   Text(
-                    "No re-post found",
+                    "No re-posts found",
                     style: GoogleFonts.poppins(
                       color: AppTheme().greyColor,
                       fontSize: 14.sp,
@@ -376,7 +376,7 @@ class _RePostsState extends State<RePosts> {
 
                               SizedBox(width: 5.w,),
 
-                              StreamBuilder(
+                              /*StreamBuilder(
                                 stream: feedsController.repostForUserProfileDoc(postId: data['postId']),
                                 builder: (context, snapshot) {
                                   //var data = snapshot.data!.data();  //how to call document snapshots
@@ -417,10 +417,11 @@ class _RePostsState extends State<RePosts> {
                                         feedsController.rePostAPost(
                                           postId: data['postId'], 
                                           postContent: data['postContent'], 
-                                          postName: data['posterName'], 
+                                          posterName: data['posterName'], 
                                           postTitle: data['posterTitle'], 
                                           posterId: data['posterId'], 
-                                          posterPhoto: data['posterPhoto']
+                                          posterPhoto: data['posterPhoto'],
+                                          isImage: data['isImage']
                                         );
                                       },
                                       onTapCancel: () => feedsController.deleteRepost(postId: data['postId']),
@@ -443,10 +444,10 @@ class _RePostsState extends State<RePosts> {
                                      ),
                                   );
                                 }
-                              ),
+                              ),*/
                               /////////////////////////
                               
-                              StreamBuilder(
+                              /*StreamBuilder(
                                 stream: feedsController.repostForUserProfileDoc(postId: data['postId']),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData && snapshot.data!.exists) {
@@ -457,10 +458,11 @@ class _RePostsState extends State<RePosts> {
                                         feedsController.rePostAPost(
                                           postId: data['postId'], 
                                           postContent: data['postContent'], 
-                                          postName: data['posterName'], 
+                                          posterName: data['posterName'], 
                                           postTitle: data['posterTitle'], 
                                           posterId: data['posterId'], 
-                                          posterPhoto: data['posterPhoto']
+                                          posterPhoto: data['posterPhoto'], 
+                                          isImage: data['isImage']
                                         );
                                       },
                                       onTapCancel: () => feedsController.deleteRepost(postId: data['postId']),
@@ -473,7 +475,7 @@ class _RePostsState extends State<RePosts> {
                                 }
                                 return SizedBox();
                               }
-                            ),
+                            ),*/
                           ],
                         ),
                         SizedBox(height: 5.h,),
@@ -495,7 +497,7 @@ class _RePostsState extends State<RePosts> {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
                                           // Show a loading indicator while waiting for data
                                           return Text(
-                                            //posts
+                                            
                                             '....',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().greyColor,
@@ -510,7 +512,7 @@ class _RePostsState extends State<RePosts> {
                                         if (snapshot.hasError) {
                                           // Handle error if any
                                           return Text(
-                                            //posts
+                                            
                                             '....',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().redColor,
@@ -524,7 +526,7 @@ class _RePostsState extends State<RePosts> {
                                         }
                                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                                           return Text(
-                                            //posts
+                                            
                                             '....',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().mainColor, //.lightestOpacityBlue,
@@ -592,7 +594,7 @@ class _RePostsState extends State<RePosts> {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
                                           // Show a loading indicator while waiting for data
                                           return Text(
-                                            //posts
+                                            
                                             '....',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().greyColor,
@@ -607,7 +609,7 @@ class _RePostsState extends State<RePosts> {
                                         if (snapshot.hasError) {
                                           // Handle error if any
                                           return Text(
-                                            //posts
+                                          
                                             '....',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().redColor,
@@ -621,7 +623,7 @@ class _RePostsState extends State<RePosts> {
                                         }
                                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                                           return Text(
-                                            //posts
+                                        
                                             '....',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().mainColor, //.lightestOpacityBlue,
@@ -689,7 +691,7 @@ class _RePostsState extends State<RePosts> {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
                                           // Show a loading indicator while waiting for data
                                           return Text(
-                                            //posts
+                                            
                                             '....',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().greyColor,
@@ -704,7 +706,7 @@ class _RePostsState extends State<RePosts> {
                                         if (snapshot.hasError) {
                                           // Handle error if any
                                           return Text(
-                                            //posts
+                                            
                                             '....',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().redColor,
@@ -718,7 +720,7 @@ class _RePostsState extends State<RePosts> {
                                         }
                                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                                           return Text(
-                                            //posts
+                                          
                                             '....',
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().mainColor, //.lightestOpacityBlue,
@@ -762,7 +764,7 @@ class _RePostsState extends State<RePosts> {
                                     ),
                                     SizedBox(width: 5.w,),
                                     Text(
-                                      're-post',
+                                      're-posts',
                                       style: GoogleFonts.poppins(
                                         color: AppTheme().blackColor,
                                         fontSize: 12.sp,

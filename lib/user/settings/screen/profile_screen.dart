@@ -121,13 +121,18 @@ class ProfileScreen extends StatelessWidget {
 
                   //////////////**pick and save some of these to database*/////////////////
                   String checkDate = profileController.selectedDate!.isEmpty ? 'Select Date' : profileController.selectedDate!;
+                  String checkCountry = profileController.selectedCountry == null ? 'Select Country' : profileController.selectedCountry!;
+                  String checkGender = profileController.gender ?? 'Gender'; //profileController.gender == null ? 'Select Gender' : profileController.gender!;
                   bool isProfileUpdated = snapshot.data!.data()!['isProfileUpdated'] ?? false;
                   String name = snapshot.data!.data()!['name'];
                   String email = snapshot.data!.data()!['email']; 
                   String photo = snapshot.data!.data()!['photo'];
-                  String bioText = snapshot.data!.data()!['bio'] ?? 'This is a dummy bio-text. Kindly update your profile';
-                  String myLink = snapshot.data!.data()!['link'] ?? 'link to other socials';
-                  String myDOB = snapshot.data!.data()!['dob'] ?? checkDate;//profileController.selectedDate; //profileController.selectedDate!.isEmpty ? 'Select Date' : profileController.selectedDate!;
+                  String bioText = snapshot.data!.data()!['bio'] ?? 'Update your bio';
+                  String myLink = snapshot.data!.data()!['link'] ?? 'affiliated link';
+                  String myDOB = snapshot.data!.data()!['dob'] ?? checkDate;
+                  String myCountry = snapshot.data!.data()!['country'] ?? checkCountry;
+                  String myGender = snapshot.data!.data()!['gender'] ?? checkGender;
+
 
 
                   return Padding(
@@ -551,6 +556,9 @@ class ProfileScreen extends StatelessWidget {
                                         isProfileUpdated: isProfileUpdated, 
                                         bio: bioText, 
                                         link: myLink,
+                                        selectedCountry: myCountry,
+                                        selectedGender: myGender,
+                                        
                                       ));
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -664,7 +672,7 @@ class ProfileScreen extends StatelessWidget {
                         onPressed: () {
                           Get.to(() => ViewPostsScreen());
                         }, 
-                        title: 'View Posts',
+                        title: 'Activities',
                       ),
                       SizedBox(height: 20.h,),
                       ProfileItem(

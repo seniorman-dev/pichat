@@ -423,7 +423,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                       feedsController.unlikeACommentUnderAPost(postId: data['postId'], commentId: data['commentId']);
                                     }, 
                                     child: Icon(
-                                      feedsController.isCommentLiked && data['commenterId']? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                                      feedsController.isCommentLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
                                       size: 24.r,
                                       color: feedsController.isCommentLiked? AppTheme().mainColor: AppTheme().darkGreyColor,
                                     )

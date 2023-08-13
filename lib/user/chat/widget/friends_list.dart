@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +11,9 @@ import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/screen/dm_screen.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/extract_firstname.dart';
-import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
-import 'all_users_list.dart';
+
 
 
 
@@ -120,11 +120,24 @@ class FriendsList extends StatelessWidget {
                         backgroundColor: AppTheme().opacityBlue,
                         child: CircleAvatar(
                           radius: 38.r,
-                          backgroundColor: AppTheme().lightGreyColor,
-                          child: Icon(    ////data['photo']
-                            CupertinoIcons.person,
-                            color: AppTheme().blackColor,
-                            size: 40.r,
+                          backgroundColor: data['photo'] == null ? AppTheme().darkGreyColor : AppTheme().blackColor,
+                          //backgroundColor: AppTheme().darkGreyColor,
+                          child: data['photo'] == null 
+                          ?null
+                          :ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
+                            clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
+                            child: CachedNetworkImage(
+                              imageUrl: data['photo'],
+                              width: 50.w,
+                              height: 50.h,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Loader(),
+                              errorWidget: (context, url, error) => Icon(
+                                Icons.error,
+                                color: AppTheme().lightestOpacityBlue,
+                              ),
+                            ),
                           ),
                         ),
                       ),

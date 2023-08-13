@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -153,7 +154,24 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                 backgroundColor: AppTheme().opacityBlue,
                                 child: CircleAvatar(
                                   radius: 30.r,
-                                  backgroundColor: AppTheme().darkGreyColor,
+                                  backgroundColor: data['photo'] == null ? AppTheme().darkGreyColor : AppTheme().blackColor,
+                                  child: data['photo'] == null 
+                                  ?null
+                                  :ClipRRect(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
+                                    clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
+                                    child: CachedNetworkImage(
+                                      imageUrl: data['photo'],
+                                      width: 40.w,
+                                      height: 40.h,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Loader(),
+                                      errorWidget: (context, url, error) => Icon(
+                                        Icons.error,
+                                        color: AppTheme().lightestOpacityBlue,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                               SizedBox(width: 10.w,),

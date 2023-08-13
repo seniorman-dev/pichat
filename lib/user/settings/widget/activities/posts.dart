@@ -376,8 +376,8 @@ class _MyPostsState extends State<MyPosts> {
                               ),
 
                               SizedBox(width: 5.w,),
-
-                              StreamBuilder(
+                            
+                              /*StreamBuilder(
                                 stream: feedsController.repostForUserProfileDoc(postId: data['postId']),
                                 builder: (context, snapshot) {
                                   //var data = snapshot.data!.data();  //how to call document snapshots
@@ -418,10 +418,11 @@ class _MyPostsState extends State<MyPosts> {
                                         feedsController.rePostAPost(
                                           postId: data['postId'], 
                                           postContent: data['postContent'], 
-                                          postName: data['posterName'], 
+                                          posterName: data['posterName'], 
                                           postTitle: data['posterTitle'], 
                                           posterId: data['posterId'], 
-                                          posterPhoto: data['posterPhoto']
+                                          posterPhoto: data['posterPhoto'],
+                                          isImage: data['isImage']
                                         );
                                       },
                                       onTapCancel: () => feedsController.deleteRepost(postId: data['postId']),
@@ -444,10 +445,10 @@ class _MyPostsState extends State<MyPosts> {
                                      ),
                                   );
                                 }
-                              ),
+                              ),*/
                               /////////////////////////
                               
-                              StreamBuilder(
+                              /*StreamBuilder(
                                 stream: feedsController.repostForUserProfileDoc(postId: data['postId']),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData && snapshot.data!.exists) {
@@ -458,10 +459,11 @@ class _MyPostsState extends State<MyPosts> {
                                         feedsController.rePostAPost(
                                           postId: data['postId'], 
                                           postContent: data['postContent'], 
-                                          postName: data['posterName'], 
+                                          posterName: data['posterName'], 
                                           postTitle: data['posterTitle'], 
                                           posterId: data['posterId'], 
-                                          posterPhoto: data['posterPhoto']
+                                          posterPhoto: data['posterPhoto'], 
+                                          isImage: data['isImage']
                                         );
                                       },
                                       onTapCancel: () => feedsController.deleteRepost(postId: data['postId']),
@@ -474,7 +476,7 @@ class _MyPostsState extends State<MyPosts> {
                                 }
                                 return SizedBox();
                               }
-                            ),
+                            ),*/
                           ],
                         ),
                         SizedBox(height: 5.h,),
@@ -766,7 +768,7 @@ class _MyPostsState extends State<MyPosts> {
                                     ),
                                     SizedBox(width: 5.w,),
                                     Text(
-                                      're-post',
+                                      're-posts',
                                       style: GoogleFonts.poppins(
                                         color: AppTheme().blackColor,
                                         fontSize: 12.sp,

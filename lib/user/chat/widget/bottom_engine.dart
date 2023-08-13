@@ -56,16 +56,16 @@ class BottomEngine extends StatelessWidget {
     //wrap with positioned
     return Padding(
       padding: EdgeInsets.symmetric(
-        vertical: 20.h, //20.h
-        horizontal: 25.w  //20.h
+        vertical: 0.h, //25.h
+        horizontal: 10.w  //20.h
       ),
       child: Container(
         alignment: Alignment.center,
-        height: 60.h, //80.h
+        height: 70.h, //60.h
         //width: 400.w,
         padding: EdgeInsets.symmetric(
-          vertical: 2.h, //10.h
-          horizontal: 15.w  //15.h
+          vertical: 0.h, //2.h
+          horizontal: 10.w  //15.h
         ),
         decoration: BoxDecoration(
           color: AppTheme().whiteColor,
@@ -93,15 +93,16 @@ class BottomEngine extends StatelessWidget {
             VerticalDivider(color: AppTheme().darkGreyColor,thickness: 1,),
             SizedBox(width: 5.w,),
             Expanded(
-              child: TextFormField(   
-                onTap: () async{},       
+              child: TextFormField( 
+                autofocus: true,  
+                onTap: () {},       
                 scrollPhysics: const BouncingScrollPhysics(),
                 scrollController: ScrollController(),
-                textInputAction: TextInputAction.newline,
+                textInputAction: TextInputAction.done,
                 textCapitalization: TextCapitalization.sentences,
-                focusNode: focusNode,
+                //focusNode: focusNode,
                 minLines: 1,
-                maxLines: 8,
+                maxLines: 10,
                 enabled: true,
                 controller: textController,
                 keyboardType: TextInputType.multiline,
@@ -113,7 +114,7 @@ class BottomEngine extends StatelessWidget {
                 decoration: InputDecoration(        
                   border: InputBorder.none,        
                   hintText: 'Type a message...',
-                  hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 13.sp),              
+                  hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 14.sp),              
                 )
               ),
             ),

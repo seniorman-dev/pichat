@@ -195,7 +195,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20.h,),   
+                    SizedBox(height: 20.h,),
+                       
                     //to get logged in user's name
                     StreamBuilder(
                       stream: controller.firestore.collection('users').doc(controller.userID).snapshots(),
@@ -233,52 +234,108 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                           if (data != null) {
                             // Access the data safely
                             var firstName = getFirstName(fullName: data['name']);  
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Hello $firstName,',
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      color: AppTheme().darkGreyColor,
-                                      fontSize: 13.sp, //12.sp
-                                      fontWeight: FontWeight.w500
-                                    )
+                                //SizedBox(height: 20.h),
+
+                                //check if user has updated their profile (so that it can ginger them to update their profile)
+                                data['isProfileUpdated'] ? SizedBox() :
+                                Center(
+                                  child: Container(
+                                    height: 40.h,
+                                    width: 140.w,
+                                    //padding: EdgeInsets.all(10),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 0.h, //0.h
+                                      horizontal: 5.w  //10.w
+                                    ),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: AppTheme().opacityBlue, //.whiteColor,
+                                      borderRadius: BorderRadius.circular(30.r),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.2),
+                                          spreadRadius: 0.1.r,
+                                          blurRadius: 8.0.r,
+                                        )
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          CupertinoIcons.settings_solid,
+                                          color: AppTheme().blackColor, //.opacityBlue,
+                                        ),
+                                        SizedBox(width: 5.w),
+                                        Text(
+                                          'update profile',
+                                          style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                              color: AppTheme().blackColor,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 12.sp,
+                                              overflow: TextOverflow.ellipsis
+                                            )
+                                          )
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
+                                /////////////////
+                                SizedBox(height: 20.h),
 
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        CupertinoIcons.person_add,
-                                        color: AppTheme().blackColor,
-                                        size: 30.r,
+                                    Text(
+                                      'Hello $firstName,',
+                                      style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                          color: AppTheme().darkGreyColor,
+                                          fontSize: 13.sp, //12.sp
+                                          fontWeight: FontWeight.w500
+                                        )
                                       ),
-                                      onPressed: () {
-                                        Get.to(() => const AllUsersList());
-                                      },          
                                     ),
-                                    IconButton(
-                                      icon: Icon(
-                                        CupertinoIcons.app_badge,
-                                        color: AppTheme().blackColor,
-                                        size: 30.r,
-                                      ),
-                                      onPressed: () {
-                                        Get.to(() => const FriendsRequestList());
-                                      },          
-                                    ),
-                                    //SizedBox(width: 2.w,),
-                                    IconButton(
-                                      icon: Icon(
-                                        CupertinoIcons.bell,
-                                        color: AppTheme().blackColor,
-                                        size: 30.r,
-                                      ),
-                                      onPressed: () {
-                                        Get.to(() => const NotificationScreen());
-                                      },          
+
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(
+                                            CupertinoIcons.person_add,
+                                            color: AppTheme().blackColor,
+                                            size: 30.r,
+                                          ),
+                                          onPressed: () {
+                                            Get.to(() => const AllUsersList());
+                                          },          
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            CupertinoIcons.app_badge,
+                                            color: AppTheme().blackColor,
+                                            size: 30.r,
+                                          ),
+                                          onPressed: () {
+                                            Get.to(() => const FriendsRequestList());
+                                          },          
+                                        ),
+                                        //SizedBox(width: 2.w,),
+                                        IconButton(
+                                          icon: Icon(
+                                            CupertinoIcons.bell,
+                                            color: AppTheme().blackColor,
+                                            size: 30.r,
+                                          ),
+                                          onPressed: () {
+                                            Get.to(() => const NotificationScreen());
+                                          },          
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -327,54 +384,27 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                           ),
                         )
                       ],
-                    )
-
-                    //////////////GEOLOCATOR
-                    /*Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            InkWell(
-                              onTap: () async{},
-                              child: Icon(
-                                CupertinoIcons.placemark_fill,
-                                color: AppTheme().blackColor,
-                              ),
-                            ),
-
-                            SizedBox(width: 2.w),
-                            
-                            Text(
-                              location,
-                              style: GoogleFonts.poppins(
-                                color: AppTheme().blackColor,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                textStyle: const TextStyle(
-                                  overflow: TextOverflow.ellipsis
-                                )
-                              ),
-                            )
-                          ],
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            CupertinoIcons.bell,
-                            color: AppTheme().blackColor,
-                            size: 30.r,
-                          ),
-                          onPressed: () {
-                            Get.to(() => const NotificationScreen());
-                          },          
-                        ),
-                      ],
-                    )*/
+                    ),
                   ],
                 ),
               ),
 
-              SizedBox(height: 10.h,), //20.h
+              //SizedBox(height: 10.h,), //20.h
+
+              //search for recent chats
+              SearchTextField(
+                textController: chatServiceontroller.recentChatsTextController,
+                  onChanged: (value) {
+                    /*setState(() {
+                      chatServiceontroller.recentChatsTextController.text = value;
+                      chatServiceontroller.isSearchingRecentChats = true;
+                      debugPrint("Value: $value");
+                    });*/
+                  }, 
+                hintText: 'Search recent messages...',
+              ),
+
+              SizedBox(height: 20.h,),
 
               //list of friends & add friend/connect button
               FriendsList(),
@@ -390,21 +420,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
               ),
 
               //SizedBox(height: 10.h,), //20.h
-
-              //search for recent chats
-              SearchTextField(
-                textController: chatServiceontroller.recentChatsTextController,
-                onChanged: (value) {
-                  /*setState(() {
-                    chatServiceontroller.recentChatsTextController.text = value;
-                    chatServiceontroller.isSearchingRecentChats = true;
-                    debugPrint("Value: $value");
-                  });*/
-                }, 
-                hintText: 'Search recent messages...',
-              ),
-
-              SizedBox(height: 20.h,), //20.h
 
               //recent chats stream
               RecentChats(),

@@ -80,7 +80,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 100.h),
+            SizedBox(height: 70.h),  //80.h
 
             //image (remove sizedbox later)
             SizedBox(
@@ -148,10 +148,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
                       alignment: Alignment.center,
                       //height: 65.h, //55.h,
                       child: TextFormField(
-                        focusNode: feedsController.focusNode,
-                        onEditingComplete: () {
-                          FocusScope.of(context).requestFocus(feedsController.focusNode);
-                        },
+                        autofocus: true,
                         controller: feedsController.postTextController,
                         spellCheckConfiguration: SpellCheckConfiguration(),
                         scrollPadding: EdgeInsets.symmetric(
@@ -281,7 +278,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
                 )
               ),
                   
-            SizedBox(height: 30.h),
+            SizedBox(height: 50.h),
 
             SizedBox(
               height: 70.h,
@@ -310,7 +307,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
                 ),
               ),
             ),
-            SizedBox(height: 20.h)
+            SizedBox(height: 100.h)
           ]
         )
       )

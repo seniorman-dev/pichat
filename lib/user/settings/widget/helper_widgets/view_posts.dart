@@ -1,16 +1,11 @@
 import 'package:pichat/user/settings/widget/activities/connects.dart';
 import 'package:pichat/user/settings/widget/activities/posts.dart';
 import 'package:pichat/user/settings/widget/activities/re-posts.dart';
-import 'package:pichat/utils/error_loader.dart';
-import 'package:pichat/utils/loader.dart';
-import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 
 
@@ -29,9 +24,14 @@ class ViewPostsScreen extends StatefulWidget {
   State<ViewPostsScreen> createState() => _ViewPostsScreenState();
 }
 
-class _ViewPostsScreenState extends State<ViewPostsScreen> with SingleTickerProviderStateMixin{
+class _ViewPostsScreenState extends State<ViewPostsScreen> with TickerProviderStateMixin {
+
   @override
   Widget build(BuildContext context) {
+
+    //tabbar controller
+    TabController tabBarController = TabController(length: 3, vsync: this);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppTheme().whiteColor,
@@ -57,35 +57,10 @@ class _ViewPostsScreenState extends State<ViewPostsScreen> with SingleTickerProv
               fontWeight: FontWeight.w500
             )
           ),
-        ),
-        body: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(), //BouncingScrollPhysics(),
-          child: buildBody(context),
-        ),
-      ),
-    );
-  }
-
-  Widget buildBody(BuildContext context) {
-    return _tabSection(context);
-    /*Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 20.h,),
-        //Tab Bar Next
-        _tabSection(context)
-      ],
-    );*/
-  }
-
-  Widget _tabSection(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[           
-          TabBar(
-            isScrollable: false,
+ 
+          bottom: TabBar(
+            controller: tabBarController,
+            isScrollable: true,
             physics: const BouncingScrollPhysics(),
             labelColor: AppTheme().mainColor,
             unselectedLabelColor: AppTheme().greyColor,
@@ -124,22 +99,29 @@ class _ViewPostsScreenState extends State<ViewPostsScreen> with SingleTickerProv
                 ),
               ),
             ]
-          ),  
-          SizedBox( 
-            //Add this to give height
-            height: MediaQuery.of(context).size.height,
-            child: TabBarView(
-              //controller: TabController(length: 3, vsync: this),
-              physics: BouncingScrollPhysics(),
-              children: [           
-                MyPosts(),              
-                RePosts(),
-                MyConnects()
-            ]
           ),
+       ),
+        body: SafeArea(
+          //physics: NeverScrollableScrollPhysics(), //BouncingScrollPhysics(),
+          child: _tabSection(context, tabBarController),
         ),
+      ),
+    );
+  }
+  Widget _tabSection(BuildContext context, TabController tabBarController) {
+    return TabBarView(
+      physics: const BouncingScrollPhysics(),
+      controller: tabBarController,
+      children: const [
+        MyPosts(),              
+        RePosts(),
+        MyConnects()     
       ],
-    ),
-  );
+    );
+  }
 }
-}
+
+
+
+
+

@@ -37,7 +37,9 @@ class FeedsController extends ChangeNotifier {
   //global key for form field
   GlobalKey formKey = GlobalKey<FormState>();
   //for post textformfield
-  FocusNode focusNode = FocusNode(); //for keyboard
+  FocusNode focusNode = FocusNode(); //for keyboard for uploading post
+  FocusNode focusNode2 = FocusNode(); //for keyboard for commenting on a post
+
   //for commenting textformfield
   FocusNode focusNodeForCommentTextfield = FocusNode(); //for keyboard
 
@@ -51,7 +53,8 @@ class FeedsController extends ChangeNotifier {
   //check if it is a video or picture content that wants to be uploaded
   bool isContentImage = false;
 
-
+  bool isLiked = false;
+  bool isReposted = false;
 
 
   @override
@@ -246,7 +249,7 @@ class FeedsController extends ChangeNotifier {
     String userName = snapshot.get('name');
     String userId = snapshot.get('id');
     String userPhoto = snapshot.get('photo');
-    bool userOnline = snapshot.get('isOnline');
+    //bool userOnline = snapshot.get('isOnline');
     //////////////////////////////////
     
     //like post on the general TL (will call this query snapshot stream in logged in users profile)
@@ -373,7 +376,7 @@ class FeedsController extends ChangeNotifier {
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   //repost a post function
-  Future<void> rePostAPost({required String postId, required String posterId, required String postName, required String posterPhoto, required String postTitle, required String postContent}) async{
+  Future<void> rePostAPost({required bool isImage, required String postId, required String posterId, required String posterName, required String posterPhoto, required String postTitle, required String postContent}) async{
     //do this if you want to get any logged in user property 
     DocumentSnapshot snapshot = await firestore
     .collection('users')
@@ -384,31 +387,40 @@ class FeedsController extends ChangeNotifier {
     String userPhoto = snapshot.get('photo');
     bool userOnline = snapshot.get('isOnline');
     //////////////////////////////////
-    var newId = (Random().nextInt(1000000)).toString();
+    var repostId = (Random().nextInt(100000)).toString();
 
+    //just to show who reposted on the feeds screen
     /*await firestore
     .collection('feeds')
     .doc(postId)
     .update({
-      'repostedBy': userName
+      'reposters': FieldValue.arrayUnion([
+        {
+          'reposterName': userName,
+          'reposterId': userId,
+          'reposterPhoto': userPhoto,
+        }
+      ])
     });*/
     
-    //repost the post on the general TL
+    //repost the post on the general TL (to allow user to only repost once)
     await firestore
     .collection('feeds')
-    .doc(newId)
+    .doc(userID)
     .set({
-      'postId': newId,
+      'postId': postId,
+      'repostId': repostId,
       'posterId': posterId,
-      'posterName': postName,
+      'posterName': posterName,
       'posterPhoto': posterPhoto,
       'postTitle': postTitle,
       'postContent': postContent,
       'isReposted': true,
+      'isImage': isImage,
+      'timestamp': Timestamp.now(),
       'reposterName': userName,
       'reposterId': userId,
       'reposterPhoto': userPhoto,
-      'timestamp': Timestamp.now()
     });
 
     //update the "re-posts" collection reference for posts on the TL (it is this stream that we are going to call for each unique post on the TL or feeds. to dislay their length)
@@ -418,13 +430,15 @@ class FeedsController extends ChangeNotifier {
     .collection('reposts')
     .doc(userId)
     .set({
-      'postId': newId,
+      'postId': postId,
+      'repostId': repostId,
       'posterId': posterId,
-      'posterName': postName,
+      'posterName': posterName,
       'posterPhoto': posterPhoto,
       'postTitle': postTitle,
       'postContent': postContent,
       'isReposted': true,
+      'isImage': isImage,
       'reposterName': userName,
       'reposterId': userId,
       'reposterPhoto': userPhoto,
@@ -439,12 +453,14 @@ class FeedsController extends ChangeNotifier {
     .doc(postId)
     .set({
       'postId': postId,
+      'repostId': repostId,
       'posterId': posterId,
-      'posterName': postName,
+      'posterName': posterName,
       'posterPhoto': posterPhoto,
       'postTitle': postTitle,
       'postContent': postContent,
       'isReposted': true,
+      'isImage': isImage,
       'reposterName': userName,
       'reposterId': userId,
       'reposterPhoto': userPhoto,
@@ -491,14 +507,9 @@ class FeedsController extends ChangeNotifier {
     .get();
     String userName = snapshot.get('name');
     String userId = snapshot.get('id');
+    String userPhoto = snapshot.get('photo');
     //////////////////////////////////
-    ///
-    await firestore
-    .collection('feeds')
-    .doc(postId)
-    .update({
-      'isReposted': false,
-    });
+    
     ///
     await firestore
     .collection('feeds')
@@ -518,6 +529,12 @@ class FeedsController extends ChangeNotifier {
       'isReposted': false,
     });
 
+    //deletes the main reposted post from the TL(i used the poster's document id to tail it)
+    await firestore
+    .collection('feeds')
+    .doc(userID)
+    .delete();
+    
     
     //delete a re-post on the general TL
     await firestore
@@ -539,10 +556,10 @@ class FeedsController extends ChangeNotifier {
 
   
 
-
-  //////////Comment on a post
+                 //*Comment on a post**//
+  /////////////////////////////////////////////////////////////////////
   //comment on a post function
-  Future<void> commentOnApost({required String postId}) async{
+  Future<void> commentOnApost({required String postId, required String posterName}) async{
 
     //post id
     var commentId = (Random().nextInt(100000)).toString();
@@ -566,6 +583,7 @@ class FeedsController extends ChangeNotifier {
     .doc(commentId)
     .set({
       'postId': postId,
+      'posterName': posterName,
       'comment': commentTextController.text,
       'commentId': commentId,
       'commenterId': userId,
@@ -585,6 +603,7 @@ class FeedsController extends ChangeNotifier {
     .doc(commentId)
     .set({
       'postId': postId,
+      'posterName': posterName,
       'comment': commentTextController.text,
       'commentId': commentId,
       'commenterId': userId,
@@ -593,7 +612,77 @@ class FeedsController extends ChangeNotifier {
       'userCommented': true,
       'timestamp': Timestamp.now()
     });
+  }
+  
 
+
+
+  ////boolean affiliated to this function below
+  bool isCommentLiked = false;
+  //for comments on a feed
+  Future<void> likeACommentUnderAPost({required String postId, required String commentId}) async {
+    //do this if you want to get any logged in user property 
+    DocumentSnapshot snapshot = await firestore
+    .collection('users')
+    .doc(userID)
+    .get();
+    String userName = snapshot.get('name');
+    String userId = snapshot.get('id');
+    String userPhoto = snapshot.get('photo');
+    bool userOnline = snapshot.get('isOnline');
+    //////////////////////////////////
+    
+    await firestore
+    .collection('feeds')
+    .doc(postId)
+    .collection('comments')
+    .doc(commentId)
+    .collection('likes')
+    .doc(userId)
+    .set({
+      'userName': userName,
+      'userId': userId,
+      'userPhoto': userPhoto,
+      'timestamp': Timestamp.now()
+    });
+  }
+
+  //the stream affiliated to the above function
+  //stream of users that commeted a post uniquely(for user profile)
+  Stream<QuerySnapshot<Map<String, dynamic>>> usersWhoLikedACommentUnderAPostStream({required String postId, required String commentId}) async* {
+    yield*
+    firestore
+    .collection('feeds')
+    .doc(postId)
+    .collection('comments')
+    .doc(commentId)
+    .collection('likes')
+    .orderBy('timestamp', descending: true)
+    .snapshots();
+  }
+
+
+
+
+  //for comments on a feed
+  Future<void> unlikeACommentUnderAPost({required String postId, required String commentId}) async {
+    //do this if you want to get any logged in user property 
+    DocumentSnapshot snapshot = await firestore
+    .collection('users')
+    .doc(userID)
+    .get();
+
+    String userId = snapshot.get('id');
+    //////////////////////////////////
+    
+    await firestore
+    .collection('feeds')
+    .doc(postId)
+    .collection('comments')
+    .doc(commentId)
+    .collection('likes')
+    .doc(userId)
+    .delete();
   }
 
 
