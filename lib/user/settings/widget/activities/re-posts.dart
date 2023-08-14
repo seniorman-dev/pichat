@@ -238,7 +238,7 @@ class _RePostsState extends State<RePosts> {
                                     Text(
                                       formatTime(timestamp: data['timestamp']),
                                       style: GoogleFonts.poppins(
-                                        color: AppTheme().darkGreyColor,
+                                        color: AppTheme().greyColor,
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w500,
                                         textStyle: const TextStyle(

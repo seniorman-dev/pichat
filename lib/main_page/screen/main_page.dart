@@ -4,6 +4,7 @@ import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/calls/screen/calls.dart';
 import 'package:pichat/user/chat/screen/home_screen.dart';
 import 'package:pichat/user/feeds/screen/feeds_screen.dart';
+import 'package:pichat/user/group_chat/screen/group_chat_screen.dart';
 import 'package:pichat/user/settings/screen/profile_screen.dart';
 
 
@@ -29,6 +30,7 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> widgetOptions = <Widget>[
     const ChatScreen(),
+    const GroupChatMessages(),
     const FeedScreen(),
     const CallScreen(),
     const ProfileScreen()

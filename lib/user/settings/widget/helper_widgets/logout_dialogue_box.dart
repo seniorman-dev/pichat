@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/screen/login_screen.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/utils/snackbar.dart';
@@ -92,7 +93,7 @@ import 'package:pichat/utils/snackbar.dart';
                     children: [
                       Text(
                         'Are you sure you want to logout?',
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           color: AppTheme().blackColor, //.normalGreyColor,
                           fontWeight: FontWeight.w500,
                           fontSize: 15.sp
@@ -129,7 +130,7 @@ import 'package:pichat/utils/snackbar.dart';
                             ),
                             child: Text(
                               "Yes",
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 color: AppTheme().mainColor,
                                 fontSize: 16.sp,
                               ),
@@ -164,7 +165,7 @@ import 'package:pichat/utils/snackbar.dart';
                             ),
                             child: Text(
                               "No",
-                              style: TextStyle(
+                              style:  GoogleFonts.poppins(
                                 color: AppTheme().whiteColor,
                                 fontSize: 16.sp,
                               ),

@@ -253,15 +253,17 @@ class _FeedScreenState extends State<FeedScreen> {
                                             CircleAvatar(
                                               backgroundColor: AppTheme().lightGreyColor,
                                               radius: 20.r,
-                                              child: IconButton(
-                                                icon: const Icon(
-                                                  Icons.more_horiz_rounded,
+                                              child: Center(
+                                                child: IconButton(
+                                                  icon: const Icon(
+                                                    Icons.more_horiz_rounded,
+                                                  ),
+                                                  color: AppTheme().blackColor,
+                                                  iconSize: 20.r,
+                                                  onPressed: () {
+                                                    //open dialogue for more options
+                                                  },
                                                 ),
-                                                color: AppTheme().blackColor,
-                                                iconSize: 20.r,
-                                                onPressed: () {
-                                                  //open dialogue for more options
-                                                },
                                               )
                                             )
                                           ],
@@ -270,7 +272,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                         Text(
                                           formatTime(timestamp: data['timestamp']),
                                           style: GoogleFonts.poppins(
-                                            color: AppTheme().darkGreyColor,
+                                            color: AppTheme().greyColor,
                                             fontSize: 12.sp,
                                             fontWeight: FontWeight.w500,
                                             textStyle: const TextStyle(

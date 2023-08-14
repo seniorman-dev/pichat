@@ -131,8 +131,8 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                         Container(
                           //height: 110.h,
                           padding: EdgeInsets.symmetric(
-                            vertical: 15.h, //20.h
-                            horizontal: 15.w  //20.h
+                            vertical: 15.h, //15.h
+                            horizontal: 15.w  //15.h
                           ),
                           decoration: BoxDecoration(
                             color: AppTheme().whiteColor,
@@ -150,10 +150,10 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                             children: [
                               //profilePic
                               CircleAvatar(
-                                radius: 32.r,
+                                radius: 38.r,
                                 backgroundColor: AppTheme().opacityBlue,
                                 child: CircleAvatar(
-                                  radius: 30.r,
+                                  radius: 36.r,
                                   backgroundColor: data['photo'] == null ? AppTheme().darkGreyColor : AppTheme().blackColor,
                                   child: data['photo'] == null 
                                   ?null
@@ -193,15 +193,15 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                     Text(
                                       data['email'] , //data['isOnline'] ? 'online' : 'offline',  //data['email'],     
                                       style: GoogleFonts.poppins(
-                                        color: AppTheme().darkGreyColor, //specify color when user is online or offline
-                                        fontSize: 14.sp, //14.sp
+                                        color: AppTheme().greyColor, //specify color when user is online or offline
+                                        fontSize: 13.sp, //14.sp
                                         fontWeight: FontWeight.w500,
                                         textStyle: const TextStyle(
                                           overflow: TextOverflow.ellipsis
                                         )
                                       ),
                                     ),
-                                    SizedBox(height: 5.h,),
+                                    SizedBox(height: 8.h,),
                                     //Row (button to send friend request)
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,

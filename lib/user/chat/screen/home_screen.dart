@@ -296,7 +296,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                                       'Hello $firstName,',
                                       style: GoogleFonts.poppins(
                                         textStyle: TextStyle(
-                                          color: AppTheme().darkGreyColor,
+                                          color: AppTheme().greyColor,
                                           fontSize: 13.sp, //12.sp
                                           fontWeight: FontWeight.w500
                                         )

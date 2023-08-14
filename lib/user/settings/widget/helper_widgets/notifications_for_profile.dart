@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/user/notifications/controller/notifications_controller.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
@@ -66,7 +67,10 @@ class _NotificationScreenForProfileState extends State<NotificationScreenForProf
   }
 
   Widget buildBody(BuildContext context) {
+
     var authController = Provider.of<AuthController>(context);
+    var notificationsCntroller = Provider.of<NotificationsController>(context);
+
     return StreamBuilder(
       stream: authController.firestore.collection('users').doc(authController.userID).collection('notifications').snapshots(),
       builder: (context, snapshot) {
@@ -186,8 +190,25 @@ class _NotificationScreenForProfileState extends State<NotificationScreenForProf
                         ),
 
                       SizedBox(height: 10.h),
-                      //
-                      Container(
+
+
+                      //the list gan gan
+                      Dismissible(
+                      key: UniqueKey(),
+                      direction: DismissDirection.endToStart,
+                      background: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(
+                            CupertinoIcons.delete_simple,
+                            color: AppTheme().redColor,
+                          )
+                        ],
+                      ),
+                      onDismissed: (direction) {
+                        notificationsCntroller.deleteNotification();
+                      },
+                      child: Container(
                         padding: EdgeInsets.symmetric(
                           vertical: 15.h, //15.h
                           horizontal: 15.w, //21.w
@@ -265,6 +286,7 @@ class _NotificationScreenForProfileState extends State<NotificationScreenForProf
                           ]
                         )
                       ),
+                  )
                     ],
                   );
                 },

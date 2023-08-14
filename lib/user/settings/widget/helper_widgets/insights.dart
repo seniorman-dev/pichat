@@ -104,7 +104,7 @@ import 'package:pichat/theme/app_theme.dart';
                     ),
                     child: Text(
                       "OK",
-                      style: TextStyle(
+                      style: GoogleFonts.poppins(
                         color: AppTheme().whiteColor,
                         fontSize: 16.sp,
                       ),

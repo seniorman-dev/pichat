@@ -295,7 +295,9 @@ class ChatServiceController extends ChangeNotifier {
     doc(friendId).delete();
   }
   
-  //send direct messages
+  
+
+  ////////////////send direct messages
   Future<void> sendDirectMessages({
     required String receiverId,
     required String receiverName,

@@ -329,7 +329,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                                 Text(
                                                   formatTime(timestamp: data['timestamp']),
                                                   style: GoogleFonts.poppins(
-                                                    color: AppTheme().darkGreyColor,
+                                                    color: AppTheme().greyColor,
                                                     fontSize: 11.sp,
                                                     fontWeight: FontWeight.normal,
                                                     textStyle: TextStyle(
@@ -344,7 +344,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                             Text(
                                               data['comment'],
                                               style: GoogleFonts.poppins(
-                                                color: AppTheme().darkGreyColor,
+                                                color: AppTheme().greyColor,
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w500,
                                                 textStyle: TextStyle(
@@ -475,6 +475,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
             ),
 
 
+
             ////////////////////////
             //textfield to send comment
             Padding(
@@ -514,7 +515,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                       borderSide: BorderSide.none
                     ),       
                     hintText: 'Type a message...',
-                    hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 14.sp,),              
+                    hintStyle: GoogleFonts.poppins(color: AppTheme().greyColor, fontSize: 14.sp,),              
                     filled: true,
                     fillColor: AppTheme().lightGreyColor,
                     suffixIcon: InkWell(

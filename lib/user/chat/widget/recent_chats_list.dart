@@ -269,7 +269,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                           Text(
                                             formatTime(timestamp: data2['timestamp']),
                                             style: GoogleFonts.poppins(
-                                              color: AppTheme().darkGreyColor,
+                                              color: AppTheme().greyColor,
                                               fontSize: 12.sp,
                                               fontWeight: FontWeight.w500
                                             ),
@@ -287,7 +287,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                           Text(
                                             data2['lastMessage'],
                                             style: GoogleFonts.poppins(
-                                              color: AppTheme().darkGreyColor,
+                                              color: AppTheme().greyColor,
                                               fontSize: 12.sp,
                                               fontWeight: FontWeight.w500,
                                               textStyle: const TextStyle(

@@ -173,7 +173,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
                             borderSide: BorderSide.none
                           ),       
                           hintText: 'What do you have to say?',
-                          hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 13.sp, fontStyle: FontStyle.italic),              
+                          hintStyle: GoogleFonts.poppins(color: AppTheme().greyColor, fontSize: 13.sp, fontStyle: FontStyle.italic),              
                           filled: true,
                           fillColor: AppTheme().lightGreyColor,
                           //prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
