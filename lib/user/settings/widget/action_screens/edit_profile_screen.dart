@@ -79,6 +79,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
+          controller: profileController.scrollController,
           child: buildBody(context),
         )
       ),
@@ -95,6 +96,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     String checkCountry = widget.isProfileUpdated ? widget.selectedCountry : 'Select Country';
     //check if gender is selected
     //String checkGender = widget.isProfileUpdated ? widget.selectedGender : 'Select Gender';
+    var profileController = Provider.of<ProfileController>(context);
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -486,7 +488,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   vertical: 5.h
                 ),  //20        
                 scrollPhysics: const BouncingScrollPhysics(),
-                scrollController: ScrollController(),
+                //scrollController: profileController.scrollController,
                 textCapitalization: TextCapitalization.sentences,
                 textInputAction: TextInputAction.next, //.newline,
                 enabled: true,
@@ -561,7 +563,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   vertical: 5.w
                 ),  //20        
                 scrollPhysics: const BouncingScrollPhysics(),
-                scrollController: ScrollController(),
+                //scrollController: profileController.scrollController,
                 textInputAction: TextInputAction.done,
                 enabled: true,
                 keyboardType: TextInputType.url,

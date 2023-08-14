@@ -54,7 +54,7 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
             crossAxisAlignment: CrossAxisAlignment.center,
             //mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 210.h,), //210.h
+              SizedBox(height: 135.h,), //210.h
               CircleAvatar(
                 radius: 100.r,
                 backgroundColor: AppTheme().lightestOpacityBlue,

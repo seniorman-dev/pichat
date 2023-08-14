@@ -177,7 +177,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
     
     //Dependency injection by provider
     var controller = Provider.of<AuthController>(context);
-    var chatServiceontroller = Provider.of<ChatServiceController>(context);
+    var chatServiceController = Provider.of<ChatServiceController>(context);
 
     return SafeArea(
       child: Scaffold(
@@ -390,20 +390,28 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                 ),
               ),
 
-              //SizedBox(height: 10.h,), //20.h
+              SizedBox(height: 10.h,), //20.h
 
-              //search for recent chats
-              /*SearchTextField(
-                textController: chatServiceontroller.recentChatsTextController,
-                  onChanged: (value) {
-                    /*setState(() {
-                      chatServiceontroller.recentChatsTextController.text = value;
-                      chatServiceontroller.isSearchingRecentChats = true;
-                      debugPrint("Value: $value");
-                    });*/
-                  }, 
-                hintText: 'Search recent messages...',
-              ),*/
+              //search for users
+              SearchTextField(
+                textController: chatServiceController.recentChatsTextController, 
+                hintText: 'Search for recent messages',
+                onChanged: (searchText) {
+                // Update recentMessagesStream when search text changes
+                setState(() {
+                  chatServiceController.recentChatsStream = chatServiceController.firestore
+                  .collection('users')
+                  .doc(chatServiceController.auth.currentUser!.uid)
+                  .collection('recent_chats')
+                  //.orderBy('timestamp')
+                  .where(
+                    "name",
+                    isGreaterThanOrEqualTo: searchText,
+                    isLessThan: '${searchText}z')
+                    .snapshots();
+                  });
+                },
+              ),
 
               SizedBox(height: 20.h,),
 
@@ -418,6 +426,24 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                   vertical: 20.h,
                 ),
                 child: Divider(color: AppTheme().darkGreyColor, thickness: 1,),
+              ),
+
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20.w,
+                  vertical: 20.h,
+                ),
+                child: Text(
+                  'Recent Messages',
+                  style: GoogleFonts.poppins(
+                    color: AppTheme().blackColor,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    textStyle: const TextStyle(
+                      overflow: TextOverflow.ellipsis
+                    )
+                  ),
+                ),
               ),
 
               //SizedBox(height: 10.h,), //20.h

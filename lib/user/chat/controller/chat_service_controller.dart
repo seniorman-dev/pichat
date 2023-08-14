@@ -244,6 +244,7 @@ class ChatServiceController extends ChangeNotifier {
 
                  /**for chat fuctionalitites */
   /////////////////////////////////////////////////////////////////////
+  Stream<QuerySnapshot<Map<String, dynamic>>>? recentChatsStream;
   
   //(to be placed inside "sendDirectMessages" function)//
   Future<void> addUserToRecentChats({required String receiverId, required String receiverName, required String receiverPhoto, required String lastMessage, required Timestamp timestamp, required String sentBy}) async{
@@ -295,7 +296,7 @@ class ChatServiceController extends ChangeNotifier {
     doc(friendId).delete();
   }
   
-  
+
 
   ////////////////send direct messages
   Future<void> sendDirectMessages({

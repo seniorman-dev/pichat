@@ -72,7 +72,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
         //resizeToAvoidBottomInset: true,
         backgroundColor: AppTheme().whiteColor,//.lightGreyColor,
         appBar: AppBar(
-          toolbarHeight: 110.h,
+          toolbarHeight: 80.h,
           backgroundColor: AppTheme().whiteColor,
           centerTitle: false,
           elevation: 0,

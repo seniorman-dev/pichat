@@ -40,13 +40,12 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Stream<QuerySnapshot<Map<String, dynamic>>>? userStream;
 
   @override
   void initState() {
     var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
     //initialized the stream
-    userStream = chatServiceController.firestore.collection('users').doc(chatServiceController.auth.currentUser!.uid).collection('recent_chats').orderBy('timestamp').snapshots();
+    chatServiceController.recentChatsStream = chatServiceController.firestore.collection('users').doc(chatServiceController.auth.currentUser!.uid).collection('recent_chats').orderBy('timestamp').snapshots();
     super.initState();
   }
 
@@ -60,10 +59,9 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
 
     return Column(
       children: [
-        //SizedBox(height: 10.h,),
 
         //search for users
-        SearchTextField(
+        /*SearchTextField(
           textController: chatServiceController.recentChatsTextController, 
           hintText: 'Search for recent messages',
           onChanged: (searchText) {
@@ -83,11 +81,11 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
             },
           ),
 
-          SizedBox(height: 10.h,),
+          SizedBox(height: 10.h,),*/
 
           //the stream of the recent messages gan gan
           StreamBuilder(
-          stream: userStream,
+          stream: chatServiceController.recentChatsStream ,
           builder: (context, snapshot) {
 
             //filtered list
