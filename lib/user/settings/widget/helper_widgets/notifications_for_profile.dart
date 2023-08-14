@@ -193,22 +193,7 @@ class _NotificationScreenForProfileState extends State<NotificationScreenForProf
 
 
                       //the list gan gan
-                      Dismissible(
-                      key: UniqueKey(),
-                      direction: DismissDirection.endToStart,
-                      background: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Icon(
-                            CupertinoIcons.delete_simple,
-                            color: AppTheme().redColor,
-                          )
-                        ],
-                      ),
-                      onDismissed: (direction) {
-                        notificationsCntroller.deleteNotification();
-                      },
-                      child: Container(
+                      Container(
                         padding: EdgeInsets.symmetric(
                           vertical: 15.h, //15.h
                           horizontal: 15.w, //21.w
@@ -286,7 +271,6 @@ class _NotificationScreenForProfileState extends State<NotificationScreenForProf
                           ]
                         )
                       ),
-                  )
                     ],
                   );
                 },

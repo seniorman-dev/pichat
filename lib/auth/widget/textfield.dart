@@ -31,15 +31,6 @@ class CustomTextField extends StatelessWidget {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodesForRegisteration[1],
-        onEditingComplete: () {
-          controller.focusNodesForRegisteration[1].requestFocus();
-          controller.scrollControllerForRegisteration.animateTo(
-            controller.scrollControllerForRegisteration.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             color: AppTheme().blackColor,
@@ -101,15 +92,6 @@ class _CustomTextField2State extends State<CustomTextField2> {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodesForRegisteration[2],
-        onEditingComplete: () {
-          controller.focusNodesForRegisteration[2].requestFocus();
-          controller.scrollControllerForRegisteration.animateTo(
-            controller.scrollControllerForRegisteration.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             color: AppTheme().blackColor,
@@ -181,15 +163,6 @@ class _CustomTextField3State extends State<CustomTextField3> {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodesForRegisteration[3],
-        onEditingComplete: () {
-          controller.focusNodesForRegisteration[3].requestFocus();
-          controller.scrollControllerForRegisteration.animateTo(
-            controller.scrollControllerForRegisteration.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             color: AppTheme().blackColor,
@@ -258,15 +231,6 @@ class CustomTextField4 extends StatelessWidget {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodesForRegisteration[0],
-        onEditingComplete: () {
-          controller.focusNodesForRegisteration[0].requestFocus();
-          controller.scrollControllerForRegisteration.animateTo(
-            controller.scrollControllerForRegisteration.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             color: AppTheme().blackColor,
@@ -329,15 +293,6 @@ class EmailFieldLogin extends StatelessWidget {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodesForLogin[0],
-        onEditingComplete: () {
-          controller.focusNodesForLogin[0].requestFocus();
-          controller.scrollControllerForLogin.animateTo(
-            controller.scrollControllerForLogin.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             color: AppTheme().blackColor,
@@ -397,15 +352,6 @@ class _PasswordFieldLoginState extends State<PasswordFieldLogin> {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
-        focusNode: controller.focusNodesForLogin[1],
-        onEditingComplete: () {
-          controller.focusNodesForLogin[1].requestFocus();
-          controller.scrollControllerForLogin.animateTo(
-            controller.scrollControllerForLogin.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             color: AppTheme().blackColor,

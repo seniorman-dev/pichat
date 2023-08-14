@@ -130,7 +130,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               Icons.error,
                               color: AppTheme().lightestOpacityBlue,
                             ),
-                            controller.imageFromGallery!,
+                            controller.isImageSelectedFromGallery ? controller.imageFromGallery! : controller.imageFromCamera!,
                             filterQuality: FilterQuality.high,
                             fit: BoxFit.cover, //.contain,
                             width: 80.w,
@@ -625,7 +625,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 var datePicked = await DatePicker.showSimpleDatePicker(
                   context,
                   //initialDate: DateTime(2023),
-                  firstDate: DateTime.now(),
+                  firstDate: DateTime(1950), //DateTime.now(),
                   //lastDate: DateTime(2012),
                   dateFormat: "dd-MMMM-yyyy",
                   locale: DateTimePickerLocale.en_us,

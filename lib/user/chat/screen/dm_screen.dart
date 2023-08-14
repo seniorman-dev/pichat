@@ -37,7 +37,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
   double calculateBottomPadding(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double minPadding = 0;
-    double maxPadding = screenHeight * 0.37; // Adjust the value as needed (0.41 is an example)
+    double maxPadding = screenHeight * 0.39; // Adjust the value as needed (0.37 is an example)
 
     return keyboardHeight > MediaQuery.of(context).padding.bottom + 10 ? maxPadding : minPadding;
   }
