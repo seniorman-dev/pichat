@@ -42,7 +42,6 @@ class _SearchTextFieldState extends State<SearchTextField> {
         height: 65.h,
         //width: 100.w,
         child: TextFormField(
-          autofocus: true,
           autovalidateMode: AutovalidateMode.onUserInteraction,          
           scrollPhysics: const BouncingScrollPhysics(),
           scrollController: ScrollController(),

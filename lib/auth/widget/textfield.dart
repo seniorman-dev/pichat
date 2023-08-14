@@ -299,7 +299,8 @@ class EmailFieldLogin extends StatelessWidget {
             fontSize: 13.sp
           )
         ),
-        autofocus: true,
+        //autofocus: true,
+        focusNode: controller.focusNodesForLoginEmail,
         textCapitalization: TextCapitalization.sentences,          
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -344,7 +345,9 @@ class  PasswordFieldLogin extends StatefulWidget {
 class _PasswordFieldLoginState extends State<PasswordFieldLogin> {
   @override
   Widget build(BuildContext context) {
+
     var controller = Provider.of<AuthController>(context);
+
     return Container(
       decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(20.r)
@@ -358,7 +361,8 @@ class _PasswordFieldLoginState extends State<PasswordFieldLogin> {
             fontSize: 13.sp
           )
         ),
-        autofocus: true,      
+        //autofocus: true,
+        focusNode: controller.focusNodesForLoginPassword,      
         textCapitalization: TextCapitalization.sentences,              
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),

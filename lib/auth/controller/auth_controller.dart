@@ -48,11 +48,15 @@ class AuthController extends ChangeNotifier{
   final formKey = GlobalKey<FormState>();
 
   //for registration textformfields to automatically scroll to the next seamlessly
-  final List<FocusNode> focusNodesForRegisteration = List.generate(4, (index) => FocusNode());
+  final FocusNode focusNodesForNameReg = FocusNode();
+  final FocusNode focusNodesForEmailReg = FocusNode();
+  final FocusNode focusNodesForPasswordReg = FocusNode();
+  final FocusNode focusNodesForConfirmPasswordReg = FocusNode();
   final ScrollController scrollControllerForRegisteration = ScrollController();
 
   //for login textformfields to automatically scroll to the next seamlessly
-  final List<FocusNode> focusNodesForLogin = List.generate(2, (index) => FocusNode());
+  final FocusNode focusNodesForLoginEmail = FocusNode();
+  final FocusNode focusNodesForLoginPassword = FocusNode();
   final ScrollController scrollControllerForLogin = ScrollController();
 
   //for reset piassword textformfields to automatically scroll to the next seamlessly
@@ -83,14 +87,13 @@ class AuthController extends ChangeNotifier{
   ///dispose all
   @override
   void dispose() {
-    //dispose the 4 focusNodes for the register textformfields
-    for (var focusNode in focusNodesForLogin) {
-      focusNode.dispose();
-    }
-    //dispose the 2 focusNodes for the login textformfields
-    for (var focusNode in focusNodesForLogin) {
-      focusNode.dispose();
-    }
+    focusNodesForLoginEmail.dispose();
+    focusNodesForLoginPassword.dispose();
+    focusNodesForNameReg.dispose();
+    focusNodesForEmailReg.dispose();
+    focusNodesForPasswordReg.dispose();
+    focusNodesForConfirmPasswordReg.dispose();
+
     // TODO: implement dispose
     registerNameController.dispose();
     registerEmailController.dispose();
