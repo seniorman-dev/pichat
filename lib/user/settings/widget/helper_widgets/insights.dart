@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
 
 
@@ -22,7 +23,7 @@ import 'package:pichat/theme/app_theme.dart';
             vertical: 40.h, //50.h
           ),
           content: SizedBox(
-            height: 260.h, //220.h,
+            height: 280.h, //260.h,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -64,11 +65,14 @@ import 'package:pichat/theme/app_theme.dart';
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Explore detailed statistics of your\naccount as it thrives.\n              (Coming Soon👌)',
-                        style: TextStyle(
+                        'Explore detailed statistics of your \naccount as it thrives.\n(Coming Soon👌)',
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            overflow: TextOverflow.visible,
+                          ),
                           color: AppTheme().blackColor, //.normalGreyColor,
                           fontWeight: FontWeight.w500,
-                          fontSize: 15.sp
+                          fontSize: 15.sp,
                         ),
                       ),
                     ],
@@ -79,7 +83,7 @@ import 'package:pichat/theme/app_theme.dart';
                   ),
                   
                   //OK Button
-                  OutlinedButton(
+                  ElevatedButton(
                     onPressed: () {
                       Get.back();
                     },
@@ -94,14 +98,14 @@ import 'package:pichat/theme/app_theme.dart';
                         color: AppTheme().mainColor,
                         style: BorderStyle.solid
                       ),
-                      backgroundColor: AppTheme().whiteColor,
-                      foregroundColor: AppTheme().whiteColor,
+                      backgroundColor: AppTheme().mainColor,
+                      foregroundColor: AppTheme().mainColor,
                       minimumSize:const Size(double.infinity, 50)
                     ),
                     child: Text(
                       "OK",
                       style: TextStyle(
-                        color: AppTheme().mainColor,
+                        color: AppTheme().whiteColor,
                         fontSize: 16.sp,
                       ),
                     ),

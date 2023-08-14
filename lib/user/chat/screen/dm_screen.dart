@@ -171,12 +171,15 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            //chatlist
             ChatList(
               senderName: widget.senderName, 
               senderId: widget.senderId,
               receiverName: widget.receiverName, 
               receiverId: widget.receiverID,
             ),
+
+            //bottom textfield
             Padding(
               padding: EdgeInsets.only(
                 bottom: calculateBottomPadding(context)

@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
@@ -35,31 +36,7 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
 
-  /*final ScrollController messageController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    // After the widget is built, scroll to the last message.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      scrollToLastMessage();
-    });
-  }
-
-  // Function to scroll to the last message.
-  void scrollToLastMessage() {
-    messageController.animateTo(
-      messageController.position.maxScrollExtent,
-      duration: Duration(milliseconds: 20), 
-      curve: Curves.bounceIn
-    );
-  }
-
-  @override
-  void dispose() {
-    messageController.dispose();
-    super.dispose();
-  }*/
+  /*final ScrollController messageController = ScrollController();*/
 
 
   
@@ -70,6 +47,7 @@ class _ChatListState extends State<ChatList> {
     //provider for dependency injection
     var authController = Provider.of<AuthController>(context);
     var chatServiceController = Provider.of<ChatServiceController>(context);
+    bool _shouldAutoScroll = true;
     
     return Expanded(
       child: StreamBuilder(
@@ -127,6 +105,12 @@ class _ChatListState extends State<ChatList> {
             );
           }
 
+          //it makes messages list automatically scroll up after a message has been sent
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            chatServiceController.messageController.jumpTo(chatServiceController.messageController.position.maxScrollExtent);
+          });
+
+
           return Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 15.w, //20.w
@@ -162,7 +146,7 @@ class _ChatListState extends State<ChatList> {
                   chatServiceController.markMessageAsSeen(messageId: data['messageId'], receiverId: widget.receiverId);
                 }
                 
-
+          
                 return Dismissible(
                   key: UniqueKey(),
                   direction: data['senderId'] == authController.userID ? DismissDirection.endToStart : DismissDirection.endToStart,
@@ -226,7 +210,7 @@ class _ChatListState extends State<ChatList> {
                               ),
                             ),
                           ),
-
+          
                         Container(
                           alignment: Alignment.centerLeft,
                           //height: 80.h,
@@ -263,7 +247,7 @@ class _ChatListState extends State<ChatList> {
                           ),
                         ),
                         SizedBox(height: 5.h,),
-
+          
                         
                         //Time and isSeen icon feature
                         Row(
@@ -305,7 +289,7 @@ class _ChatListState extends State<ChatList> {
                   ),
                 );
               } 
-      
+              
             ),
           );
         }

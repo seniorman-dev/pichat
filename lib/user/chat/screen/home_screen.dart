@@ -243,7 +243,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                                 data['isProfileUpdated'] ? SizedBox() :
                                 Center(
                                   child: Container(
-                                    height: 40.h,
+                                    height: 30.h,
                                     width: 140.w,
                                     //padding: EdgeInsets.all(10),
                                     padding: EdgeInsets.symmetric(
@@ -266,6 +266,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Icon(
+                                          size: 20.r,
                                           CupertinoIcons.settings_solid,
                                           color: AppTheme().blackColor, //.opacityBlue,
                                         ),
@@ -276,7 +277,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                                             textStyle: TextStyle(
                                               color: AppTheme().blackColor,
                                               fontWeight: FontWeight.normal,
-                                              fontSize: 12.sp,
+                                              fontSize: 11.sp, //12.sp
                                               overflow: TextOverflow.ellipsis
                                             )
                                           )
@@ -392,7 +393,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
               //SizedBox(height: 10.h,), //20.h
 
               //search for recent chats
-              SearchTextField(
+              /*SearchTextField(
                 textController: chatServiceontroller.recentChatsTextController,
                   onChanged: (value) {
                     /*setState(() {
@@ -402,7 +403,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                     });*/
                   }, 
                 hintText: 'Search recent messages...',
-              ),
+              ),*/
 
               SizedBox(height: 20.h,),
 

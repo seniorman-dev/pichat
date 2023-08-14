@@ -10,6 +10,7 @@ import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/widget/buttons.dart';
 import 'package:pichat/user/chat/widget/search_textfield.dart';
+import 'package:pichat/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
@@ -99,12 +100,18 @@ class _AllUsersListState extends State<AllUsersList> {
               SearchTextField(
                 textController: chatServiceController.allUsersTextEditingController, 
                 hintText: 'Find connects',
-                onChanged: (value) {
-                  /*setState(() {
-                    chatServiceController.isSearchingForUsers = true;
-                    chatServiceController.allUsersTextEditingController.text = value;
-                    debugPrint("Value: $value");
-                  });*/
+                onChanged: (searchText) {
+                // Update userStream when search text changes
+                setState(() {
+                  userStream = FirebaseFirestore.instance
+                  .collection('users')
+                  //.where('id', isNotEqualTo: userID)
+                  .where(
+                    "name",
+                    isGreaterThanOrEqualTo: searchText,
+                    isLessThan: '${searchText}z')
+                    .snapshots();
+                  });
                 },
               ),
 

@@ -94,7 +94,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                       ),
                       SizedBox(height: 50.h),
                       Text(
-                        "You don't have any connect request yet",
+                        "No connect request found",
                         style: GoogleFonts.poppins(
                           color: AppTheme().greyColor,
                           fontSize: 14.sp,
