@@ -708,7 +708,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         url: controller.userLink.text, 
                         dob: controller.selectedDate!,
                         gender: controller.gender!,
-                        isProfileUpdated: true
+                        isProfileUpdated: true, 
+                        context: context
                       ).then((value) => Get.to(() => ProfileUpdatedSuccessScreen()));
                     }
                     else {

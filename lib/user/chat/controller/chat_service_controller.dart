@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pichat/api/api.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 
 
@@ -18,18 +20,20 @@ class ChatServiceController extends ChangeNotifier {
   double keyboardHeight = 0;
   double keyboardTop = 0;
 
+  //////////////TextEditingControllers here
+  final TextEditingController allUsersTextEditingController = TextEditingController();
+  final TextEditingController recentChatsTextController = TextEditingController();
+  final TextEditingController chatTextController = TextEditingController();
+
   @override
   void dispose() {
     // TODO: implement dispose
     messageController.dispose();
     allUsersTextEditingController.dispose();
     recentChatsTextController.dispose();
+    chatTextController.dispose();
     super.dispose();
   }
-
-  //////////////TextEditingControllers here
-  final allUsersTextEditingController = TextEditingController();
-  final recentChatsTextController = TextEditingController();
 
 
   //when a user is searching for all users
@@ -296,6 +300,183 @@ class ChatServiceController extends ChangeNotifier {
     doc(friendId).delete();
   }
   
+  
+
+
+
+  //picked image from gallery
+  File? imageFromGallery;
+  //picked image from camera snap
+  File? imageFromCamera;
+
+  ////check if the image is taken from gallery or not
+  bool isImageSelectedFromGallery = false;
+  /// check if any image is selected at all
+  bool isAnyImageSelected = false;
+
+  //for image or video content
+  File? file;
+  //check if it is a video or picture content that wants to be sent
+  bool isContentImageOrVideo = false;
+
+
+
+
+
+  ////////////////send direct messages
+  Future<void> sendPictureOrVideoWithOrWithoutAText({
+    required File? file,
+    required String receiverId,
+    required String receiverName,
+    required String receiverPhoto,
+    required String message  //gotten from the text controller used to send message
+  }) async{
+    Timestamp timestamp = Timestamp.now();
+    //for identifying messages or messages documents uniquely 
+    var messageId = (Random().nextInt(100000)).toString();
+
+    //did this to get the last message sent from any of the chatters (messages stream)
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(auth.currentUser!.uid)
+    .collection('recent_chats')
+    .doc(receiverId)
+    .collection('messages')
+    .doc(messageId)
+    .get();
+    String lastMessageSent = snapshot.get('message');
+    String sentBy = snapshot.get('senderId');
+    Timestamp timeofLastMessageSnet = snapshot.get('timestamp');
+    /////////////////////////////////////////////
+    
+    //did this to get the FCM Token of the receiver 
+    DocumentSnapshot receiverSnapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(receiverId)
+    .get();
+    String FCMToken = receiverSnapshot.get('FCMToken');
+    /////////////////////////////////////////////
+    
+    //did this to get the name and email of the current user
+    DocumentSnapshot senderSnapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(auth.currentUser!.uid)
+    .get();
+    String name = senderSnapshot.get('name');
+    String userEmail = senderSnapshot.get('email');
+    
+    //////THIS IS WHERE IMAGE/VIDEO UPLOADING IMPLEMETATION COMES IN
+    //name of the folder we are first storing the file to
+    String? folderName = userEmail;
+    //name the file we are sending to firebase cloud storage
+    String fileName = "${DateTime.now().millisecondsSinceEpoch}direct_messages";
+    //set the storage reference as "users_photos" and the "filename" as the image reference
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('$folderName/$fileName');
+    //upload the image to the cloud storage
+    firebase_storage.UploadTask uploadTask = ref.putFile(file!);
+    //call the object and then show that it has already been uploaded to the cloud storage or bucket
+    firebase_storage.TaskSnapshot taskSnapshot = 
+    await uploadTask
+    .whenComplete(() => debugPrint("content uploaded succesfully to fire storage"));
+    //get the imageUrl from the above taskSnapshot
+    String contentUrl = await taskSnapshot.ref.getDownloadURL();
+
+    //NOW, WE CHECK IF THE CONTENT ABOUT TO BE SENT IS AN IMAGE OR VIDEO
+    if (isContentImageOrVideo) {
+      await firestore.collection('users')
+      .doc(auth.currentUser!.uid)
+      .collection('recent_chats')
+      .doc(receiverId)
+      .collection('messages')
+      .doc(messageId)
+      .set({
+        'senderId': auth.currentUser!.uid,
+        'messageId': messageId,
+        'image': contentUrl,
+        'video': 'non',
+        'message': message,
+        'messageType': 'image',
+        'isSeen': false,
+        'timestamp': timestamp,
+      });
+    
+      //add message to friend / receiver's  collection (update isSeen later)
+      await firestore.collection('users')
+      .doc(receiverId)
+      .collection('recent_chats')
+      .doc(auth.currentUser!.uid)
+      .collection('messages')
+      .doc(messageId)
+      .set({
+        'senderId': auth.currentUser!.uid,
+        'messageId': messageId,
+        'image': contentUrl,
+        'video': 'non',
+        'message': message,
+        'messageType': 'image',
+        'isSeen': false,
+        'timestamp': timestamp,
+      });
+
+      //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
+      addUserToRecentChats(timestamp: timeofLastMessageSnet, lastMessage: '📷 Image ~ $lastMessageSent', receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy);
+      //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
+      API().sendPushNotificationWithFirebaseAPI(content: '📷 Image ~ $lastMessageSent', receiverFCMToken: FCMToken, title: name);
+    
+      // Scroll to the newly added message to make it visible.
+      messageController.jumpTo(messageController.position.maxScrollExtent);
+      // to see what the url looks like
+      debugPrint("Image URL: $contentUrl");
+    }
+    //THIS WILL EXECUTE IF THE CONTENT IS A VIDEO
+    else {
+      await firestore.collection('users')
+      .doc(auth.currentUser!.uid)
+      .collection('recent_chats')
+      .doc(receiverId)
+      .collection('messages')
+      .doc(messageId)
+      .set({
+        'senderId': auth.currentUser!.uid,
+        'messageId': messageId,
+        'video': contentUrl,
+        'image': 'non',
+        'message': message,
+        'messageType': 'video',
+        'isSeen': false,
+        'timestamp': timestamp,
+      });
+    
+      //add message to friend / receiver's  collection (update isSeen later)
+      await firestore.collection('users')
+      .doc(receiverId)
+      .collection('recent_chats')
+      .doc(auth.currentUser!.uid)
+      .collection('messages')
+      .doc(messageId)
+      .set({
+        'senderId': auth.currentUser!.uid,
+        'messageId': messageId,
+        'video': contentUrl,
+        'image': 'non',
+        'message': message,
+        'messageType': 'video',
+        'isSeen': false,
+        'timestamp': timestamp,
+      });
+
+      //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
+      addUserToRecentChats(timestamp: timeofLastMessageSnet, lastMessage: '🎬 Video ~ $lastMessageSent', receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy);
+      //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
+      API().sendPushNotificationWithFirebaseAPI(content: '🎬 Video ~ $lastMessageSent', receiverFCMToken: FCMToken, title: name);
+    
+      // Scroll to the newly added message to make it visible.
+      messageController.jumpTo(messageController.position.maxScrollExtent);
+      debugPrint("Image URL: $contentUrl");
+    }
+
+  }
+
 
 
   ////////////////send direct messages
@@ -307,9 +488,42 @@ class ChatServiceController extends ChangeNotifier {
   }) async{
 
     Timestamp timestamp = Timestamp.now();
+    //for identifying messages or messages documents uniquely 
     var messageId = (Random().nextInt(100000)).toString();
 
-    //add message to current user / sender collection (update isSeen later)
+    //did this to get the last message sent from any of the chatters (messages stream)
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(auth.currentUser!.uid)
+    .collection('recent_chats')
+    .doc(receiverId)
+    .collection('messages')
+    .doc(messageId)
+    .get();
+    String lastMessageSent = snapshot.get('message');
+    String sentBy = snapshot.get('senderId');
+    Timestamp timeofLastMessageSnet = snapshot.get('timestamp');
+    /////////////////////////////////////////////
+    
+    //did this to get the FCM Token of the receiver 
+    DocumentSnapshot receiverSnapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(receiverId)
+    .get();
+    String FCMToken = receiverSnapshot.get('FCMToken');
+    /////////////////////////////////////////////
+    
+    //did this to get the name and email of the current user
+    DocumentSnapshot senderSnapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(auth.currentUser!.uid)
+    .get();
+    String name = senderSnapshot.get('name');
+    String userEmail = senderSnapshot.get('email');
+
+
+
+    //add message to current user / sender collection   
     await firestore.collection('users')
     .doc(auth.currentUser!.uid)
     .collection('recent_chats')
@@ -320,6 +534,9 @@ class ChatServiceController extends ChangeNotifier {
       'senderId': auth.currentUser!.uid,
       'messageId': messageId,
       'message': message,
+      'image': 'non',
+      'video': 'non',
+      'messageType': 'text',
       'isSeen': false,
       'timestamp': timestamp,
     });
@@ -335,36 +552,12 @@ class ChatServiceController extends ChangeNotifier {
       'senderId': auth.currentUser!.uid,
       'messageId': messageId,
       'message': message,
+      'image': 'non',
+      'video': 'non',
+      'messageType': 'text',
       'isSeen': false,
       'timestamp': timestamp,
     });
-    
-    //did this to get the last message sent from any of the chatters (messages stream)
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-    .collection('users')
-    .doc(auth.currentUser!.uid)
-    .collection('recent_chats')
-    .doc(receiverId)
-    .collection('messages')
-    .doc(messageId)
-    .get();
-    String lastMessageSent = snapshot.get('message');
-    String sentBy = snapshot.get('senderId');
-    Timestamp timeofLastMessageSnet = snapshot.get('timestamp');
-    /////////////////////////////////////////////
-    //did this to get the FCM Token of the receiver 
-    DocumentSnapshot receiverSnapshot = await FirebaseFirestore.instance
-    .collection('users')
-    .doc(receiverId)
-    .get();
-    String FCMToken = receiverSnapshot.get('FCMToken');
-    /////////////////////////////////////////////
-    ///
-    DocumentSnapshot senderSnapshot = await FirebaseFirestore.instance
-    .collection('users')
-    .doc(auth.currentUser!.uid)
-    .get();
-    String name = senderSnapshot.get('name');
 
     //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
     addUserToRecentChats(timestamp: timeofLastMessageSnet, lastMessage: lastMessageSent, receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy);
@@ -373,8 +566,10 @@ class ChatServiceController extends ChangeNotifier {
     
     // Scroll to the newly added message to make it visible.
     messageController.jumpTo(messageController.position.maxScrollExtent);
+    ////////////////////////////////////////////////////////////////////
   }
   
+
   //delete direct message when texting
   Future<void> deleteDirectMessages({required String messageId, required String receiverId}) async{
     //do this if you want to get any logged in user property 

@@ -43,15 +43,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildBody(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    
+    //final size = MediaQuery.of(context).size;
     var controller = Provider.of<AuthController>(context);
+    
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: 25.w,
         vertical: 20.h,
       ),
       child: Form(
-        key: controller.formkeyForLogin,
+        key: GlobalKey<FormState>(),//controller.formkeyForLogin,
         child: FocusScope(
           node: controller.focusScopeNodesForLogin,
           child: Column(

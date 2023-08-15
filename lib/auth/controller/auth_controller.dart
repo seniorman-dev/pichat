@@ -45,22 +45,22 @@ class AuthController extends ChangeNotifier{
   final TextEditingController registerConfirmPasswordController = TextEditingController();
   
 
-  //for textformfields in the (edii profile) screen to perform validation operations
-  final formKey = GlobalKey<FormState>();
+  //for textformfields in the (edit profile) screen to perform validation operations
+  //final formKey = GlobalKey<FormState>();
 
   //for registration textformfields to automatically scroll to the next seamlessly
   final FocusScopeNode focusScopeNodesForReg = FocusScopeNode();
-  final GlobalKey<FormState> formkeyForReg = GlobalKey();
+  //final GlobalKey<FormState> formkeyForReg = GlobalKey();
   final ScrollController scrollControllerForRegisteration = ScrollController();
 
   //for login textformfields to automatically scroll to the next seamlessly
   final FocusScopeNode focusScopeNodesForLogin = FocusScopeNode();
-  final GlobalKey<FormState> formkeyForLogin = GlobalKey();
+  //final GlobalKey<FormState> formkeyForLogin = GlobalKey();
   final ScrollController scrollControllerForLogin = ScrollController();
 
   //for reset piassword textformfields to automatically scroll to the next seamlessly
   final FocusScopeNode focusNodesForResetPasswordPage = FocusScopeNode();
-  final GlobalKey<FormState> formkeyForResetPasswrdPage = GlobalKey();
+  //final GlobalKey<FormState> formkeyForResetPasswrdPage = GlobalKey();
   final ScrollController scrollControllerForResetPasswordPage = ScrollController();
 
   //////////////////////////////
@@ -89,7 +89,6 @@ class AuthController extends ChangeNotifier{
   void dispose() {
     focusScopeNodesForLogin.dispose();
     focusScopeNodesForReg.dispose();
-
     // TODO: implement dispose
     registerNameController.dispose();
     registerEmailController.dispose();
@@ -193,8 +192,8 @@ class AuthController extends ChangeNotifier{
             Get.offAll(() => const MainPage());
             loginEmailController.clear();
             loginPasswordController.clear();
-          }).whenComplete(() => getToast(context: context, text: 'logged in as, $userEmail'));
-
+          });  //.whenComplete(() => getToast(context: context, text: 'logged in as, $userEmail'));
+          getToast(context: context, text: 'logged in as, $userEmail');
         }
         else {
           return getToast(context: context, text: 'Uh-oh, something went wrong');

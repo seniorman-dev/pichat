@@ -9,8 +9,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/utils/toast.dart';
 import 'package:provider/provider.dart';
-
 import '../../settings/controller/profile_controller.dart';
+
+
+
+
 
 
 
@@ -37,13 +40,9 @@ class FeedsController extends ChangeNotifier {
   //global key for form field
   GlobalKey formKey = GlobalKey<FormState>();
   //for post textformfield
-  FocusNode focusNode = FocusNode(); //for keyboard for uploading post
-  FocusNode focusNode2 = FocusNode(); //for keyboard for commenting on a post
 
-  //for commenting textformfield
-  FocusNode focusNodeForCommentTextfield = FocusNode(); //for keyboard
 
-  //picked content (wether image or video)
+  //picked content (whether image or video)
   File? contentFile;
 
   ////check if the image is taken from gallery or not
@@ -52,7 +51,7 @@ class FeedsController extends ChangeNotifier {
   bool isAnyImageSelected = false;
   //check if it is a video or picture content that wants to be uploaded
   bool isContentImage = false;
-
+  //check if a posted content is liked and reposted
   bool isLiked = false;
   bool isReposted = false;
 
@@ -61,8 +60,6 @@ class FeedsController extends ChangeNotifier {
   void dispose() {
     // TODO: implement dispose
     commentTextController.dispose();
-    focusNode.dispose();
-    focusNodeForCommentTextfield.dispose();
     postTextController.dispose();
     super.dispose();
   }
@@ -136,7 +133,7 @@ class FeedsController extends ChangeNotifier {
     
       //check if the content about to be posted is an image or not, then post to general feeds
       if(isContentImage) {
-        //(this one is not catching catch)
+        //(this one catch)
         await firestore
         .collection('feeds')
         .doc(postId)

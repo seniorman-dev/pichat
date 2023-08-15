@@ -37,7 +37,7 @@ class CustomTextField extends StatelessWidget {
             fontSize: 13.sp
           )
         ),
-        autofocus: true,
+        //autofocus: true,
         textCapitalization: TextCapitalization.sentences,          
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -98,7 +98,7 @@ class _CustomTextField2State extends State<CustomTextField2> {
             fontSize: 13.sp
           )
         ),
-        autofocus: true,      
+        //autofocus: true,      
         textCapitalization: TextCapitalization.sentences,    
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -169,7 +169,7 @@ class _CustomTextField3State extends State<CustomTextField3> {
             fontSize: 13.sp
           )
         ),
-        autofocus: true,      
+        //autofocus: true,      
         textCapitalization: TextCapitalization.sentences,              
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -237,7 +237,7 @@ class CustomTextField4 extends StatelessWidget {
             fontSize: 13.sp
           )
         ),
-        autofocus: true,     
+        //autofocus: true,     
         textCapitalization: TextCapitalization.sentences,              
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),

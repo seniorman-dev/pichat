@@ -1,4 +1,5 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -234,17 +235,74 @@ class _ChatListState extends State<ChatList> {
                               )
                             ],*/
                           ),
-                          child: Text(
-                            data['message'],
-                            style: GoogleFonts.poppins(  //urbanist
-                              color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w500,
-                              textStyle: TextStyle(
-                                overflow: TextOverflow.visible
+                          child: Column(
+                            children: [
+                              data['messageType'] == 'text' ?
+                              Text(
+                                data['message'],
+                                style: GoogleFonts.poppins(  //urbanist
+                                  color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500,
+                                  textStyle: TextStyle(
+                                    overflow: TextOverflow.visible
+                                  )
+                                ),
                               )
-                            ),
-                          ),
+                              :data['messageType'] == 'image' ?
+                              SizedBox(
+                                height: 300.h,
+                                width: 200.w,//MediaQuery.of(context).size.width, //double.infinity,
+                                child: Card(
+                                  color: AppTheme().lightGreyColor,
+                                  semanticContainer: true,
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0.r), //20.r
+                                  ),
+                                  elevation: 0,
+                                  child: CachedNetworkImage(
+                                    imageUrl: data['image'],
+                                    //width: 50.w,
+                                    //height: 50.h,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Loader(),
+                                    errorWidget: (context, url, error) => Icon(
+                                      Icons.error,
+                                      color: AppTheme().lightestOpacityBlue,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              //implement video player widget (VideoPlayerWidget)
+                              :Text(
+                                'video player widget', //data['video']
+                                style: GoogleFonts.poppins(
+                                  color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500,
+                                  textStyle: TextStyle(
+                                    overflow: TextOverflow.visible
+                                  )
+                                ),
+                              ),
+                              SizedBox(height: 3.h,),
+                              data['messageType'] == 'image' || data['messageType'] == 'video'
+                              ?
+                              Text(
+                                data['message'],
+                                style: GoogleFonts.poppins(  //urbanist
+                                  color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500,
+                                  textStyle: TextStyle(
+                                    overflow: TextOverflow.visible
+                                  )
+                                ),
+                              )
+                              : SizedBox()
+                            ],
+                          )  
                         ),
                         SizedBox(height: 5.h,),
           

@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pichat/utils/snackbar.dart';
+import 'package:pichat/utils/toast.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:country_code_picker/country_code_picker.dart';
 
@@ -51,7 +52,7 @@ class ProfileController extends ChangeNotifier {
   @override
   void dispose() {
     // TODO: implement dispose
-    //dispose the 4 focusNodes for the textformfield
+    //dispose the disposables
     focusScopeNode.dispose();
     userLink.dispose();
     userBio.dispose();
@@ -114,7 +115,7 @@ class ProfileController extends ChangeNotifier {
   }
   
   //update user prfile
-  Future<void> updateUserProfile({required String gender, required String name, required String email, required String biography, required String url, required String dob, required bool isProfileUpdated}) async{
+  Future<void> updateUserProfile({required BuildContext context, required String gender, required String name, required String email, required String biography, required String url, required String dob, required bool isProfileUpdated}) async{
     try {
       await firestore
       .collection('users')
@@ -131,7 +132,7 @@ class ProfileController extends ChangeNotifier {
       });
     }
     catch (e) {
-      customGetXSnackBar(title: 'Uh-Oh', subtitle: '$e');
+      getToast(context: context, text: "Uh-Oh,$e");
     }
   }
   

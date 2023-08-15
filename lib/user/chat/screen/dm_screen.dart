@@ -5,9 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/widget/bottom_engine.dart';
 import 'package:pichat/user/chat/widget/chat_list.dart';
 import 'package:pichat/utils/loader.dart';
+import 'package:provider/provider.dart';
+
+
+
 
 
 
@@ -35,6 +40,8 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
   double keyboardTop = 0;
 
   double calculateBottomPadding(BuildContext context) {
+
+    ///did all these for device keyboard to automatically scroll up when the custom textformfield is tapped
     double screenHeight = MediaQuery.of(context).size.height;
     double minPadding = 0;
     double maxPadding = screenHeight * 0.39; // Adjust the value as needed (0.37 is an example)
@@ -66,6 +73,8 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
 
   @override
   Widget build(BuildContext context) {
+
+    var chatServiceController = Provider.of<ChatServiceController>(context);
 
     return SafeArea(
       child: Scaffold(
@@ -187,7 +196,8 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
               child: BottomEngine(
                 receiverName: widget.receiverName, 
                 receiverId: widget.receiverID, 
-                receiverPhoto: widget.receiverProfilePic,
+                receiverPhoto: widget.receiverProfilePic, 
+                chatTextController: chatServiceController.chatTextController,
               ),
             ),
             //give it small height

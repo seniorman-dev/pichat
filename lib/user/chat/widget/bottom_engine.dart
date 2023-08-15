@@ -12,46 +12,56 @@ import 'package:provider/provider.dart';
 
 
 
-class BottomEngine extends StatelessWidget {
-  BottomEngine({super.key, required this.receiverName, required this.receiverId, required this.receiverPhoto,});
+class BottomEngine extends StatefulWidget {
+  BottomEngine({super.key, required this.receiverName, required this.receiverId, required this.receiverPhoto, required this.chatTextController,});
   final String receiverName;
   final String receiverId;
   final String receiverPhoto;
-  final TextEditingController textController = TextEditingController();
+  final TextEditingController chatTextController;
+
+  @override
+  State<BottomEngine> createState() => _BottomEngineState();
+}
+
+class _BottomEngineState extends State<BottomEngine> {
 
   @override
   Widget build(BuildContext context) {
 
-    var controller = Provider.of<ChatServiceController>(context);
-    
-    //global key
-    GlobalKey globalKey = GlobalKey();
+    var chatServiceController = Provider.of<ChatServiceController>(context);
 
-    FocusNode focusNode = FocusNode(); //for keyboard
 
     //only send messages when there is something to send
-    void sendMessage() async{
-      if(textController.text.isNotEmpty) {
-        //send message
-        controller.sendDirectMessages(
-          receiverId: receiverId, 
-          receiverName: receiverName, 
-          receiverPhoto: receiverPhoto, 
-          message: textController.text
+    void sendMessage() {
+      if(chatServiceController.chatTextController.text.isNotEmpty) {
+        //then send the intended message
+        chatServiceController.sendDirectMessages(
+          receiverId: widget.receiverId, 
+          receiverName: widget.receiverName, 
+          receiverPhoto: widget.receiverPhoto, 
+          message: chatServiceController.chatTextController.text, 
         )
         //.then((val) => textController.clear())
-        .then((value) => controller.makeKeyboardDisappear());
-        textController.clear();
+        .then((value) => chatServiceController.makeKeyboardDisappear());
+        chatServiceController.chatTextController.clear();
       }
     }
 
-    void showKeyboard() {
-      focusNode.requestFocus();
+    void sendPictureOrVideo() {
+      
+      //then send the intended message
+      chatServiceController.sendPictureOrVideoWithOrWithoutAText(
+      receiverId: widget.receiverId, 
+      receiverName: widget.receiverName, 
+      receiverPhoto: widget.receiverPhoto, 
+      message: chatServiceController.chatTextController.text, 
+      file: chatServiceController.file  
+      )
+      .then((value) => chatServiceController.makeKeyboardDisappear());
+      chatServiceController.chatTextController.clear(); 
     }
 
-    void hideKeyboard() {
-      focusNode.unfocus();
-    }
+
     
     //wrap with positioned
     return Padding(
@@ -94,7 +104,7 @@ class BottomEngine extends StatelessWidget {
             SizedBox(width: 5.w,),
             Expanded(
               child: TextFormField( 
-                autofocus: true,  
+                //autofocus: true,  
                 onTap: () {},       
                 scrollPhysics: const BouncingScrollPhysics(),
                 scrollController: ScrollController(),
@@ -103,7 +113,7 @@ class BottomEngine extends StatelessWidget {
                 minLines: 1,
                 maxLines: 10,
                 enabled: true,
-                controller: textController,
+                controller: chatServiceController.chatTextController,
                 keyboardType: TextInputType.multiline,
                 autocorrect: true,
                 enableSuggestions: true,
@@ -122,7 +132,14 @@ class BottomEngine extends StatelessWidget {
               icon: const Icon(
                 CupertinoIcons.location_north_line_fill
               ),
-              onPressed: () => sendMessage(),
+              onPressed: () {
+                if(chatServiceController.file == null) {
+                  sendMessage();
+                }
+                else{
+                  sendPictureOrVideo();
+                }
+              },
               //iconSize: 30.r, //40.r, 
               color: AppTheme().mainColor,
             ),
