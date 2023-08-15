@@ -488,7 +488,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                   horizontal: 15.w  //10.w
                 ),
                 child: TextFormField(
-                  autofocus: true,
+                  //autofocus: true,
                   controller: feedsController.commentTextController,
                   spellCheckConfiguration: SpellCheckConfiguration(),
                   scrollPadding: EdgeInsets.symmetric(

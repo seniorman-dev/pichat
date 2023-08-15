@@ -50,106 +50,118 @@ class _LoginScreenState extends State<LoginScreen> {
         horizontal: 25.w,
         vertical: 20.h,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 120.h,),
-          Text(
-            'Welcome Back!',
-            style: GoogleFonts.poppins(
-              textStyle: TextStyle(
-                color: AppTheme().blackColor,
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold               
-              )
-            ),
-          ),
-          SizedBox(height: 50.h),
-          Text(
-            'Your Email',
-            style: GoogleFonts.poppins(
-              textStyle: TextStyle(
-                color: AppTheme().blackColor,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.bold //.w500               
-              )
-            ),
-          ),
-          SizedBox(height: 10.h,),
-          EmailFieldLogin(
-            textController: controller.loginEmailController, 
-            onSaved: (val) {
-              controller.loginEmailController.text = val!;
-            }, 
-            hintText: 'johndoe@example.com', 
-            //validator: controller.validateEmail
-          ),
-          SizedBox(height: 20.h),
-          Text(
-            'Password',
-            style: GoogleFonts.poppins(
-              textStyle: TextStyle(
-                color: AppTheme().blackColor,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.bold //.w500               
-              )
-            ),
-          ),
-          SizedBox(height: 10.h,),
-          PasswordFieldLogin(
-            textController: controller.loginPasswordController, 
-            onSaved: (val) {
-              controller.loginPasswordController.text = val!;
-            }, 
-            hintText: 'enter your password', 
-          ),
-          SizedBox(height: 50.h),
-          CustomElevatedButton(
-            text: 'Login', 
-            onPressed: () {
-              setState(() {
-                controller.isLoading = true;
-              });
-              controller.signIn(); //.whenComplete(() => Get.to(() => MainPage()));
-              setState(() {
-                controller.isLoading = false;
-              });
-            },
-          ),
-          SizedBox(height: 20.h,),
-          //already have account?
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+      child: Form(
+        key: controller.formkeyForLogin,
+        child: FocusScope(
+          node: controller.focusScopeNodesForLogin,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 120.h,),
               Text(
-                "Don't have an account?",
+                'Welcome Back!',
                 style: GoogleFonts.poppins(
-                  color: Colors.grey, //AppTheme().darkGreyColor,
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w500
+                  textStyle: TextStyle(
+                    color: AppTheme().blackColor,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold               
+                  )
                 ),
               ),
-              SizedBox(width: 2.w,),
-              TextButton(
-                child: Text(
-                  'Register',
-                  style: GoogleFonts.poppins(
-                    textStyle: TextStyle(
-                      color: AppTheme().mainColor,
-                      fontWeight: FontWeight.bold,
+              SizedBox(height: 50.h),
+              Text(
+                'Your Email',
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    color: AppTheme().blackColor,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.bold //.w500               
+                  )
+                ),
+              ),
+              SizedBox(height: 10.h,),
+              EmailFieldLogin(
+                textController: controller.loginEmailController, 
+                onSaved: (val) {
+                  //controller.loginEmailController.text = val!;
+                }, 
+                hintText: 'johndoe@example.com', 
+                onEditingComplete: () {
+                  controller.focusScopeNodesForLogin.nextFocus();
+                }, 
+                //validator: controller.validateEmail
+              ),
+              SizedBox(height: 20.h),
+              Text(
+                'Password',
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    color: AppTheme().blackColor,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.bold //.w500               
+                  )
+                ),
+              ),
+              SizedBox(height: 10.h,),
+              PasswordFieldLogin(
+                textController: controller.loginPasswordController, 
+                onSaved: (val) {
+                  //controller.loginPasswordController.text = val!;
+                }, 
+                hintText: 'enter your password', 
+                onEditingComplete: () {
+                  controller.focusScopeNodesForLogin.nextFocus();
+                }, 
+              ),
+              SizedBox(height: 50.h),
+              CustomElevatedButton(
+                text: 'Login', 
+                onPressed: () {
+                  setState(() {
+                    controller.isLoading = true;
+                  });
+                  controller.signIn(context: context);
+                  setState(() {
+                    controller.isLoading = false;
+                  });
+                },
+              ),
+              SizedBox(height: 20.h,),
+              //already have account?
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't have an account?",
+                    style: GoogleFonts.poppins(
+                      color: Colors.grey, //AppTheme().darkGreyColor,
                       fontSize: 13.sp,
-                      decoration: TextDecoration.underline
+                      fontWeight: FontWeight.w500
                     ),
                   ),
-                ),
-                onPressed: () {
-                  Get.to(() => const RegisterScreen());
-                }, 
-              )
-            ],
+                  SizedBox(width: 2.w,),
+                  TextButton(
+                    child: Text(
+                      'Register',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          color: AppTheme().mainColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13.sp,
+                          decoration: TextDecoration.underline
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      Get.to(() => const RegisterScreen());
+                    }, 
+                  )
+                ],
+              ),
+              SizedBox(height: 20.h,)
+            ]
           ),
-          SizedBox(height: 20.h,)
-        ]
+        ),
       ),
     );
   }

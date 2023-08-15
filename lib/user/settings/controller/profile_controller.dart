@@ -36,10 +36,9 @@ class ProfileController extends ChangeNotifier {
   
   
   //for textformfields to perform validation operations
-  final formKey = GlobalKey<FormState>();
-
+  final GlobalKey<FormState> formKey = GlobalKey();
   //for textformfields to automatically scroll to the next seamlessly
-  final List<FocusNode> focusNodes = List.generate(2, (index) => FocusNode());
+  final FocusScopeNode focusScopeNode = FocusScopeNode();
 
 
   //final TextEditingController userNameTextController = TextEditingController();  
@@ -53,9 +52,7 @@ class ProfileController extends ChangeNotifier {
   void dispose() {
     // TODO: implement dispose
     //dispose the 4 focusNodes for the textformfield
-    for (var focusNode in focusNodes) {
-      focusNode.dispose();
-    }
+    focusScopeNode.dispose();
     userLink.dispose();
     userBio.dispose();
     scrollController.dispose();

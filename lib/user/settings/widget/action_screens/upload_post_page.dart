@@ -148,7 +148,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
                       alignment: Alignment.center,
                       //height: 65.h, //55.h,
                       child: TextFormField(
-                        autofocus: true,
+                        //autofocus: true,
                         controller: feedsController.postTextController,
                         spellCheckConfiguration: SpellCheckConfiguration(),
                         scrollPadding: EdgeInsets.symmetric(

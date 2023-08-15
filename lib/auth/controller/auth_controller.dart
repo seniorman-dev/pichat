@@ -9,6 +9,7 @@ import 'package:pichat/auth/screen/login_screen.dart';
 import 'package:pichat/auth/screen/successful_registration_screen.dart';
 import 'package:pichat/main_page/screen/main_page.dart';
 import 'package:pichat/utils/snackbar.dart';
+import 'package:pichat/utils/toast.dart';
 
 
 
@@ -44,26 +45,25 @@ class AuthController extends ChangeNotifier{
   final TextEditingController registerConfirmPasswordController = TextEditingController();
   
 
-  //for textformfields to perform validation operations
+  //for textformfields in the (edii profile) screen to perform validation operations
   final formKey = GlobalKey<FormState>();
 
   //for registration textformfields to automatically scroll to the next seamlessly
-  final FocusNode focusNodesForNameReg = FocusNode();
-  final FocusNode focusNodesForEmailReg = FocusNode();
-  final FocusNode focusNodesForPasswordReg = FocusNode();
-  final FocusNode focusNodesForConfirmPasswordReg = FocusNode();
+  final FocusScopeNode focusScopeNodesForReg = FocusScopeNode();
+  final GlobalKey<FormState> formkeyForReg = GlobalKey();
   final ScrollController scrollControllerForRegisteration = ScrollController();
 
   //for login textformfields to automatically scroll to the next seamlessly
-  final FocusNode focusNodesForLoginEmail = FocusNode();
-  final FocusNode focusNodesForLoginPassword = FocusNode();
+  final FocusScopeNode focusScopeNodesForLogin = FocusScopeNode();
+  final GlobalKey<FormState> formkeyForLogin = GlobalKey();
   final ScrollController scrollControllerForLogin = ScrollController();
 
   //for reset piassword textformfields to automatically scroll to the next seamlessly
-  final FocusNode focusNodesForResetPasswordPage = FocusNode();
+  final FocusScopeNode focusNodesForResetPasswordPage = FocusScopeNode();
+  final GlobalKey<FormState> formkeyForResetPasswrdPage = GlobalKey();
   final ScrollController scrollControllerForResetPasswordPage = ScrollController();
 
-
+  //////////////////////////////
   bool isChecked = false;
   bool blindText1 = false;
   bool blindText2 = false;
@@ -87,12 +87,8 @@ class AuthController extends ChangeNotifier{
   ///dispose all
   @override
   void dispose() {
-    focusNodesForLoginEmail.dispose();
-    focusNodesForLoginPassword.dispose();
-    focusNodesForNameReg.dispose();
-    focusNodesForEmailReg.dispose();
-    focusNodesForPasswordReg.dispose();
-    focusNodesForConfirmPasswordReg.dispose();
+    focusScopeNodesForLogin.dispose();
+    focusScopeNodesForReg.dispose();
 
     // TODO: implement dispose
     registerNameController.dispose();
@@ -109,7 +105,7 @@ class AuthController extends ChangeNotifier{
 
 
   //SIGN UP / REGISTER METHOD
-  Future signUp() async {
+  Future signUp({required BuildContext context}) async {
     try {
       //get fcm token
       String? token = await messaging.getToken();
@@ -150,19 +146,24 @@ class AuthController extends ChangeNotifier{
         }
 
         else {
-          return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
+          // ignore: use_build_context_synchronously
+          getToast(context: context, text: 'Uh-oh, something went wrong');
+          //return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
         }
       }
       else {
-        customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
+        // ignore: use_build_context_synchronously
+        getToast(context: context, text: 'Invalid credentials');
+        //return customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
       }
     } on FirebaseAuthException catch (e) {
-      customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
+      getToast(context: context, text: 'Erro: ${e.message}');
+      //customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }
   }
   
   //SIGN IN OR LOGIN METHOD
-  Future signIn() async {
+  Future signIn({required BuildContext context}) async {
     try {
       //get fcm token
       String? token = await messaging.getToken();
@@ -192,26 +193,29 @@ class AuthController extends ChangeNotifier{
             Get.offAll(() => const MainPage());
             loginEmailController.clear();
             loginPasswordController.clear();
-          });
+          }).whenComplete(() => getToast(context: context, text: 'logged in as, $userEmail'));
+
         }
         else {
-          return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
+          return getToast(context: context, text: 'Uh-oh, something went wrong');
+          //return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
         }
       }
       else {
-        customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
+        return getToast(context: context, text: 'Invalid credentials');
+        //customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
       }
     } on FirebaseAuthException catch (e) {
-      customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
+      return getToast(context: context, text: 'Error: ${e.message}');
+      //customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }
   }
 
 
   //SIGN OUT METHOD
-  Future<void> signOut() async {
+  Future<void> signOut({required BuildContext context}) async {
     try {
       //delete the data of the exiting user so that you create room to persist data for the next user
-      final box = GetStorage();
       box.remove('name');
       box.remove('email');
       box.remove('id');
@@ -219,9 +223,11 @@ class AuthController extends ChangeNotifier{
 
       await firestore.collection('users').doc(userID).update({"isOnline": false});
       await firebase.signOut()
-      .whenComplete(() => Get.offAll(() => LoginScreen()));
+      .whenComplete(() => Get.offAll(() => LoginScreen())); //.then((value) => getToast(context: context, text: 'user logged out'));
+      getToast(context: context, text: 'user logged out');
     } on FirebaseAuthException catch (e) {
-      customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
+      return getToast(context: context, text: 'Error: ${e.message}');
+      //customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }
   }
 

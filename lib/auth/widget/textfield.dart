@@ -275,9 +275,10 @@ class CustomTextField4 extends StatelessWidget {
 //////////////////////////////////For Login Screen
 //for email
 class EmailFieldLogin extends StatelessWidget {
-  const EmailFieldLogin({super.key, required this.textController, required this.onSaved, required this.hintText,});
+  const EmailFieldLogin({super.key, required this.textController, required this.onSaved, required this.hintText, required this.onEditingComplete,});
   final TextEditingController textController;
   final void Function(String?)? onSaved;
+  final void Function()? onEditingComplete;
   final String hintText;
   //final String? Function(String?)? validator;
 
@@ -299,8 +300,6 @@ class EmailFieldLogin extends StatelessWidget {
             fontSize: 13.sp
           )
         ),
-        //autofocus: true,
-        focusNode: controller.focusNodesForLoginEmail,
         textCapitalization: TextCapitalization.sentences,          
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -325,7 +324,7 @@ class EmailFieldLogin extends StatelessWidget {
           //prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
         ),
         onSaved: onSaved,
-        //validator: validator
+        onEditingComplete: onEditingComplete
       ),
     );
   }
@@ -333,9 +332,10 @@ class EmailFieldLogin extends StatelessWidget {
 
 //for password
 class  PasswordFieldLogin extends StatefulWidget {
-  const PasswordFieldLogin({super.key, required this.textController, required this.onSaved, required this.hintText,});
+  const PasswordFieldLogin({super.key, required this.textController, required this.onSaved, required this.hintText, required this.onEditingComplete,});
   final TextEditingController textController;
   final void Function(String?)? onSaved;
+  final void Function()? onEditingComplete;
   final String hintText;
 
   @override
@@ -360,9 +360,7 @@ class _PasswordFieldLoginState extends State<PasswordFieldLogin> {
             color: AppTheme().blackColor,
             fontSize: 13.sp
           )
-        ),
-        //autofocus: true,
-        focusNode: controller.focusNodesForLoginPassword,      
+        ),      
         textCapitalization: TextCapitalization.sentences,              
         scrollPhysics: const BouncingScrollPhysics(),
         scrollController: ScrollController(),
@@ -400,6 +398,7 @@ class _PasswordFieldLoginState extends State<PasswordFieldLogin> {
           ), 
         ),
         onSaved: widget.onSaved,
+        onEditingComplete: widget.onEditingComplete,
       ),
     );
   }

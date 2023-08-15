@@ -179,7 +179,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               setState(() {
                 controller.isLoading = true;
               });
-              controller.signUp();  //.whenComplete(() => Get.offAll(SuccessfulRegistrationScreen()));
+              controller.signUp(context: context);
               setState(() {
                 controller.isLoading = false;
               });
