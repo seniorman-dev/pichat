@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/feeds/controller/feeds_controller.dart';
 import 'package:pichat/user/feeds/widget/comment_screen.dart';
-import 'package:pichat/user/settings/widget/video_player_widget.dart';
+import 'package:pichat/user/chat/widget/video/video_player_widget.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
@@ -322,7 +322,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                       Icons.error,
                                       color: AppTheme().lightestOpacityBlue,
                                     ),
-                                  ) : VideoPlayerWidget(videoUrl: data['postContent'],),
+                                  ) : VideoPlayerItem(videoUrl: data['postContent'],),
                                 ),
                               ),
                               

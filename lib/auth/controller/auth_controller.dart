@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pichat/auth/screen/login_screen.dart';
 import 'package:pichat/auth/screen/successful_registration_screen.dart';
 import 'package:pichat/main_page/screen/main_page.dart';
@@ -242,60 +243,70 @@ class AuthController extends ChangeNotifier{
 
   
 
+  final googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly', //'https://www.googleapis.com/auth/drive',
+    ],
+  );
+
+  Future<void> handleGoogleSignIn({required BuildContext context})async{
+    //get fcm token
+    String? token = await messaging.getToken();
+
+    final res = await googleSignIn.signIn();
+    final auth = await res!.authentication;
+    final credentials = GoogleAuthProvider.credential(accessToken: auth.accessToken, idToken: auth.idToken);
+    final firebaseUser = (await firebase.signInWithCredential(credentials)).user;
+    if(firebaseUser != null){
+      final results = (await firestore.collection('users').where('id', isEqualTo: firebaseUser.uid).get()).docs;
+
+      if(results.isEmpty){
+        //save these data of the current user so that you can persist data with get storage
+        box.write('name', firebaseUser.displayName);
+        box.write('email', firebaseUser.email);
+        box.write('id', firebaseUser.uid);
+        debugPrint("My Details: ${box.read('name')} ${box.read('email')} ${box.read('id')}");
+        await firestore.collection('users').doc(firebaseUser.uid).set({
+          'email': firebaseUser.email,
+          "id": firebaseUser.uid,
+          "name": firebaseUser.displayName,
+          'password': registerConfirmPasswordController.text,
+          'photo': 'photo', //put dummy image link pending when the user updates his/her photo
+          'isOnline': true,
+          'isVerified': firebaseUser.emailVerified,
+          'location': 'location', //get from geolocator or google maps,
+          'agreedToT&C': isChecked,
+          'isProfileUpdated': false,
+          "timestamp": Timestamp.now()
+        })
+        .then((val) async => await firestore.collection('users').doc(firebaseUser.uid).update({'FCMToken': token}))
+        .then((val) {
+          Get.offAll(() => const SuccessfulRegistrationScreen());
+        });
+        
+      } 
+      else{
+        Get.to(() => MainPage());
+      }
+    }
+    else {
+      getToast(context: context, text: 'User does not exit');
+    }
+
+  }
+  
+  //use "whenComplete" to navigate to the login screen after you've signed ou
+  Future handleGoogleSignOut() async{
+    final res = await googleSignIn.signOut();
+    return res;
+  }
 
 
 
 
 
   ////////////////////////////////////////////////////////////////////////////////////
-  /*Future<void> signInWithGoogle() async{
-    try {
-      //begin interactive sign in process
-      final GoogleSignInAccount? gUser = await GoogleSignIn(
-        serverClientId: '930937927575-ih02cie0tgno7in6ge9vapaeppj7dui6.apps.googleusercontent.com'
-      ).signIn();
-      //obtain auth details from request
-      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
-      //create a new credential for the user
-      final credential = GoogleAuthProvider.credential(
-        accessToken: gAuth.accessToken,
-        idToken: gAuth.idToken
-      );
-      //get fcm token
-      String? token = await messaging.getToken();
-
-      //finally sign in the user and add their details or credentials to Firebase
-      UserCredential userCredential = await firebase.signInWithCredential(credential);  //.whenComplete(() async =>
-      debugPrint(userCredential.user!.displayName);
-      debugPrint(userCredential.user!.email);
-      debugPrint(userCredential.user!.uid);
-      debugPrint("${userCredential.user!.emailVerified}");
-      debugPrint(userCredential.user!.phoneNumber);
-      debugPrint(userCredential.user!.photoURL);
-
-      if(userCredential.user != null) {
-        Get.to(() => MainPage());
-        await firestore.collection('users')
-        .doc(gUser.id)
-        .set({
-          'name': userCredential.user!.displayName,
-          'email': userCredential.user!.email,
-          'photo': userCredential.user!.photoURL,
-          'id': userCredential.user!.uid,
-          'isOnline': true,
-          'isVerified': false,
-          'location': 'location' //get from geolocator,
-        }).whenComplete(() async => await firestore.collection('users').doc(gUser.id).update({'FCMToken': token}));
-      }
-      /*else {
-        return customGetXSnackBar(title: 'Uh - Oh!', subtitle: 'Something went wrong');
-      }*/
-
-    }
-    catch(e) {
-      debugPrint('Sign In Error: $e');
-    }
-  }*/
 
 
 }

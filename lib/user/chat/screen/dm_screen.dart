@@ -177,32 +177,83 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
             SizedBox(width: 10.w,)  
           ],
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //chatlist
-            ChatList(
-              senderName: widget.senderName, 
-              senderId: widget.senderId,
-              receiverName: widget.receiverName, 
-              receiverId: widget.receiverID,
-            ),
-
-            //bottom textfield
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: calculateBottomPadding(context)
-              ),
-              child: BottomEngine(
+        body: Container(
+          //decoration: BoxDecoration(
+          //image: DecorationImage(image: AssetImage('asset/img/chat.jpg'))),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //chatlist
+              ChatList(
+                senderName: widget.senderName, 
+                senderId: widget.senderId,
                 receiverName: widget.receiverName, 
-                receiverId: widget.receiverID, 
-                receiverPhoto: widget.receiverProfilePic, 
-                chatTextController: chatServiceController.chatTextController,
+                receiverId: widget.receiverID,
               ),
-            ),
-            //give it small height
-            SizedBox(height: 2.h,)
-          ],
+        
+        
+              //show image here
+              chatServiceController.file != null ?
+              //image (remove sizedbox later)
+              InkWell(
+                onLongPress: (){
+                  //set file content to null or cancel image picker from picking file
+                  setState(() {
+                    chatServiceController.file = null;
+                  });
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 0.h, //25.h
+                    horizontal: 10.w  //20.h
+                  ),
+                  child: SizedBox(
+                    height: 400.h,
+                    width: double.infinity,
+                    child: Card(
+                      color: AppTheme().darkGreyColor,
+                      semanticContainer: true,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0.r),
+                      ),
+                      elevation: 2,
+                      child: chatServiceController.isContentImage && chatServiceController.isAnyImageSelected
+                      ?Image.file(
+                        errorBuilder: (context, url, error) => Icon(
+                          Icons.error,
+                          color: AppTheme().lightestOpacityBlue,
+                        ),
+                        chatServiceController.file!,
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.cover, //.contain,
+                        width: 65.w,
+                        height: 80.h,
+                      ) 
+                      :SizedBox(), //show content as video
+                    ),
+                  ),
+                ),
+              )
+              : SizedBox(),
+              
+        
+              //bottom textfield
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: calculateBottomPadding(context)
+                ),
+                child: BottomEngine(
+                  receiverName: widget.receiverName, 
+                  receiverId: widget.receiverID, 
+                  receiverPhoto: widget.receiverProfilePic, 
+                  chatTextController: chatServiceController.chatTextController,
+                ),
+              ),
+              //give it small height
+              SizedBox(height: 2.h,)
+            ],
+          ),
         )   
       ),   
     );

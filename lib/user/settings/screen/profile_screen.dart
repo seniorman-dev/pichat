@@ -39,9 +39,14 @@ import '../widget/action_screens/upload_post_page.dart';
 
 
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
   
@@ -591,7 +596,13 @@ class ProfileScreen extends StatelessWidget {
                                       Get.to(() => UploadPostPage(
                                         onPressedForSavingEveryThing: () {
                                           if(feedsController.postTextController.text.isNotEmpty && feedsController.contentFile != null) {
-                                            feedsController.uploadContentToDatbase(file: feedsController.contentFile, context: context).then((value) => Get.to(() => PostUpdatedSuccessScreen()));
+                                            feedsController.uploadContentToDatbase(file: feedsController.contentFile, context: context)
+                                            .then((value) {
+                                              setState(() {
+                                                feedsController.contentFile = null;
+                                              });
+                                              Get.to(() => PostUpdatedSuccessScreen());
+                                            });
                                           }
                                           else{
                                             getToast(text: 'Incomplete Credentials', context: context);

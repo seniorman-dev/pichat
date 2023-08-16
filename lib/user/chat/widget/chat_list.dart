@@ -8,6 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
+import 'package:pichat/user/chat/widget/audio/audio_player_widget.dart';
+import 'package:pichat/user/chat/widget/video/video_player_widget.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/extract_firstname.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
@@ -211,12 +213,18 @@ class _ChatListState extends State<ChatList> {
                               ),
                             ),
                           ),
-          
+                        
+                        //the real container gan gan
                         Container(
                           alignment: Alignment.centerLeft,
                           //height: 80.h,
                           width: 200.w,
-                          padding: EdgeInsets.symmetric(
+                          padding: data['messageType'] == 'image' || data['messageType'] == 'video' 
+                          ?EdgeInsets.symmetric(
+                            vertical: 5.h,
+                            horizontal: 5.w
+                          )
+                          :EdgeInsets.symmetric(
                             vertical: 10.h, //15.h
                             horizontal: 10.w  //15.h
                           ),
@@ -275,29 +283,28 @@ class _ChatListState extends State<ChatList> {
                                 ),
                               )
                               //implement video player widget (VideoPlayerWidget)
-                              :Text(
-                                'video player widget', //data['video']
-                                style: GoogleFonts.poppins(
-                                  color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w500,
-                                  textStyle: TextStyle(
-                                    overflow: TextOverflow.visible
-                                  )
-                                ),
-                              ),
+                              :data['video'] == 'video' ?
+                              VideoPlayerItem(videoUrl: data['video']) 
+                              //Substitute for audio widget
+                              : AudioWidget(),
                               SizedBox(height: 3.h,),
                               data['messageType'] == 'image' || data['messageType'] == 'video'
                               ?
-                              Text(
-                                data['message'],
-                                style: GoogleFonts.poppins(  //urbanist
-                                  color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w500,
-                                  textStyle: TextStyle(
-                                    overflow: TextOverflow.visible
-                                  )
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 5.w,
+                                  vertical: 5.h
+                                ),
+                                child: Text(
+                                  data['message'],
+                                  style: GoogleFonts.poppins(  //urbanist
+                                    color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w500,
+                                    textStyle: TextStyle(
+                                      overflow: TextOverflow.visible
+                                    )
+                                  ),
                                 ),
                               )
                               : SizedBox()

@@ -50,8 +50,8 @@ List<BottomNavigationBarItem> _navBarsItems() {
       label: 'Home',
     ),
     const BottomNavigationBarItem(
-      activeIcon: Icon(CupertinoIcons.text_bubble_fill),
-      icon: Icon(CupertinoIcons.text_bubble),
+      activeIcon: Icon(CupertinoIcons.chat_bubble_text_fill),
+      icon: Icon(CupertinoIcons.chat_bubble_text),
       label: 'Groups',
     ),
     const BottomNavigationBarItem(

@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/feeds/controller/feeds_controller.dart';
 import 'package:pichat/user/settings/controller/profile_controller.dart';
+import 'package:pichat/utils/toast.dart';
 import 'package:provider/provider.dart';
 
 
@@ -337,16 +338,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
       }
     }
     catch (e) {
-      final snackBar = SnackBar(
-        backgroundColor: AppTheme().whiteColor, //.lightestOpacityBlue,
-        content: Text(
-          "Error: $e",
-          style: GoogleFonts.poppins(
-            color: AppTheme().blackColor
-          ),
-        )
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      getToast(context: context, text: 'Error picking image from gallery: $e');
       debugPrint("Error Pickig Image From Gallery: $e");
     }
   }
@@ -372,17 +364,8 @@ class _UploadPostPageState extends State<UploadPostPage> {
       }
     }
     catch (e) {
-      final snackBar = SnackBar(
-        backgroundColor: AppTheme().whiteColor, //.lightestOpacityBlue,
-        content: Text(
-          "Error: $e",
-          style: GoogleFonts.poppins(
-            color: AppTheme().blackColor
-          ),
-        )
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      debugPrint("Error Pickig Image From Gallery: $e");
+      getToast(context: context, text: 'Error picking video from gallery: $e');
+      debugPrint("Error Pickig Video From Gallery: $e");
     }
   }
 }
