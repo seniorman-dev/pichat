@@ -379,7 +379,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                         SizedBox(height: 10.h),
                                         Text(
-                                          'Re-posts',
+                                          'Saves',
                                           style: GoogleFonts.poppins(
                                             color: AppTheme().blackColor,
                                             fontSize: 13.sp,
@@ -599,10 +599,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             feedsController.uploadContentToDatbase(file: feedsController.contentFile, context: context)
                                             .then((value) {
                                               setState(() {
-                                                feedsController.contentFile = null;
+                                                Get.to(() => PostUpdatedSuccessScreen());
+                                                feedsController.isAnyThingSelected = false;
+                                                feedsController.postTextController.clear();
                                               });
-                                              Get.to(() => PostUpdatedSuccessScreen());
                                             });
+                                            //feedsController.postTextController.clear();
                                           }
                                           else{
                                             getToast(text: 'Incomplete Credentials', context: context);
@@ -687,11 +689,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       SizedBox(height: 20.h,),
                       ProfileItem(
-                        icon: CupertinoIcons.person_3, 
+                        icon: CupertinoIcons.creditcard, 
                         onPressed: () {
                           //Get.to(() => CreateGroupScreen());
                         }, 
-                        title: 'Create Group',
+                        title: 'Wallet', //will imlement in the feature
                       ),
                       SizedBox(height: 20.h,),
                       ProfileItem(

@@ -17,7 +17,7 @@ import 'package:pichat/user/feeds/controller/feeds_controller.dart';
 import 'package:pichat/user/settings/controller/profile_controller.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-import 'test_audio.dart';
+import 'user/group_chat/controller/group_chat_controller.dart';
 import 'user/notifications/controller/notifications_controller.dart';
 import 'utils/error_loader.dart';
 import 'utils/loader.dart';
@@ -77,6 +77,9 @@ void main() async{
         ),
         ChangeNotifierProvider<NotificationsController>(
           create: (_) => NotificationsController()
+        ),
+        ChangeNotifierProvider<GroupChatController>(
+          create: (_) => GroupChatController()
         )
       ],
       child: const MyApp(),

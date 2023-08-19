@@ -220,16 +220,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 alignment: Alignment.centerLeft,
                 height: 68.h, //70.h,
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(16),
                 //width: 100.w,
-                child: Text(
-                  widget.name,
-                  style: GoogleFonts.poppins(
-                    textStyle: TextStyle(
-                      color: AppTheme().blackColor,
-                      fontSize: 13.sp
-                    )
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(CupertinoIcons.person, color: AppTheme().blackColor,),
+                    SizedBox(width: 13.w,),
+                    Text(
+                      widget.name,
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          color: AppTheme().blackColor,
+                          fontSize: 13.sp
+                        )
+                      ),
+                    ),
+                  ],
                 ),
               ),
         
@@ -256,16 +263,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 alignment: Alignment.centerLeft,
                 height: 68.h, //70.h,
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(16),
                 //width: 100.w,
-                child: Text(
-                  widget.email,
-                  style: GoogleFonts.poppins(
-                    textStyle: TextStyle(
-                      color: AppTheme().blackColor,
-                      fontSize: 13.sp
-                    )
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(CupertinoIcons.mail, color: AppTheme().blackColor,),
+                    SizedBox(width: 13.w,),
+                    Text(
+                      widget.email,
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          color: AppTheme().blackColor,
+                          fontSize: 13.sp
+                        )
+                      ),
+                    ),
+                  ],
                 ),
               ),
         
@@ -510,6 +524,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 13.sp),              
                     filled: true,
                     fillColor: AppTheme().lightGreyColor,
+                    prefixIcon: Icon(CupertinoIcons.person, color: AppTheme().blackColor,)
                   ),
                   validator: (value) {
                     if(value!.isEmpty ) {
@@ -587,7 +602,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 13.sp),              
                     filled: true,
                     fillColor: AppTheme().lightGreyColor,
-                    //prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
+                    prefixIcon: Icon(CupertinoIcons.link, color: AppTheme().blackColor,)
                   ),
                   validator: (value) {
                     //https://www.t.ng
@@ -678,16 +693,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   height: 70.h, //65.h,
                   padding: EdgeInsets.all(10),
                   //width: 100.w,
-                  child: Text(
-                    //widget.isProfileUpdated 
-                    //? widget.dateOfBirth :
-                    controller.selectedDate!.isEmpty ? checkDate : controller.selectedDate!,
-                    style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                        color: controller.selectedDate!.isEmpty ? AppTheme().greyColor : AppTheme().blackColor,
-                        fontSize: 13.sp
-                      )
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(CupertinoIcons.calendar, color: AppTheme().blackColor,),
+                      SizedBox(width: 13.w,),
+                      Text(
+                        //widget.isProfileUpdated 
+                        //? widget.dateOfBirth :
+                        controller.selectedDate!.isEmpty ? checkDate : controller.selectedDate!,
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            color: controller.selectedDate!.isEmpty ? AppTheme().greyColor : AppTheme().blackColor,
+                            fontSize: 13.sp
+                          )
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -713,16 +735,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ).then((value) => Get.to(() => ProfileUpdatedSuccessScreen()));
                     }
                     else {
-                      final snackBar = SnackBar(
-                        backgroundColor: AppTheme().whiteColor,
-                        content: Text(
-                          "Invalid Credentials",
-                          style: GoogleFonts.poppins(
-                            color: AppTheme().blackColor
-                          ),
-                        )
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      getToast(context: context, text: "Invalid Credentials");
                     }
                   },
                   style: ElevatedButton.styleFrom(

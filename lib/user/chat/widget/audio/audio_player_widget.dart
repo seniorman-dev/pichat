@@ -3,7 +3,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,7 +20,8 @@ import 'package:provider/provider.dart';
 
 
 class AudioWidget extends StatefulWidget {
-  const AudioWidget({super.key,});
+  const AudioWidget({super.key, required this.senderId,});
+  final String senderId;
 
 
   @override
@@ -35,7 +35,26 @@ class _AudioWidgetState extends State<AudioWidget> {
 
   @override
   void initState() {
+    var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
     audioPlayer = AudioPlayer();
+    audioPlayer.onPlayerStateChanged.listen((event) {
+      event == PlayerState.playing;
+      /*setState(() {
+        event == PlayerState.playing;
+      });*/
+    });
+    //duration event listener
+    audioPlayer.onDurationChanged.listen((newDuration) {
+      setState(() {
+        chatServiceController.duration = newDuration;
+      });
+    });
+    //position event listener
+    audioPlayer.onPositionChanged.listen((newPosition) {
+      setState(() {
+        chatServiceController.position = newPosition;
+      });
+    });
     super.initState();
   }
 
@@ -44,6 +63,11 @@ class _AudioWidgetState extends State<AudioWidget> {
     audioPlayer.dispose();
     super.dispose();
   }
+
+  String formatAudioTime({required int seconds}) {
+    return "${Duration(seconds: seconds)}".split('.')[0].padLeft(6, '0'); //8, 0
+  }
+
   //use 'isRecording' to change icon of recording and its color, then call the "sendAudioToStorage()"
   //put this function in chat list page (initialize all the players oh)
   Future<void> playRecording() async{
@@ -63,6 +87,7 @@ class _AudioWidgetState extends State<AudioWidget> {
       print('error: $e');
     }
   }
+
   
   @override
   Widget build(BuildContext context) {
@@ -71,8 +96,23 @@ class _AudioWidgetState extends State<AudioWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         GestureDetector(
-          onTap: () {
-            setState(() {
+          onTap: () async{
+            if(chatServiceController.isPlaying) {
+              //don't mind the dead code,it's because of StatelessWidget
+              await audioPlayer.pause();
+              setState(() {
+                chatServiceController.isPlaying = false;
+              });
+            }
+            else {
+              playRecording();
+              //await audioPlayer.play(UrlSource(widget.message));
+              setState(() {
+                chatServiceController.isPlaying = true;
+              });
+            }
+            //////
+            /*setState(() {
               chatServiceController.isPlaying = !chatServiceController.isPlaying;
             });
             if(chatServiceController.isPlaying) {
@@ -82,25 +122,40 @@ class _AudioWidgetState extends State<AudioWidget> {
             }
             else {
               playRecording();
-            }
+            }*/
 
           },
           child: Icon(
-            chatServiceController.isPlaying  
-            ?CupertinoIcons.play_fill //.pause_solid
-            :CupertinoIcons.pause_fill, //.play_fill,
-            color: AppTheme().whiteColor,
+            chatServiceController.isPlaying 
+            ?CupertinoIcons.pause_solid
+            :CupertinoIcons.play_fill,
+            color: widget.senderId == chatServiceController.auth.currentUser!.uid ? AppTheme().whiteColor : AppTheme().blackColor,
           ),
         ),
-        SizedBox(width: 5.w),
+        //SizedBox(width: 5.w),
         
         Expanded(
-          child: LinearProgressIndicator(
-            //value: chatServiceController.progress,
-            valueColor: AlwaysStoppedAnimation<Color>(AppTheme().whiteColor),
-            backgroundColor: AppTheme().greyColor,
+          child: Slider(
+            min: 0,
+            max: chatServiceController.duration.inSeconds.toDouble(),
+            activeColor: widget.senderId == chatServiceController.auth.currentUser!.uid ? AppTheme().whiteColor : AppTheme().blackColor,
+            inactiveColor: AppTheme().greyColor, 
+            value: chatServiceController.position.inSeconds.toDouble(),
+            onChanged: (double value) {
+              final position = Duration(seconds: value.toInt());
+              audioPlayer.seek(position);
+              audioPlayer.resume();
+            },
           ),
         ),
+        Text(
+          formatAudioTime(seconds: chatServiceController.position.inSeconds),  //starting time
+          style: GoogleFonts.poppins(
+            fontSize: 13.sp,
+            fontWeight: FontWeight.normal,
+            color: widget.senderId == chatServiceController.auth.currentUser!.uid ? AppTheme().whiteColor : AppTheme().blackColor,
+          ),
+        )
       ],
     );
   }

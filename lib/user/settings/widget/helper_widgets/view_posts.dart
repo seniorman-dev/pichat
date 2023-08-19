@@ -80,7 +80,7 @@ class _ViewPostsScreenState extends State<ViewPostsScreen> with TickerProviderSt
               ),
               Tab(
                 child: Text(
-                  'Re-posts',
+                  'Saves',
                   style: GoogleFonts.poppins(  //urbanist
                     //color: AppTheme().blackColor,
                     fontSize: 13.sp,

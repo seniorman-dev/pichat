@@ -19,7 +19,7 @@ class VideoPlayerItem extends StatefulWidget {
 
 class _VideoPlayerItemState extends State<VideoPlayerItem> {
 
-  bool isPlay = false;
+  bool isPlaying = false;
 
   late CachedVideoPlayerController videoPlayerController;
 
@@ -46,34 +46,80 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 16/9,
-      child: Stack(
-        children: [
-          CachedVideoPlayer(videoPlayerController),
-          Align(
-            alignment: Alignment.center,
-            child: IconButton(
-              onPressed: () {
-                if(isPlay ){
-                  videoPlayerController.pause();
-                }
-                else{
-                  videoPlayerController.play();
-                }
-                setState(() {
-                  isPlay = !isPlay;
-                });
-              }, 
-              icon: Icon(
-                isPlay 
-                ?CupertinoIcons.play_circle
-                :CupertinoIcons.pause_circle, 
-                color: AppTheme().whiteColor,
-              )
+    return InkWell(
+      onDoubleTap: () {
+        videoPlayerController.play();
+      },
+      onTap: () {
+        if(isPlaying ){
+          videoPlayerController.pause();
+          setState(() {
+            isPlaying = false;
+          });
+        }
+        else{
+          videoPlayerController.play();
+          setState(() {
+            isPlaying = true;
+          });
+        }
+      },
+      child: AspectRatio(
+        aspectRatio: 16/9,
+        child: Stack(
+          children: [
+            CachedVideoPlayer(videoPlayerController),
+            Align(
+              alignment: Alignment.center,
+              child: IconButton(
+                onPressed: () {
+                  if(isPlaying ){
+                    videoPlayerController.pause();
+                    setState(() {
+                      isPlaying = false;
+                    });
+                  }
+                  else{
+                    videoPlayerController.play();
+                    setState(() {
+                      isPlaying = true;
+                    });
+                  }
+                }, 
+                icon: Icon(
+                  isPlaying 
+                  ?CupertinoIcons.pause_circle
+                  :CupertinoIcons.play_circle, 
+                  color: isPlaying ? Colors.transparent : AppTheme().whiteColor,
+                )
+              ),
             ),
-          )
-        ],
+            //////////
+            /*Expanded(
+          child: Slider(
+            min: 0,
+            max: chatServiceController.duration.inSeconds.toDouble(),
+            activeColor: widget.senderId == chatServiceController.auth.currentUser!.uid ? AppTheme().whiteColor : AppTheme().blackColor,
+            inactiveColor: AppTheme().greyColor, 
+            value: chatServiceController.position.inSeconds.toDouble(),
+            onChanged: (double value) {
+              final position = Duration(seconds: value.toInt());
+              audioPlayer.seek(position);
+              audioPlayer.resume();
+            },
+          ),
+        ),
+        Text(
+          formatAudioTime(seconds: chatServiceController.position.inSeconds),  //starting time
+          style: GoogleFonts.poppins(
+            fontSize: 13.sp,
+            fontWeight: FontWeight.normal,
+            color: widget.senderId == chatServiceController.auth.currentUser!.uid ? AppTheme().whiteColor : AppTheme().blackColor,
+          ),
+        )*/
+            //////////
+          ],
+        ),
       ),
     );
   }

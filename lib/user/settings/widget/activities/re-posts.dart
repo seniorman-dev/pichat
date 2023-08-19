@@ -67,7 +67,7 @@ class _RePostsState extends State<RePosts> {
                   ),
                   SizedBox(height: 50.h),
                   Text(
-                    "No re-posts found",
+                    "No saves found",
                     style: GoogleFonts.poppins(
                       color: AppTheme().greyColor,
                       fontSize: 14.sp,
@@ -570,7 +570,7 @@ class _RePostsState extends State<RePosts> {
                                         ),
                                         SizedBox(width: 5.w,),
                                         Text(
-                                          reposts >= 0 && reposts <= 1 ? 're-post' : 're-posts',
+                                          reposts >= 0 && reposts <= 1 ? 'save' : 'saves',
                                           style: GoogleFonts.poppins(
                                             color: AppTheme().blackColor,
                                             fontSize: 12.sp,

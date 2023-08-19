@@ -48,7 +48,7 @@ class FeedsController extends ChangeNotifier {
   ////check if the image is taken from gallery or not
   bool isImageSelectedFromGallery = false;
   /// check if any image is selected at all
-  bool isAnyImageSelected = false;
+  bool isAnyThingSelected = false;
   //check if it is a video or picture content that wants to be uploaded
   bool isContentImage = false;
   //check if a posted content is liked and reposted
@@ -405,7 +405,7 @@ class FeedsController extends ChangeNotifier {
     });*/
     
     //repost the post on the general TL (to allow user to only repost once)
-    await firestore
+    /*await firestore
     .collection('feeds')
     .doc(userID)
     .set({
@@ -422,7 +422,7 @@ class FeedsController extends ChangeNotifier {
       'reposterName': userName,
       'reposterId': userId,
       'reposterPhoto': userPhoto,
-    });
+    });*/
 
     //update the "re-posts" collection reference for posts on the TL (it is this stream that we are going to call for each unique post on the TL or feeds. to dislay their length)
     await firestore
@@ -531,10 +531,10 @@ class FeedsController extends ChangeNotifier {
     });
 
     //deletes the main reposted post from the TL(i used the poster's document id to tail it)
-    await firestore
+    /*await firestore
     .collection('feeds')
     .doc(userID)
-    .delete();
+    .delete();*/
     
     
     //delete a re-post on the general TL

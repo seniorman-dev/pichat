@@ -56,48 +56,6 @@ class ChatServiceController extends ChangeNotifier {
 
 
 
-  //SEND MESSAGES
-  /*Future<void> sendMessage({required String receiverName, required String message}) async{
-    //get current user info
-    final String? currentUserName = auth.currentUser!.displayName;
-    final Timestamp timestamp = Timestamp.now();
-    var messageId = (Random().nextInt(100000)).toString();
-
-    //create a new message
-    MessageModel newMessage = MessageModel(
-      content: message, 
-      messageId: messageId, 
-      receiverName: receiverName,
-      senderName: currentUserName!,
-      timestamp: timestamp, 
-      isSeen: false
-    );
-
-    //construct a chat room id from current user id and receiver's id (did this to ensure uniqueness)
-    List<String?> ids = [currentUserName, receiverName];
-    ids.sort(); //this ensures that the chat room id is always the same for any pair of users
-    String chatRoomId = ids.join('_');  //combines the ids into a single string to make it usable
-    
-    //add new message to database (note: this idea is only applicable to creating group chats)
-    //i'd use my own format for private chats
-    await firestore.collection('chat_rooms').doc(chatRoomId).collection('messages').doc(messageId).set(newMessage.toMap());
-  }
-
-
-  //GET MESSAGES
-  Stream<QuerySnapshot> getMessage({required String currentUserName, required String receiverName}) {
-    //construct a chat room id from current user id and receiver's id (did this to ensure uniqueness)
-    List<String?> ids = [currentUserName, receiverName];
-    ids.sort(); //this ensures that the chat room id is always the same for any pair of users
-    String chatRoomId = ids.join('_');  //combines the ids into a single string to make it usable
-
-    //add new message to database (note: this idea is only applicable to creating group chats)
-    //i'd use my own format for private chats
-    return firestore.collection('chat_rooms').doc(chatRoomId).collection('messages').orderBy('timestamp', descending: false).snapshots();
-  }*/
-  
-
-
   //sendFriendRequest to a user
   Future sendFriendRequest({required String recipientId}) async {
     try {
@@ -162,18 +120,26 @@ class ChatServiceController extends ChangeNotifier {
       //////////////////////////////////
 
       // Add sender of the request to the current user or receipient's friend list
-      await firestore.collection('users').doc(auth.currentUser!.uid).collection('friends').doc(friendId)
+      await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .collection('friends')
+      .doc(friendId)
       .set({
-      'name': friendName,
-      'id': friendId,
-      'photo': friendProfilePic,
+        'name': friendName,
+        'id': friendId,
+        'photo': friendProfilePic,
       });
       // Add receiver of the request or current user to the sender's friend list
-      await firestore.collection('users').doc(friendId).collection('friends').doc(auth.currentUser!.uid)
+      await firestore
+      .collection('users')
+      .doc(friendId)
+      .collection('friends')
+      .doc(auth.currentUser!.uid)
       .set({
-      'name': userName,   
-      'id': userId, //auth.currentUser!.uid,
-      'photo': userPhoto, 
+        'name': userName,   
+        'id': userId, //auth.currentUser!.uid,
+        'photo': userPhoto, 
       });
 
       //Remove sender of the request from the current user / receipient's friendRequests collection
@@ -637,10 +603,14 @@ class ChatServiceController extends ChangeNotifier {
 
   
 
-
+  //////////////////////////////to send audio//////////////////////////////////
   bool isPlaying = false;
   bool isRecording = false;
   String audioPath = "" ;  //save to db
+  Duration duration = Duration.zero;
+  Duration position = Duration.zero;
+  //bool isTimeElasped = false;
+
 
   //upload and save to fire storage
   Future<void> uploadAudioToFireStorage({required String contentUrl, required BuildContext context, required String receiverId, required String message, required String receiverName, required String receiverPhoto}) async{

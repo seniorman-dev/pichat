@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 
 
 //takePhotoBottomSheet
-Future<void> showSendOptionsBottomSheet({required BuildContext context, required VoidCallback onPressedForImage, required VoidCallback onPressedForVideo,}) async {
+Future<void> showSendOptionsBottomSheetForGroup({required BuildContext context, required VoidCallback onPressedForImage, required VoidCallback onPressedForVideo,}) async {
   //var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
   showModalBottomSheet(
     isScrollControlled: true,

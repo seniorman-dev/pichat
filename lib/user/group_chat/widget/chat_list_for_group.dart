@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
 import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/widget/audio/audio_player_widget.dart';
 import 'package:pichat/user/chat/widget/video/video_player_widget.dart';
+import 'package:pichat/user/group_chat/controller/group_chat_controller.dart';
 import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/extract_firstname.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
@@ -26,18 +25,19 @@ import 'package:provider/provider.dart';
 
 
 
-class ChatList extends StatefulWidget {
-  const ChatList({super.key, required this.senderName, required this.receiverName, required this.receiverId, required this.senderId});
-  final String senderName;
-  final String senderId;
-  final String receiverName;
-  final String receiverId;
+class GroupChatList extends StatefulWidget {
+  const GroupChatList({super.key, required this.groupName, required this.groupId,});
+  //final String senderName;
+  //final String senderId;
+  //final String senderPhoto;
+  final String groupName;
+  final String groupId;
 
   @override
-  State<ChatList> createState() => _ChatListState();
+  State<GroupChatList> createState() => _GroupChatListState();
 }
 
-class _ChatListState extends State<ChatList> {
+class _GroupChatListState extends State<GroupChatList> {
 
   /*final ScrollController messageController = ScrollController();*/
 
@@ -47,20 +47,13 @@ class _ChatListState extends State<ChatList> {
   @override
   Widget build(BuildContext context) {
 
-    //provider for dependency injection
+    var groupChatController = Provider.of<GroupChatController>(context);
     var authController = Provider.of<AuthController>(context);
-    var chatServiceController = Provider.of<ChatServiceController>(context);
-    //bool _shouldAutoScroll = true;
+    bool _shouldAutoScroll = true;
     
     return Expanded(
       child: StreamBuilder(
-        stream: chatServiceController.firestore.collection('users')
-        .doc(chatServiceController.auth.currentUser!.uid)
-        .collection('recent_chats')
-        .doc(widget.receiverId)
-        .collection('messages')
-        .orderBy('timestamp')
-        .snapshots(),
+        stream: groupChatController.groupMessagesStream(groupId: widget.groupId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Show a loading indicator while waiting for data
@@ -87,14 +80,14 @@ class _ChatListState extends State<ChatList> {
                         radius: 100.r,
                         backgroundColor: AppTheme().lightestOpacityBlue,
                           child: Icon(
-                          CupertinoIcons.text_bubble,
+                          CupertinoIcons.chat_bubble_text,
                           color: AppTheme().mainColor,
                           size: 70.r,
                         ),
                       ),
                       SizedBox(height: 30.h),
                       Text(
-                        "Start a conversation with ${getFirstName(fullName: widget.receiverName)} 😊",
+                        "Be the first to start a conversation\n                  in this group 😊",
                         style: GoogleFonts.poppins(
                           color: AppTheme().greyColor,
                           fontSize: 14.sp,
@@ -110,7 +103,7 @@ class _ChatListState extends State<ChatList> {
 
           //it makes messages list automatically scroll up after a message has been sent
           SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            chatServiceController.messageController.jumpTo(chatServiceController.messageController.position.maxScrollExtent);
+            groupChatController.messageScrollController.jumpTo(groupChatController.messageScrollController.position.maxScrollExtent);
           });
 
 
@@ -124,7 +117,7 @@ class _ChatListState extends State<ChatList> {
                 horizontal: 10.w, //20.w
                 vertical: 10.h  //20.h
               ),
-              controller: chatServiceController.messageController,
+              controller: groupChatController.messageScrollController,
               //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
@@ -146,14 +139,14 @@ class _ChatListState extends State<ChatList> {
                   var currentDate = formatDate(timestamp: data['timestamp']);
                   var previousDate = formatDate(timestamp: previousData['timestamp']);
                   showDateHeader = currentDate != previousDate;
-                  chatServiceController.markMessageAsSeen(messageId: data['messageId'], receiverId: widget.receiverId);
+                  groupChatController.markMessageAsSeen(groupId: widget.groupId, messageId: data['messageId']);
                 }
                 
           
                 return Dismissible(
                   key: UniqueKey(),
                   direction: data['senderId'] == authController.userID ? DismissDirection.endToStart : DismissDirection.endToStart,
-                  onDismissed: (direction) => chatServiceController.deleteDirectMessages(messageId: data['messageId'], receiverId: widget.receiverId),
+                  onDismissed: (direction) => groupChatController.deleteDirectMessagesFromGroup(messageId: data['messageId'], groupId: widget.groupId,),
                   background: Row(
                     mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.end : MainAxisAlignment.end,
                     children: [
@@ -164,9 +157,6 @@ class _ChatListState extends State<ChatList> {
                     ]
                   ),
                   child: InkWell(
-                    /*onTap: () {
-                      chatServiceController.markMessageAsSeen(messageId: data['messageId'], receiverId: widget.receiverId);
-                    },*/
                     onLongPress: () {
                       //show message info or message statistics alert dialog
                     },
@@ -218,7 +208,7 @@ class _ChatListState extends State<ChatList> {
                         Container(
                           alignment: Alignment.centerLeft,
                           //height: 80.h,
-                          width: 200.w,
+                          width: 170.w, //200.w,
                           padding: data['messageType'] == 'image' || data['messageType'] == 'video' 
                           ?EdgeInsets.symmetric(
                             vertical: 5.h,
@@ -245,16 +235,38 @@ class _ChatListState extends State<ChatList> {
                           ),
                           child: Column(
                             children: [
-                              data['messageType'] == 'text' ?
-                              Text(
-                                data['message'],
-                                style: GoogleFonts.poppins(  //urbanist
-                                  color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w500,
-                                  textStyle: TextStyle(
-                                    overflow: TextOverflow.visible
+                              //name of the sender
+                              data['senderId'] == authController.userID ? SizedBox()
+                              :Row(
+                                mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.start : MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    getFirstName(fullName: data['senderName']),
+                                    style: GoogleFonts.poppins(  //urbanist
+                                      color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.bold,
+                                      textStyle: TextStyle(
+                                        overflow: TextOverflow.visible
+                                      )
+                                    ),
                                   )
+                                ],
+                              ),
+                              SizedBox(height: 2.h,),
+                              data['messageType'] == 'text' ?
+                              Align(
+                                alignment: data['senderId'] == authController.userID ? Alignment.centerLeft :Alignment.centerRight,
+                                child: Text(
+                                  data['message'],
+                                  style: GoogleFonts.poppins(  //urbanist
+                                    color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
+                                    fontSize: 13.sp, //15.sp,
+                                    fontWeight: FontWeight.w500,
+                                    textStyle: TextStyle(
+                                      overflow: TextOverflow.visible
+                                    )
+                                  ),
                                 ),
                               )
                               :data['messageType'] == 'image' ?

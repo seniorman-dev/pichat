@@ -397,7 +397,6 @@ class _FeedScreenState extends State<FeedScreen> {
                                     //repost button
                                     InkWell(
                                       onTap: () {
-
                                         setState(() {
                                         if (controller.selectedIndicesForReposts.contains(index)){
                                           controller.deleteRepost(postId: data['postId']);
@@ -725,7 +724,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                             ),
                                             SizedBox(width: 5.w,),
                                             Text(
-                                              reposts >= 0 && reposts <= 1 ? 're-post' : 're-posts',
+                                              reposts >= 0 && reposts <= 1 ? 'save' : 'save',
                                               style: GoogleFonts.poppins(
                                                 color: AppTheme().blackColor,
                                                 fontSize: 12.sp,

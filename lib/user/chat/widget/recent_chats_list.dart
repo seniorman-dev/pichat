@@ -137,9 +137,9 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
             }
             
             return SizedBox(
-                height: 250.h,
+                height: 370.h,  //250.h
                 child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),  //const BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   //separatorBuilder: (context, index) => SizedBox(height: 0.h,), 

@@ -45,7 +45,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
             },
           ),
           title: Text(
-            'Update Post'
+            'Upload Post'
           ),
           titleSpacing: 2,
           titleTextStyle: GoogleFonts.poppins(
@@ -84,6 +84,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
             SizedBox(height: 70.h),  //80.h
 
             //image (remove sizedbox later)
+            feedsController.isAnyThingSelected ? 
             SizedBox(
               height: feedsController.contentFile != null ? MediaQuery.of(context).size.height : null,
               width: feedsController.contentFile != null ? MediaQuery.of(context).size.width : null,  //double.infinity,
@@ -95,21 +96,31 @@ class _UploadPostPageState extends State<UploadPostPage> {
                   borderRadius: BorderRadius.circular(20.0.r),
                 ),
                 elevation: 2,
-                child: feedsController.isContentImage && feedsController.isAnyImageSelected
-                ?Image.file(
-                  errorBuilder: (context, url, error) => Icon(
-                    Icons.error,
-                    color: AppTheme().lightestOpacityBlue,
+                child: feedsController.isContentImage && feedsController.isAnyThingSelected
+                ?InkWell(
+                  onLongPress: () {
+                    setState(() {
+                      feedsController.contentFile = null;
+                    });
+                  },
+                  child: Image.file(
+                    errorBuilder: (context, url, error) => Icon(
+                      Icons.error,
+                      color: AppTheme().lightestOpacityBlue,
+                    ),
+                    feedsController.contentFile!,
+                    filterQuality: FilterQuality.high,
+                    fit: BoxFit.cover, //.contain,
+                    width: 65.w,
+                    height: 80.h,
                   ),
-                  feedsController.contentFile!,
-                  filterQuality: FilterQuality.high,
-                  fit: BoxFit.cover, //.contain,
-                  width: 65.w,
-                  height: 80.h,
                 ) 
-                :SizedBox(), //show content as video
+                :SizedBox(
+                  height: 100.h,
+                ), //show content as video
               ),
-            ),
+            )
+            : SizedBox(),
             SizedBox(height: 30.h,),   
 
             //textfield
@@ -328,7 +339,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
         setState(() {
           feedsController.contentFile = File(pickedImage.path);
           feedsController.isImageSelectedFromGallery = true;
-          feedsController.isAnyImageSelected = true;
+          feedsController.isAnyThingSelected = true;
           feedsController.isContentImage = true;
         });
         debugPrint("image was picked from gallery");
@@ -354,7 +365,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
         setState(() {
           feedsController.contentFile = File(pickedVideo.path);
           feedsController.isImageSelectedFromGallery = false;
-          feedsController.isAnyImageSelected = false;
+          feedsController.isAnyThingSelected = true;
           feedsController.isContentImage = false;
         });
         debugPrint('video was picked from gallery');

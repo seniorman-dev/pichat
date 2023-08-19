@@ -13,7 +13,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/user/chat/widget/send_picture_or_video_dialogue.dart';
+import 'package:pichat/user/group_chat/controller/group_chat_controller.dart';
+import 'package:pichat/user/group_chat/widget/send_options_bottom_sheet.dart';
 import 'package:pichat/utils/toast.dart';
 import 'package:provider/provider.dart';
 import 'package:record/record.dart';
@@ -25,18 +26,20 @@ import 'package:record/record.dart';
 
 
 
-class BottomEngine extends StatefulWidget {
-  BottomEngine({super.key, required this.receiverName, required this.receiverId, required this.receiverPhoto, required this.chatTextController,});
-  final String receiverName;
-  final String receiverId;
-  final String receiverPhoto;
+
+
+class BottomEngineForGroup extends StatefulWidget {
+  BottomEngineForGroup({super.key, required this.groupName, required this.groupId, required this.groupPhoto, required this.chatTextController,});
   final TextEditingController chatTextController;
+  final String groupId;
+  final String groupName;
+  final String groupPhoto;
 
   @override
-  State<BottomEngine> createState() => _BottomEngineState();
+  State<BottomEngineForGroup> createState() => _BottomEngineForGroupState();
 }
 
-class _BottomEngineState extends State<BottomEngine> {
+class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
   
   late Record audioRecord;
   late AudioPlayer audioPlayer;
@@ -56,42 +59,42 @@ class _BottomEngineState extends State<BottomEngine> {
   }
 
   Future<void> startRecording() async{
-    var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
+    var groupChatController = Provider.of<GroupChatController>(context, listen: false);
     try {
       if(await audioRecord.hasPermission()) {
         await audioRecord.start();
         setState(() {
-          chatServiceController.isRecording = true;
+          groupChatController.isRecording = true;
         });
       }
     }
     catch (e) {
-      print('error: $e');
+      debugPrint('error: $e');
     }
   }
 
   Future<void> stopRecording() async{
-    var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
+    var groupChatController = Provider.of<GroupChatController>(context, listen: false);
     try {
       //await audioRecord.stop();
       String? path = await audioRecord.stop();
 
       setState(() {
-        chatServiceController.isRecording = false;
-        chatServiceController.audioPath = path!;
+        groupChatController.isRecording = false;
+        groupChatController.audioPath = path!;
       });
       // ignore: use_build_context_synchronously
-      chatServiceController.uploadAudioToFireStorage(
-        contentUrl: chatServiceController.audioPath, 
+      groupChatController.sendAudioToFireStorage(
+        contentUrl: groupChatController.audioPath, 
         context: context, 
-        receiverId: widget.receiverId, 
-        message: chatServiceController.chatTextController.text, 
-        receiverName: widget.receiverName, 
-        receiverPhoto: widget.receiverPhoto
+        groupId: widget.groupId,
+        groupName: widget.groupName,
+        groupPhoto: widget.groupPhoto, 
+        message: groupChatController.messageTextController.text 
       );
     }
     catch (e) {
-      print('error: $e');
+      debugPrint('error: $e');
     }
   }
 
@@ -100,39 +103,34 @@ class _BottomEngineState extends State<BottomEngine> {
 
   @override
   Widget build(BuildContext context) {
-
-    var chatServiceController = Provider.of<ChatServiceController>(context);
-
+    var groupChatController = Provider.of<GroupChatController>(context,);
 
     //only send messages when there is something to send
     Future<void> sendMessage() async{
-      if(chatServiceController.chatTextController.text.isNotEmpty) {
+      if(groupChatController.messageTextController.text.isNotEmpty) {
         //then send the intended message
-        chatServiceController.sendDirectMessages(
-          receiverId: widget.receiverId, 
-          receiverName: widget.receiverName, 
-          receiverPhoto: widget.receiverPhoto, 
-          message: chatServiceController.chatTextController.text, 
-        )
-        //.then((val) => textController.clear())
-        .then((value) => chatServiceController.makeKeyboardDisappear());
-        chatServiceController.chatTextController.clear();
+        groupChatController.sendDirectMessages(
+          message: groupChatController.messageTextController.text, 
+          groupId: widget.groupId, 
+          groupName: widget.groupName, 
+          groupPhoto: widget.groupPhoto
+        );
+        groupChatController.messageTextController.clear();
+        //.then((value) => groupChatController.messageTextController.clear());
       }
     }
-
-    Future<void> sendPictureOrVideo() async{
-      
+    
+    //for pictues or videos
+    Future<void> sendPictureOrVideo() async{   
       //then send the intended message
-      chatServiceController.sendPictureOrVideoWithOrWithoutAText(
-        receiverId: widget.receiverId, 
-        receiverName: widget.receiverName, 
-        receiverPhoto: widget.receiverPhoto, 
-        message: chatServiceController.chatTextController.text, 
-        file: chatServiceController.file  
-        )
-        .then((value) => chatServiceController.makeKeyboardDisappear()
+      groupChatController.sendPictureOrVideoWithOrWithoutAText(
+        file: groupChatController.contentFile,
+        message: groupChatController.messageTextController.text, 
+        groupId: widget.groupId, 
+        groupName: widget.groupName, 
+        groupPhoto: widget.groupPhoto       
       );
-      chatServiceController.chatTextController.clear(); 
+      groupChatController.messageTextController.clear(); 
     }
 
 
@@ -173,7 +171,7 @@ class _BottomEngineState extends State<BottomEngine> {
               //iconSize: 30.r, 
               onPressed: () {
                 //open dialog for picking video, image or file document
-                showSendOptionsBottomSheet(
+                showSendOptionsBottomSheetForGroup(
                   context: context, 
                   onPressedForImage: () {
                     pickImageFromGallery(context: context);
@@ -190,10 +188,10 @@ class _BottomEngineState extends State<BottomEngine> {
             GestureDetector(
               onTap: (){
                 setState(() {
-                  chatServiceController.isRecording = !chatServiceController.isRecording;
+                  groupChatController.isRecording = !groupChatController.isRecording;
                 });
 
-                if(chatServiceController.isRecording){
+                if(groupChatController.isRecording){
                   startRecording();
                 }
                 else {
@@ -201,8 +199,8 @@ class _BottomEngineState extends State<BottomEngine> {
                 }
               },
               child: Icon(
-                chatServiceController.isRecording ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
-                color: chatServiceController.isRecording ? AppTheme().mainColor: AppTheme().blackColor,
+                groupChatController.isRecording ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
+                color: groupChatController.isRecording ? AppTheme().mainColor: AppTheme().blackColor,
               ),
             ),
             SizedBox(width: 5.w,),
@@ -219,7 +217,7 @@ class _BottomEngineState extends State<BottomEngine> {
                 minLines: 1,
                 maxLines: 10,
                 enabled: true,
-                controller: chatServiceController.chatTextController,
+                controller: groupChatController.messageTextController,
                 keyboardType: TextInputType.multiline,
                 autocorrect: true,
                 enableSuggestions: true,
@@ -240,10 +238,10 @@ class _BottomEngineState extends State<BottomEngine> {
                 //Icons.send
               ),
               onPressed: () {
-                if(chatServiceController.file != null) {
+                if(groupChatController.file != null) {
                   sendPictureOrVideo().then((val) {
                     setState(() {
-                      chatServiceController.isAnyImageSelected = false;
+                      groupChatController.isAnyImageSelectedForChat = false;
                     });
                   });
                 }
@@ -273,14 +271,14 @@ class _BottomEngineState extends State<BottomEngine> {
     // Simulate fetching data asynchronously
     //await Future.delayed(const Duration(seconds: 2));
     try {
-      var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
+      var groupChatController = Provider.of<GroupChatController>(context, listen: false);
       final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedImage != null) { 
         setState(() {
-          chatServiceController.file = File(pickedImage.path);
-          chatServiceController.isImageSelectedFromGallery = true;
-          chatServiceController.isAnyImageSelected = true;
-          chatServiceController.isContentImage = true;
+          groupChatController.contentFile = File(pickedImage.path);
+          groupChatController.isImageSelectedFromGalleryForChat = true;
+          groupChatController.isAnyImageSelectedForChat = true;
+          groupChatController.isContentImageForChat = true;
         });
         debugPrint("image was picked from gallery");
       }
@@ -298,14 +296,15 @@ class _BottomEngineState extends State<BottomEngine> {
     // Simulate fetching data asynchronously
     //await Future.delayed(const Duration(seconds: 2));
     try {
-      var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
+      var groupChatController = Provider.of<GroupChatController>(context, listen: false);
+
       final pickedVideo = await ImagePicker().pickVideo(source: ImageSource.gallery);
       if (pickedVideo != null) { 
         setState(() {
-          chatServiceController.file = File(pickedVideo.path);
-          chatServiceController.isImageSelectedFromGallery = false;
-          chatServiceController.isAnyImageSelected = false;
-          chatServiceController.isContentImage = false;
+          groupChatController.contentFile = File(pickedVideo.path);
+          groupChatController.isImageSelectedFromGalleryForChat = true;
+          groupChatController.isAnyImageSelectedForChat = true;
+          groupChatController.isContentImageForChat = false;
         });
         debugPrint('video was picked from gallery');
       }
