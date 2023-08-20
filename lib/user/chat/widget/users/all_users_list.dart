@@ -101,15 +101,16 @@ class _AllUsersListState extends State<AllUsersList> {
                 textController: chatServiceController.allUsersTextEditingController, 
                 hintText: 'Find connects',
                 onChanged: (searchText) {
-                // Update userStream when search text changes
-                setState(() {
-                  userStream = FirebaseFirestore.instance
-                  .collection('users')
-                  //.where('id', isNotEqualTo: userID)
-                  .where(
-                    "name",
-                    isGreaterThanOrEqualTo: searchText,
-                    isLessThan: '${searchText}z')
+                  // Update userStream when search text changes
+                  setState(() {
+                    userStream = FirebaseFirestore.instance
+                    .collection('users')
+                    //.where('id', isNotEqualTo: userID)
+                    .where(
+                      "name",
+                      isGreaterThanOrEqualTo: searchText,
+                      isLessThan: '${searchText}z'
+                    )
                     .snapshots();
                   });
                 },

@@ -500,7 +500,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   initialValue: widget.bio,
                   spellCheckConfiguration: SpellCheckConfiguration(),
                   scrollPadding: EdgeInsets.symmetric(
-                    horizontal: 10.h,
+                    horizontal: 10.w,
                     vertical: 5.h
                   ),  //20        
                   scrollPhysics: const BouncingScrollPhysics(),
@@ -579,8 +579,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   initialValue: widget.link,
                   spellCheckConfiguration: SpellCheckConfiguration(),
                   scrollPadding: EdgeInsets.symmetric(
-                    horizontal: 10.h,
-                    vertical: 5.w
+                    horizontal: 10.w,
+                    vertical: 5.h
                   ),  //20        
                   scrollPhysics: const BouncingScrollPhysics(),
                   //scrollController: profileController.scrollController,

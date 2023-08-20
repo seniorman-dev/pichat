@@ -151,7 +151,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.r)
               ),
-              height: 65.h,
+              height: 68.h,
               //width: 100.w,
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,          
@@ -176,7 +176,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                   hintStyle: GoogleFonts.poppins(color: AppTheme().greyColor, fontSize: 13.sp),              
                   filled: true,
                   fillColor: AppTheme().lightGreyColor,
-                  prefixIcon: Icon(CupertinoIcons.person, color: AppTheme().blackColor,)
+                  prefixIcon: Icon(CupertinoIcons.person_fill, color: AppTheme().blackColor,)
                 ),
                 //onFieldSubmitted: widget.onChanged,
                 //onChanged: (),
@@ -201,7 +201,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.r)
               ),
-              height: 65.h,
+              height: 68.h,
               //width: 100.w,
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,          
@@ -228,7 +228,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                   hintStyle: GoogleFonts.poppins(color: AppTheme().greyColor, fontSize: 13.sp),              
                   filled: true,
                   fillColor: AppTheme().lightGreyColor,
-                  prefixIcon: Icon(CupertinoIcons.square_on_square, color: AppTheme().blackColor,)
+                  prefixIcon: Icon(CupertinoIcons.square_fill_on_square_fill, color: AppTheme().blackColor,)
                 ),
                 //onFieldSubmitted: widget.onChanged,
                 //onChanged: (),

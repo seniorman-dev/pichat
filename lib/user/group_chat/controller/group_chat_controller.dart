@@ -9,6 +9,8 @@ import 'package:pichat/user/settings/widget/helper_widgets/logout_dialogue_box.d
 import 'package:pichat/utils/extract_firstname.dart';
 import 'package:pichat/utils/toast.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+import 'package:uuid/uuid_util.dart';
 
 
 
@@ -63,14 +65,16 @@ class GroupChatController extends ChangeNotifier {
 
   //(to be placed inside "sendDirectMessages" function)//
   Future<void> addGroupToRecentChats({required String groupId, required String groupName, required String groupPhoto, required String lastMessage, required Timestamp timestamp, required String sentBy}) async{
-    await firestore.collection('users')
-    .doc(userID)
-    .collection('recent_chats')
+    await firestore
+    .collection('users')
+    .doc(auth.currentUser!.uid)
+    .collection('groups')
     .doc(groupId) 
-    .set({
-      'name': groupName,
-      'id': groupId,
-      'photo': groupPhoto,
+    .update({
+      'groupName': groupName,
+      'groupId': groupId,
+      'groupPhoto': groupPhoto,
+      'groupBio': groupBioController.text,
       'lastMessage': lastMessage,
       'sentBy': sentBy, //person that sent the very last message
       'timestamp': timestamp
@@ -78,11 +82,13 @@ class GroupChatController extends ChangeNotifier {
   }
 
 
+
   ////////////////create group chat/////////////////////////////
   Future<void> createGroupChat({required String groupName, required String groupBio,}) async{
     
     try {
-
+      //for identifying groups uniquely
+      var groupId = (Random().nextInt(100000)).toString();
 
       //did this to get the details of the group creator or admin 
       DocumentSnapshot admin = await FirebaseFirestore.instance
@@ -104,7 +110,7 @@ class GroupChatController extends ChangeNotifier {
       //name of the folder we are first storing the file to
       String? folderName = adminEmail;
       //name the file we are sending to firebase cloud storage
-      String fileName = "${DateTime.now().millisecondsSinceEpoch}group_chat_profile_image";
+      String fileName = "${groupName}_${groupId}_pic";
       //set the storage reference as "users_photos" and the "filename" as the image reference
       firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('$folderName/$fileName');
       //upload the image to the cloud storage
@@ -121,35 +127,46 @@ class GroupChatController extends ChangeNotifier {
       //serve timestamp of cloud firestore
       Timestamp timestamp = Timestamp.now();
 
-      //for identifying groups uniquely
-      var groupId = (Random().nextInt(100000)).toString();
-    
-      //create group chat collection
+      //save details of the group
       await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
       .collection('groups')
       .doc(groupId)
       .set({
-        'groupId': groupId,
         'groupName': groupName,
-        'groupBio': groupBio,
+        'groupId': groupId,
         'groupPhoto': groupPhotoUrl,
-        'groupCreator': adminName,
-        'groupMembersIdList': [
-          adminId
-        ],
-        'groupMembersDetails': [
-          {
-            'memberId': adminId,
-            'memberName': adminName,
-            'memberPhoto': adminPhoto,
-            'memberEmail': adminEmail,
-            'memberType': 'Admin',
-          }
-        ],
+        'createdAt': timestamp
+      });
+    
+      //add admin to members collection
+      await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .collection('groups')
+      .doc(groupId)
+      .collection('members')
+      .doc(auth.currentUser!.uid)
+      .set({
+        'memberId': adminId,
+        'memberName': adminName,
+        'memberPhoto': adminPhoto,
+        'memberEmail': adminEmail,
+        'memberType': 'Admin',
         'timestamp': timestamp
       });
+      
+      //add to recent group chats
+      addGroupToRecentChats(
+        timestamp: timestamp, 
+        lastMessage: lastMessage, 
+        sentBy: adminId, 
+        groupId: groupId, 
+        groupName: groupName, 
+        groupPhoto: groupPhotoUrl
+      );
 
-      //addGroupToRecentChats(groupId: groupId, groupName: groupName, groupPhoto: groupPhotoUrl, lastMessage: lastMessage, timestamp: timestamp, sentBy: adminId);
 
     }
     catch(e) {
@@ -159,11 +176,13 @@ class GroupChatController extends ChangeNotifier {
 
   //delete a group 
   Future<void> deleteGroup({required String groupId}) async{
-    //create group chat collection
     await firestore
+    .collection('users')
+    .doc(auth.currentUser!.uid)
     .collection('groups')
     .doc(groupId)
     .delete();
+
   }
 
 
@@ -173,6 +192,8 @@ class GroupChatController extends ChangeNotifier {
     
     //server timestamp
     Timestamp timestamp = Timestamp.now();
+
+    var uniqueId = Uuid().v4();
 
     //for identifying messages or messages documents uniquely 
     var messageId = (Random().nextInt(100000)).toString();
@@ -186,10 +207,11 @@ class GroupChatController extends ChangeNotifier {
     String senderId = senderSnapshot.get('id');
     String senderPhoto = senderSnapshot.get('photo');
     /////////////////////////////////////////////
-
     
     //add the message to the group chat messages (message stream)
     await firestore
+    .collection('users')
+    .doc(auth.currentUser!.uid)
     .collection('groups')
     .doc(groupId)
     .collection('messages')
@@ -210,40 +232,31 @@ class GroupChatController extends ChangeNotifier {
 
     //did this to get the last message sent from any of the chatters (messages stream)
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(auth.currentUser!.uid)
     .collection('groups')
     .doc(groupId)
+    //.collection('recent_chats')
+    //.doc(groupId)
     .collection('messages')
     .doc(messageId)
     .get();
     String lastMessageSent = snapshot.get('message');
     String sentBy = snapshot.get('senderId');
+    String nameOfSender = snapshot.get('senderName');
     Timestamp timeofLastMessageSnet = snapshot.get('timestamp');
     /////////////////////////////////////////////
 
 
-    //add this for everyone's "recent_chats" collection
-    /*await firestore.collection('users')
-    .doc(userID)
-    .collection('recent_chats')
-    .doc(groupId)
-    .set({
-      'name': groupName,
-      'id': groupId,
-      'photo': groupPhoto,
-      'lastMessage': lastMessageSent,
-      'sentBy': sentBy,
-      'timestamp': timeofLastMessageSnet
-    });*/
-
     //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
-    /*addGroupToRecentChats(
+    addGroupToRecentChats(
       timestamp: timeofLastMessageSnet, 
-      lastMessage: lastMessageSent, 
+      lastMessage: "${getFirstName(fullName: nameOfSender)} ~ $lastMessageSent", 
       sentBy: sentBy, 
       groupId: groupId, 
       groupName: groupName, 
       groupPhoto: groupPhoto
-    );*/
+    );
     //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
     //API().sendPushNotificationWithFirebaseAPI(content: lastMessageSent, receiverFCMToken: FCMToken, title: name);
     
@@ -307,11 +320,11 @@ class GroupChatController extends ChangeNotifier {
     //name of the folder we are first storing the file to
     String? folderName = userEmail;
     //name the file we are sending to firebase cloud storage
-    String fileName = "${DateTime.now().millisecondsSinceEpoch}group_messages_$groupName";
+    String fileName = "${groupName}_${groupId}_pic~vid";
     //set the storage reference as "users_photos" and the "filename" as the image reference
     firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('$folderName/$fileName');
     //upload the image to the cloud storage
-    firebase_storage.UploadTask uploadTask = ref.putFile(contentFile!);
+    firebase_storage.UploadTask uploadTask = ref.putFile(file!);
     //call the object and then show that it has already been uploaded to the cloud storage or bucket
     firebase_storage.TaskSnapshot taskSnapshot = 
     await uploadTask
@@ -322,8 +335,12 @@ class GroupChatController extends ChangeNotifier {
     //NOW, WE CHECK IF THE CONTENT ABOUT TO BE SENT IS AN IMAGE OR VIDEO
     if (isContentImageForChat) {
       await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
       .collection('groups')
       .doc(groupId)
+      //.collection('recent_chats')
+      //.doc(groupId)
       .collection('messages')
       .doc(messageId)
       .set({
@@ -342,25 +359,30 @@ class GroupChatController extends ChangeNotifier {
     
       //did this to get the last message sent from any of the chatters (messages stream)
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(auth.currentUser!.uid)
       .collection('groups')
       .doc(groupId)
+      //.collection('recent_chats')
+      //.doc(groupId)
       .collection('messages')
       .doc(messageId)
       .get();
       String lastMessageSent = snapshot.get('message');
       String sentBy = snapshot.get('senderId');
+      String nameOfSender = snapshot.get('senderName');
       Timestamp timeofLastMessageSnet = snapshot.get('timestamp');
       /////////////////////////////////////////////
       
       //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
-      /*addGroupToRecentChats(
+      addGroupToRecentChats(
         timestamp: timeofLastMessageSnet, 
-        lastMessage: '📷 Image ~ $lastMessageSent', 
+        lastMessage: '${getFirstName(fullName: nameOfSender)} ~ 📷 Image', 
         sentBy: sentBy, 
         groupId: groupId, 
         groupName: groupName, 
         groupPhoto: groupPhoto
-      );*/
+      );
   
       //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
       //API().sendPushNotificationWithFirebaseAPI(content: '📷 Image ~ $lastMessageSent', receiverFCMToken: FCMToken, title: name);
@@ -373,6 +395,8 @@ class GroupChatController extends ChangeNotifier {
     //THIS WILL EXECUTE IF THE CONTENT IS A VIDEO
     else {
       await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
       .collection('groups')
       .doc(groupId)
       .collection('messages')
@@ -394,6 +418,8 @@ class GroupChatController extends ChangeNotifier {
 
       //did this to get the last message sent from any of the chatters (messages stream)
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(auth.currentUser!.uid)
       .collection('groups')
       .doc(groupId)
       .collection('messages')
@@ -401,18 +427,19 @@ class GroupChatController extends ChangeNotifier {
       .get();
       String lastMessageSent = snapshot.get('message');
       String sentBy = snapshot.get('senderId');
+      String nameOfSender = snapshot.get('senderName');
       Timestamp timeofLastMessageSnet = snapshot.get('timestamp');
       /////////////////////////////////////////////
       
       //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
-      /*addGroupToRecentChats(
+      addGroupToRecentChats(
         timestamp: timeofLastMessageSnet, 
-        lastMessage: '🎬 Video ~ $lastMessageSent', 
+        lastMessage: '${getFirstName(fullName: nameOfSender)} ~ 🎬 Video', 
         sentBy: sentBy, 
         groupId: groupId, 
         groupName: groupName, 
         groupPhoto: groupPhoto
-      )*/
+      );
   
       //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
       //API().sendPushNotificationWithFirebaseAPI(content: '📷 Image ~ $lastMessageSent', receiverFCMToken: FCMToken, title: name);
@@ -426,13 +453,20 @@ class GroupChatController extends ChangeNotifier {
   }
 
   //delete direct message when texting
-  Future<void> deleteDirectMessagesFromGroup({required String messageId, required String groupId}) async{
-    await firestore
-    .collection('groups')
-    .doc(groupId)
-    .collection('messages')
-    .doc(messageId)
-    .delete();
+  Future<void> deleteDirectMessagesFromGroup({required String messageId, required String groupId, required String groupName, required String groupPhoto}) async{
+    try{
+      await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .collection('groups')
+      .doc(groupId)
+      .collection('messages')
+      .doc(messageId)
+      .delete();
+    }
+    catch(e) {
+      debugPrint('Error deleting message: $e');
+    }
   }
 
   //mark message as seen or read
@@ -440,6 +474,8 @@ class GroupChatController extends ChangeNotifier {
     try {
       /////////////////////////////////////////////
       await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
       .collection('groups')
       .doc(groupId)
       .collection('messages')
@@ -452,14 +488,21 @@ class GroupChatController extends ChangeNotifier {
 
 
 
-  ////////////////add friends to the group chat
+  ////////////////add friends to the group chat(make it exclusive that only the admin can do this)
   Future<void> addFriendToGroupChat({required String groupId, required String groupName, required String groupPhoto, required String friendId, required String friendName, required String friendPhoto,}) async{
 
     try {
-      //do this if you want to get any logged in user property 
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      //did this to first get the snapshot of the user (logged-in user) that wants to add the person
+      DocumentSnapshot mySnapshot = await FirebaseFirestore.instance
       .collection('users')
       .doc(auth.currentUser!.uid)
+      .get();
+      String myName = mySnapshot.get('name');
+      String myId = mySnapshot.get('id');
+      //then i did this to get the snapshot of the person to be added
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(friendId)
       .get();
       String userName = snapshot.get('name');
       String userId = snapshot.get('id');
@@ -468,61 +511,97 @@ class GroupChatController extends ChangeNotifier {
       //bool userOnline = snapshot.get('isOnline');
       //////////////////////////////////
       
-      //last message
-      String lastMessage = "You were added to this group by ${getFirstName(fullName: userName)}";
-      //serve timestamp
+      //initial message to be shown to the person that was added
+      String lastMessage = "You were added to this group by ${getFirstName(fullName: myName)}";
+      
+      //server timestamp
       Timestamp timestamp = Timestamp.now();
-      //create group chat collection
+
+      //update the recent chats first
       await firestore
+      .collection('users')
+      .doc(friendId)
+      .collection('groups')
+      .doc(groupId) 
+      .set({
+        'groupName': groupName,
+        'groupId': groupId,
+        'groupPhoto': groupPhoto,
+        'lastMessage': lastMessage,
+        'sentBy': myId,
+        'timestamp': timestamp
+      });
+      
+      //add to person to the 'members' collection first
+      await firestore
+      .collection('users')
+      .doc(friendId)
       .collection('groups')
       .doc(groupId)
-      .update({
-        'groupMembersIdList': [
-          userId
-        ],
-        'groupMembersDetails': FieldValue.arrayUnion([
-          {
-            'memberId': userId,
-            'memberName': userName,
-            'memberEmail': userEmail,
-            'memberPhoto': userPhoto,
-            'memberType': 'Member',
-          }
-        ]),
-        //'timestamp': timestamp
+      .collection('members')
+      .doc(friendId)
+      .set({
+        'memberId': userId,
+        'memberName': userName,
+        'memberEmail': userEmail,
+        'memberPhoto': userPhoto,
+        'memberType': 'Member',
+        'timestamp': timestamp
       });
+      
     }
     catch(e) {
       debugPrint('Error adding friend to group: $e');
     }
   }
 
-  ////////////////remove friends to the group chat
-  Future<void> removeFriendFromGroupChat({required String groupId, required String groupName, required String groupPhoto, required String friendId, required String friendName, required String friendPhoto, required String friendEmail}) async{
+  ////////////////remove friends from the group chat and delete the group from their db (only admin can to this)
+  Future<void> removeFriendFromGroupChat({required String groupId, required String friendId,}) async{
 
     try {
-      
-      //serve timestamp
-      Timestamp timestamp = Timestamp.now();
-      //create group chat collection
       await firestore
+      .collection('users')
+      .doc(friendId)
       .collection('groups')
       .doc(groupId)
-      .update({
-        'groupMembersIdList': FieldValue.arrayRemove([friendId]),
-        'groupMembersDetails': FieldValue.arrayRemove([
-          {
-            'memberId': friendId,
-            'memberName': friendName,
-            'memberEmail': friendEmail,
-            'memberPhoto': friendPhoto,
-            'memberType': 'Member',
-          }
-        ]),
-      });
+      .collection('members')
+      .doc(friendId)
+      .delete();
+      //
+      await firestore
+      .collection('users')
+      .doc(friendId)
+      .collection('groups')
+      .doc(groupId)
+      .delete();
     }
     catch(e) {
       debugPrint('Error removing friend from group: $e');
+    }
+  }
+
+  ////////////////remove oneself from the group chat
+  Future<void> exitFromGroupChat({required String groupId,}) async{
+
+    try {
+      await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .collection('groups')
+      .doc(groupId)
+      .collection('members')
+      .doc(auth.currentUser!.uid)
+      .delete();
+
+      await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .collection('groups')
+      .doc(groupId)
+      .delete();
+    }
+    catch(e) {
+      debugPrint('Error removing yourself from group: $e');
     }
   }
 
@@ -566,8 +645,12 @@ class GroupChatController extends ChangeNotifier {
 
       //add the messages to the collection
       await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
       .collection('groups')
       .doc(groupId)
+      //.collection('recent_chats')
+      //.doc(groupId)
       .collection('messages')
       .doc(messageId)
       .set({
@@ -587,25 +670,30 @@ class GroupChatController extends ChangeNotifier {
 
       //did this to get the last message sent from any of the chatters (messages stream)
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(auth.currentUser!.uid)
       .collection('groups')
       .doc(groupId)
+      //.collection('recent_chats')
+      //.doc(groupId)
       .collection('messages')
       .doc(messageId)
       .get();
-      String lastMessageSent = snapshot.get('message');
+      //String lastMessageSent = snapshot.get('message');
       String sentBy = snapshot.get('senderId');
+      String nameOfSender = snapshot.get('senderName');
       Timestamp timeofLastMessageSnet = snapshot.get('timestamp');
       /////////////////////////////////////////////
       
       //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
-      /*addGroupToRecentChats(
+      addGroupToRecentChats(
         timestamp: timeofLastMessageSnet, 
-        lastMessage: '🎵 Audio ', 
+        lastMessage: '${getFirstName(fullName: nameOfSender)} ~ 🎵 Audio ', 
         sentBy: sentBy, 
         groupId: groupId, 
         groupName: groupName, 
         groupPhoto: groupPhoto
-      );*/
+      );
 
       //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
       //API().sendPushNotificationWithFirebaseAPI(content: '🎵 Audio ', receiverFCMToken: FCMToken, title: name);
@@ -624,6 +712,8 @@ class GroupChatController extends ChangeNotifier {
   //to get list of messages in a group
   Stream<QuerySnapshot<Map<String, dynamic>>> groupMessagesStream({required String groupId}) async*{
     yield* firestore
+    .collection('users')
+    .doc(auth.currentUser!.uid)
     .collection('groups')
     .doc(groupId)
     .collection('messages')
@@ -636,56 +726,38 @@ class GroupChatController extends ChangeNotifier {
   //filtered group list for logged-in user (i.e, groups where logged-in user is a member)
   Stream<QuerySnapshot<Map<String, dynamic>>> userGroupListStream() async*{
     yield* firestore
+    .collection('users')
+    .doc(auth.currentUser!.uid)
     .collection('groups')
-    .where('groupMembersIdList', arrayContains: userID)
     .snapshots();
   }
 
-
-
-
-  ///////////
+  Stream<QuerySnapshot<Map<String, dynamic>>>? filteredUserGroups;
   //filtered group list for logged-in user (i.e, groups where logged-in user is a member)
-  Stream<QuerySnapshot<Map<String, dynamic>>> filteredUserGroupListStreamForSearching() async*{
-     
+  /*Stream<QuerySnapshot<Map<String, dynamic>>> filteredUserGroupListStreamForSearching() async*{
+
     yield* firestore
+    .collection('users')
+    .doc(auth.currentUser!.uid)
     .collection('groups')
-    .where('groupMembersIdList', arrayContains: userID)
-    .where('groupName', isEqualTo: groupSearchTextController.text)
+    .where(
+      'groupName', isEqualTo: groupSearchTextController.text
+    )
     .snapshots();
 
-    //to get snapshot of the members of all the groups present
-    /*QuerySnapshot groupsSnapshot = await firestore.collection('groups').get();
-    for (DocumentSnapshot groupDoc in groupsSnapshot.docs) {
-      CollectionReference membersCollection = groupDoc.reference.collection('members');
-      QuerySnapshot membersSnapshot = await membersCollection.get();
-
-      for (DocumentSnapshot memberDoc in membersSnapshot.docs) {
-        //String memberName = memberDoc.get('memberName');
-        String memberId = memberDoc.get('memberId');
-        //String memberPhoto = memberDoc.get('memberPhoto');
-        //String memberType = memberDoc.get('memberType');
-    
-        // Now you have the member information for each member in each group
-        yield* firestore
-        .collection('groups')
-        .where('groupName', isEqualTo: messageTextController.text)
-        .where('memberId', isEqualTo: memberId)
-        .orderBy('timestamp', descending: true)
-        .snapshots();
-      }
-    }*/
-  }
+  }*/
 
   //stream for group members
-  /*Stream<QuerySnapshot<Map<String, dynamic>>> groupMembersStream({required String groupId}) async*{
+  Stream<QuerySnapshot<Map<String, dynamic>>> groupMembersStream({required String groupId}) async*{
     yield*
     firestore
+    .collection('users')
+    .doc(auth.currentUser!.uid)
     .collection('groups')
     .doc(groupId)
     .collection('members')
     .orderBy('timestamp', descending: true)
     .snapshots();
-  }*/
+  }
   
 }

@@ -124,7 +124,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
     Future<void> sendPictureOrVideo() async{   
       //then send the intended message
       groupChatController.sendPictureOrVideoWithOrWithoutAText(
-        file: groupChatController.contentFile,
+        file: groupChatController.contentFile!,
         message: groupChatController.messageTextController.text, 
         groupId: widget.groupId, 
         groupName: widget.groupName, 
@@ -238,7 +238,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
                 //Icons.send
               ),
               onPressed: () {
-                if(groupChatController.file != null) {
+                if(groupChatController.contentFile != null) {
                   sendPictureOrVideo().then((val) {
                     setState(() {
                       groupChatController.isAnyImageSelectedForChat = false;

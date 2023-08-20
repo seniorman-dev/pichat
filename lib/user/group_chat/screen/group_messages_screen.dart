@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/group_chat/controller/group_chat_controller.dart';
+import 'package:pichat/user/group_chat/widget/group_info_screen.dart';
 import 'package:pichat/user/group_chat/widget/bottom_engine_for_group.dart';
 import 'package:pichat/user/group_chat/widget/chat_list_for_group.dart';
 import 'package:pichat/utils/extract_firstname.dart';
@@ -23,13 +24,11 @@ import 'package:provider/provider.dart';
 
 
 class GroupMessagingScreen extends StatefulWidget {
-  const GroupMessagingScreen({super.key, required this.groupName, required this.groupId, required this.groupPhoto, required this.groupCreator, required this.groupBio, required this.groupMembersDetails});
+  const GroupMessagingScreen({super.key, required this.groupName, required this.groupId, required this.groupPhoto, required this.groupBio,});
   final String groupName;
   final String groupId;
   final String groupPhoto;
-  final String groupCreator;
   final String groupBio;
-  final List<dynamic> groupMembersDetails;
 
   @override
   State<GroupMessagingScreen> createState() => _GroupMessagingScreenState();
@@ -142,20 +141,19 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
                         fontWeight: FontWeight.w500
                       ),
                     ),
+
                     //SizedBox(height: 2.h,),
+
                     //names of group members
-                    SizedBox(
-                      height: 180.h, //200.h
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal, //Axis.vertical,
-                        //padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
-                        separatorBuilder: (context, index) {
+                    StreamBuilder(
+                      stream: groupChatController.groupMembersStream(groupId: widget.groupId),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          // Show a loading indicator while waiting for data
                           return Text(
-                            ', ',
+                            '...',
                             style: GoogleFonts.poppins(
-                              color: AppTheme().greyColor,
+                              color: AppTheme().mainColor,
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w500,
                               textStyle: const TextStyle(
@@ -163,13 +161,13 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
                               )
                             ),
                           );
-                        },
-                        itemCount: widget.groupMembersDetails.length,
-                        itemBuilder: (context, index) {
+                        } 
+                        if (snapshot.hasError) {
+                          // Handle error if any
                           return Text(
-                            getFirstName(fullName: widget.groupMembersDetails[index]['memberName'],),
+                            '...',
                             style: GoogleFonts.poppins(
-                              color: AppTheme().greyColor,
+                              color: AppTheme().redColor,
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w500,
                               textStyle: const TextStyle(
@@ -178,7 +176,58 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
                             ),
                           );
                         }
-                      ),
+                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return Text(
+                            '...',
+                            style: GoogleFonts.poppins(
+                              color: AppTheme().greyColor,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              textStyle: const TextStyle(
+                                overflow: TextOverflow.ellipsis
+                              )
+                            ),
+                          );        
+                        }
+                        ////////
+                        return SizedBox(
+                          height: 180.h, //200.h
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            scrollDirection: Axis.horizontal, //Axis.vertical,
+                            //padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
+                            separatorBuilder: (context, index) {
+                              return Text(
+                                ', ',
+                                style: GoogleFonts.poppins(
+                                  color: AppTheme().greyColor,
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  textStyle: const TextStyle(
+                                    overflow: TextOverflow.ellipsis
+                                  )
+                                ),
+                              );
+                            },
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              var data = snapshot.data!.docs[index];
+                              return Text(
+                                getFirstName(fullName: data['memberName'],),
+                                style: GoogleFonts.poppins(
+                                  color: AppTheme().greyColor,
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  textStyle: const TextStyle(
+                                    overflow: TextOverflow.ellipsis
+                                  )
+                                ),
+                              );
+                            }
+                          ),
+                        );
+                      }
                     ),
                   ]
                 ),
@@ -190,7 +239,7 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
               icon: Icon(
                 CupertinoIcons.videocam,
                 color: AppTheme().blackColor,
-                size: 32.r,
+                size: 24.r,
               ),
               onPressed: () {},
             ),
@@ -198,17 +247,24 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
               icon: Icon(
                 CupertinoIcons.phone_down,
                 color: AppTheme().blackColor,
-                size: 32.r,
+                size: 24.r,
               ),
               onPressed: () {},
             ),
             IconButton(
               icon: Icon(
-                Icons.more_horiz_rounded,
+                Icons.info_outline_rounded,
                 color: AppTheme().blackColor,
-                size: 32.r,
+                size: 24.r,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Get.to(() => GroupInfoScreen(
+                  groupId: widget.groupId, 
+                  groupBio: widget.groupBio, 
+                  groupName: widget.groupName, 
+                  groupPhoto: widget.groupPhoto,
+                ));
+              },
             ),
             SizedBox(width: 10.w,)  
           ],
@@ -222,7 +278,8 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
               //groupchat list
               GroupChatList(
                 groupId: widget.groupId,
-                groupName: widget.groupName,       
+                groupName: widget.groupName, 
+                groupPhoto: widget.groupPhoto,       
               ),
         
               //show image here

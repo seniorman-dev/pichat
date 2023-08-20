@@ -32,6 +32,8 @@ class GroupChatMessages extends StatefulWidget {
 }
 
 class _GroupChatMessagesState extends State<GroupChatMessages> {
+  bool showDateHeader = true;
+
   @override
   Widget build(BuildContext context) {
     //dependency injection
@@ -76,15 +78,20 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
                   Expanded(
                     child: SearchTextFieldForGroup(
                       textController: groupChatController.groupSearchTextController, 
-                        hintText: 'Search for groups',
-                        onChanged: (searchText) {
-                          // Update groups when search text changes
-                          setState(() {
-                            groupChatController.userGroupStream = groupChatController.filteredUserGroupListStreamForSearching();
-                            /*groupChatController.firestore
-                            .collection('groups')
-                            .where('groupName', isEqualTo: groupChatController.messageTextController.text)
-                            .snapshots();*/
+                      hintText: 'Search for groups',
+                      onChanged: (searchText) {
+                        // Update userStream when search text changes
+                        setState(() {
+                          groupChatController.filteredUserGroups = FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(groupChatController.auth.currentUser!.uid)
+                          .collection('groups')
+                          .where(
+                            "groupName",
+                            isGreaterThanOrEqualTo: searchText,
+                            isLessThan: '${searchText}z'
+                          )
+                          .snapshots();
                         });
                       },
                     ),
@@ -187,156 +194,196 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
                     itemCount: snapshot.data!.docs.length, 
                     itemBuilder: (context, index) {
                       var data = snapshot.data!.docs[index]; 
+                      // Check if the current message's date is different from the previous message's date
+                      if (index > 0) {
+                        var previousData = snapshot.data!.docs[index - 1];
+                        var currentDate = formatDate(timestamp: data['timestamp']);
+                        var previousDate = formatDate(timestamp: previousData['timestamp']);
+                        showDateHeader = currentDate != previousDate;
+                      }
               
-                      return Dismissible(
-                        key: UniqueKey(),
-                        direction: DismissDirection.endToStart,
-                        background: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(
-                              CupertinoIcons.delete_simple,
-                              color: AppTheme().redColor                     
-                            )
-                          ]
-                        ),
-                        onDismissed: (direction) {
-                          //swipe to delete group
-                          groupChatController
-                          .deleteGroup(groupId: data['groupId']);
-                        },
-                        child: InkWell(
-                          onTap: () async{
-                            //get to group chat screen
-                            Get.to(() =>
-                             GroupMessagingScreen(
-                              groupBio: data['groupBio'], 
-                              groupCreator: data['groupCreator'], 
-                              groupId: data['groupId'], 
-                              groupMembersDetails: data['groupMembersDetails'], 
-                              groupName: data['groupName'], 
-                              groupPhoto: data['groupPhoto'],
-                             )
-                            );
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 25.w,
-                              vertical: 20.h
+                      return Column(
+                        children: [
+                          //Show the date header if needed
+                          if (showDateHeader)
+                            Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 30.h, 
+                                  horizontal: 150.w
+                                ),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: 30.h,
+                                  //width: 150.w,
+                                  padding: EdgeInsets.symmetric(
+                                    //vertical: 0.h, //20.h
+                                    horizontal: 5.w  //15.h
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme().lightGreyColor,
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                  child: Text(
+                                    formatDate(timestamp: data['timestamp']),
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.grey,
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 20.h, //30.h
-                                horizontal: 15.w  //20.h
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTheme().whiteColor,
-                                borderRadius: BorderRadius.circular(20.r),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.2),
-                                    spreadRadius: 0.1.r,
-                                    blurRadius: 8.0.r,
-                                  )
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  //profilePic  ===>> chatServiceontroller.isSearchingRecentChats ? data['photo'] : data2['photo'],
-                                  CircleAvatar(
-                                    radius: 32.r,
-                                    backgroundColor: AppTheme().opacityBlue,
-                                    child: CircleAvatar(
-                                      radius: 30.r,
-                                      backgroundColor: data['groupPhoto'] == null ? AppTheme().darkGreyColor : AppTheme().blackColor,
-                                      //backgroundColor: AppTheme().darkGreyColor,
-                                      child: data['groupPhoto'] == null 
-                                      ?null
-                                      :ClipRRect(
-                                        borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
-                                        clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
-                                        child: CachedNetworkImage(
-                                          imageUrl: data['groupPhoto'],
-                                          width: 40.w,
-                                          height: 40.h,
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) => Loader(),
-                                          errorWidget: (context, url, error) => Icon(
-                                            Icons.error,
-                                            color: AppTheme().lightestOpacityBlue,
+                          //////
+                          Dismissible(
+                            key: UniqueKey(),
+                            direction: DismissDirection.endToStart,
+                            background: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(
+                                  CupertinoIcons.delete_simple,
+                                  color: AppTheme().redColor                     
+                                ),
+                                SizedBox(width: 10.w,),
+                              ]
+                            ),
+                            onDismissed: (direction) {
+                              //swipe to delete group
+                              groupChatController
+                              .deleteGroup(groupId: data['groupId']);
+                            },
+                            child: InkWell(
+                              onTap: () async{
+                                //get to group chat screen
+                                Get.to(() =>
+                                 GroupMessagingScreen(  
+                                  groupId: data['groupId'],  
+                                  groupName: data['groupName'], 
+                                  groupPhoto: data['groupPhoto'], 
+                                  groupBio: data['groupBio']
+                                 )
+                                );
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 25.w,
+                                  vertical: 20.h
+                                ),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 20.h, //30.h
+                                    horizontal: 15.w  //20.h
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme().whiteColor,
+                                    borderRadius: BorderRadius.circular(20.r),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.2),
+                                        spreadRadius: 0.1.r,
+                                        blurRadius: 8.0.r,
+                                      )
+                                    ],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      //profilePic  ===>> chatServiceontroller.isSearchingRecentChats ? data['photo'] : data2['photo'],
+                                      CircleAvatar(
+                                        radius: 32.r,
+                                        backgroundColor: AppTheme().opacityBlue,
+                                        child: CircleAvatar(
+                                          radius: 30.r,
+                                          backgroundColor: data['groupPhoto'] == null ? AppTheme().darkGreyColor : AppTheme().blackColor,
+                                          //backgroundColor: AppTheme().darkGreyColor,
+                                          child: data['groupPhoto'] == null 
+                                          ?null
+                                          :ClipRRect(
+                                            borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
+                                            clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
+                                            child: CachedNetworkImage(
+                                              imageUrl: data['groupPhoto'],
+                                              width: 40.w,
+                                              height: 40.h,
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) => Loader(),
+                                              errorWidget: (context, url, error) => Icon(
+                                                Icons.error,
+                                                color: AppTheme().lightestOpacityBlue,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 10.w,),
-                                  //details
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        //Row 1
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                      SizedBox(width: 10.w,),
+                                      //details
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              data['groupName'],
-                                              style: GoogleFonts.poppins(
-                                                color: AppTheme().blackColor,
-                                                fontSize: 14.sp,
-                                                fontWeight: FontWeight.w500
-                                              ),
-                                            ),
-                                            /*Text(
-                                              formatTime(timestamp: data['timestamp']),
-                                              style: GoogleFonts.poppins(
-                                                color: AppTheme().greyColor,
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w500
-                                              ),
-                                            )*/
-                                          ],
-                                        ),
-      
-                                        SizedBox(height: 4.h,),
-                                        //Row 2
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            //figure this out
-                                            //show when a receiver sends a new message then disappear when the current user taps on it
-                                            Text(
-                                              data['groupId'],
-                                              style: GoogleFonts.poppins(
-                                                color: AppTheme().greyColor,
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w500,
-                                                textStyle: const TextStyle(
-                                                  overflow: TextOverflow.ellipsis
+                                            //Row 1
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  data['groupName'],
+                                                  style: GoogleFonts.poppins(
+                                                    color: AppTheme().blackColor,
+                                                    fontSize: 14.sp,
+                                                    fontWeight: FontWeight.w500
+                                                  ),
+                                                ),
+                                                Text(
+                                                  formatTime(timestamp: data['timestamp']),
+                                                  style: GoogleFonts.poppins(
+                                                    color: AppTheme().greyColor,
+                                                    fontSize: 12.sp,
+                                                    fontWeight: FontWeight.w500
+                                                  ),
                                                 )
-                                              ),
+                                              ],
                                             ),
-
-                                          ],
+      
+                                            SizedBox(height: 4.h,),
+                                            //Row 2
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                //figure this out
+                                                //show when a receiver sends a new message then disappear when the current user taps on it
+                                                Text(
+                                                  data['lastMessage'],
+                                                  style: GoogleFonts.poppins(
+                                                    color: AppTheme().greyColor,
+                                                    fontSize: 12.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    textStyle: const TextStyle(
+                                                      overflow: TextOverflow.ellipsis
+                                                    )
+                                                  ),
+                                                ),
+                                                data['sentBy'] == groupChatController.auth.currentUser!.uid
+                                                ? SizedBox()
+                                                //find a way to show this status bar when your chat partner sends you a message
+                                                :CircleAvatar(
+                                                  backgroundColor: AppTheme().mainColor,
+                                                  radius: 7.r,
+                                                )
+                                              ],
+                                            ),
+                                            
+                                          ]
                                         ),
-                                        /*SizedBox(height: 3.h,),
-                                        Text(
-                                          chatServiceController.isSearchingRecentChats ? "${formatDate(timestamp: data['timestamp'])}" : "${formatDate(timestamp: data2['timestamp'])}",
-                                          style: GoogleFonts.poppins(
-                                            color: AppTheme().blackColor,
-                                            fontSize: 10.sp,
-                                            fontWeight: FontWeight.w500
-                                          ),
-                                        )*/
-                                      ]
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       );
                     }
                   ),

@@ -65,7 +65,7 @@ import 'package:pichat/theme/app_theme.dart';
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Explore detailed statistics of your \naccount as it thrives.\n(Coming Soon👌)',
+                        'Explore detailed statistics of \nyour account as it thrives.\n(Coming Soon👌)',
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                             overflow: TextOverflow.visible,

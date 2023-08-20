@@ -26,10 +26,10 @@ import 'package:provider/provider.dart';
 
 
 class GroupChatList extends StatefulWidget {
-  const GroupChatList({super.key, required this.groupName, required this.groupId,});
+  const GroupChatList({super.key, required this.groupName, required this.groupId, required this.groupPhoto,});
   //final String senderName;
   //final String senderId;
-  //final String senderPhoto;
+  final String groupPhoto;
   final String groupName;
   final String groupId;
 
@@ -146,7 +146,9 @@ class _GroupChatListState extends State<GroupChatList> {
                 return Dismissible(
                   key: UniqueKey(),
                   direction: data['senderId'] == authController.userID ? DismissDirection.endToStart : DismissDirection.endToStart,
-                  onDismissed: (direction) => groupChatController.deleteDirectMessagesFromGroup(messageId: data['messageId'], groupId: widget.groupId,),
+                  onDismissed: (direction) {
+                    groupChatController.deleteDirectMessagesFromGroup(messageId: data['messageId'], groupId: widget.groupId, groupName: widget.groupName, groupPhoto: widget.groupPhoto,);
+                  },
                   background: Row(
                     mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.end : MainAxisAlignment.end,
                     children: [
@@ -208,7 +210,7 @@ class _GroupChatListState extends State<GroupChatList> {
                         Container(
                           alignment: Alignment.centerLeft,
                           //height: 80.h,
-                          width: 170.w, //200.w,
+                          width: 200.w, //200.w,
                           padding: data['messageType'] == 'image' || data['messageType'] == 'video' 
                           ?EdgeInsets.symmetric(
                             vertical: 5.h,

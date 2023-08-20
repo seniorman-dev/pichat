@@ -162,7 +162,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
               icon: Icon(
                 CupertinoIcons.videocam,
                 color: AppTheme().blackColor,
-                size: 32.r,
+                size: 24.r,
               ),
               onPressed: () {},
             ),
@@ -170,7 +170,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
               icon: Icon(
                 CupertinoIcons.phone_down,
                 color: AppTheme().blackColor,
-                size: 32.r,
+                size: 24.r,
               ),
               onPressed: () {},
             ),
