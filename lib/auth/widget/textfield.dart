@@ -403,3 +403,65 @@ class _PasswordFieldLoginState extends State<PasswordFieldLogin> {
     );
   }
 }
+
+
+
+
+
+//////////////////////////////////For Reset Password Screen
+//for email
+class EmailFieldResetPassword extends StatelessWidget {
+  const EmailFieldResetPassword({super.key, required this.textController, required this.onSaved, required this.hintText, required this.onEditingComplete,});
+  final TextEditingController textController;
+  final void Function(String?)? onSaved;
+  final void Function()? onEditingComplete;
+  final String hintText;
+  //final String? Function(String?)? validator;
+
+  @override
+  Widget build(BuildContext context) {
+
+    var controller = Provider.of<AuthController>(context);
+
+    return Container(
+      decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20.r)
+      ),
+      //height: 70.h,
+      width: double.infinity,
+      child: TextFormField(
+        style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+            color: AppTheme().blackColor,
+            fontSize: 13.sp
+          )
+        ),
+        textCapitalization: TextCapitalization.sentences,          
+        scrollPhysics: const BouncingScrollPhysics(),
+        scrollController: ScrollController(),
+        textInputAction: TextInputAction.next,
+        enabled: true,
+        controller: textController,
+        keyboardType: TextInputType.emailAddress,
+        autocorrect: true,
+        enableSuggestions: true,
+        enableInteractiveSelection: true,
+        cursorColor: AppTheme().blackColor,
+        //style: GoogleFonts.poppins(color: AppTheme().blackColor),
+        decoration: InputDecoration(        
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.r),
+            borderSide: BorderSide.none
+          ),       
+          hintText: hintText,
+          hintStyle: GoogleFonts.poppins(color: AppTheme().darkGreyColor, fontSize: 13.sp),              
+          filled: true,
+          fillColor: AppTheme().lightestOpacityBlue,
+          //prefixIcon: Icon(CupertinoIcons.search, color: AppTheme().blackColor,)
+        ),
+        onSaved: onSaved,
+        onEditingComplete: onEditingComplete
+      ),
+    );
+  }
+}

@@ -184,7 +184,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
                 );
               },
             ),
-            const SizedBox(width: 5,),
+            /*const SizedBox(width: 5,),
             GestureDetector(
               onTap: (){
                 setState(() {
@@ -202,7 +202,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
                 groupChatController.isRecording ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
                 color: groupChatController.isRecording ? AppTheme().mainColor: AppTheme().blackColor,
               ),
-            ),
+            )*/
             SizedBox(width: 5.w,),
             VerticalDivider(color: AppTheme().darkGreyColor, thickness: 1,),
             SizedBox(width: 5.w,),
@@ -234,7 +234,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
             SizedBox(width: 5.w,),
             IconButton(
               icon: const Icon(
-                CupertinoIcons.location_north_line_fill,
+                Icons.send_rounded
                 //Icons.send
               ),
               onPressed: () {

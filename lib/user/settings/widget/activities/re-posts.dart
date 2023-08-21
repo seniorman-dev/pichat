@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/user/chat/widget/video/video_player_widget.dart';
 import 'package:pichat/user/feeds/controller/feeds_controller.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
@@ -277,7 +278,7 @@ class _RePostsState extends State<RePosts> {
                                 borderRadius: BorderRadius.circular(30.0.r), //20.r
                               ),
                               elevation: 0,
-                              child: CachedNetworkImage(
+                              child: data['isImage'] ? CachedNetworkImage(
                                 imageUrl: data['postContent'],
                                 //width: 50.w,
                                 //height: 50.h,
@@ -287,7 +288,8 @@ class _RePostsState extends State<RePosts> {
                                   Icons.error,
                                   color: AppTheme().lightestOpacityBlue,
                                 ),
-                              ),
+                              )
+                              : VideoPlayerItem(videoUrl: data['postContent']),
                             ),
                           ),
 

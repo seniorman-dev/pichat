@@ -240,7 +240,7 @@ class _GroupChatListState extends State<GroupChatList> {
                               //name of the sender
                               data['senderId'] == authController.userID ? SizedBox()
                               :Row(
-                                mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.start : MainAxisAlignment.end,
+                                mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.start : MainAxisAlignment.start,
                                 children: [
                                   Text(
                                     getFirstName(fullName: data['senderName']),
@@ -258,7 +258,7 @@ class _GroupChatListState extends State<GroupChatList> {
                               SizedBox(height: 2.h,),
                               data['messageType'] == 'text' ?
                               Align(
-                                alignment: data['senderId'] == authController.userID ? Alignment.centerLeft :Alignment.centerRight,
+                                alignment: data['senderId'] == authController.userID ? Alignment.centerLeft :Alignment.centerLeft,
                                 child: Text(
                                   data['message'],
                                   style: GoogleFonts.poppins(  //urbanist

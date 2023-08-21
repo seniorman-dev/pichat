@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/auth/controller/auth_controller.dart';
+import 'package:pichat/auth/screen/forgot_password_screen.dart';
 import 'package:pichat/auth/screen/register_screen.dart';
 import 'package:pichat/auth/widget/textfield.dart';
 import 'package:pichat/theme/app_theme.dart';
@@ -115,7 +116,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller.focusScopeNodesForLogin.nextFocus();
                 }, 
               ),
-              SizedBox(height: 50.h),
+              SizedBox(height: 10.h,),
+
+              //forgot password text
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Get.to(() => ForgotPasswordScreen());
+                    },
+                    child: Text(
+                      'forgot password?',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          color: AppTheme().mainColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13.sp,
+                          decoration: TextDecoration.underline
+                        ),
+                      ),
+                    )
+                  )
+                ],
+              ),
+
+              SizedBox(height: 40.h),
               CustomElevatedButton(
                 text: 'Login', 
                 onPressed: () {

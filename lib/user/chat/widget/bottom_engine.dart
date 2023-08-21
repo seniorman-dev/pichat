@@ -186,7 +186,7 @@ class _BottomEngineState extends State<BottomEngine> {
                 );
               },
             ),
-            const SizedBox(width: 5,),
+            /*const SizedBox(width: 5,),
             GestureDetector(
               onTap: (){
                 setState(() {
@@ -204,7 +204,7 @@ class _BottomEngineState extends State<BottomEngine> {
                 chatServiceController.isRecording ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
                 color: chatServiceController.isRecording ? AppTheme().mainColor: AppTheme().blackColor,
               ),
-            ),
+            ),*/
             SizedBox(width: 5.w,),
             VerticalDivider(color: AppTheme().darkGreyColor, thickness: 1,),
             SizedBox(width: 5.w,),

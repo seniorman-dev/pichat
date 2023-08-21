@@ -219,7 +219,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   color: AppTheme().lightGreyColor
                 ),
                 alignment: Alignment.centerLeft,
-                height: 68.h, //70.h,
+                height: 70.h, //70.h,
                 padding: EdgeInsets.all(16),
                 //width: 100.w,
                 child: Row(
@@ -262,13 +262,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   color: AppTheme().lightGreyColor
                 ),
                 alignment: Alignment.centerLeft,
-                height: 68.h, //70.h,
+                height: 70.h, //70.h,
                 padding: EdgeInsets.all(16),
                 //width: 100.w,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(CupertinoIcons.mail, color: AppTheme().blackColor,),
+                    Icon(CupertinoIcons.envelope, color: AppTheme().blackColor,),
                     SizedBox(width: 13.w,),
                     Text(
                       widget.email,
@@ -414,8 +414,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   color: AppTheme().lightGreyColor
                 ),
                 alignment: Alignment.centerLeft,
-                height: 68.h, //70.h,
-                padding: EdgeInsets.all(8),
+                height: 70.h, //70.h,
+                //padding: EdgeInsets.all(8),
                 //width: 100.w,
                 child: Row(
                   children: [
@@ -486,7 +486,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   borderRadius: BorderRadius.circular(20.r)
                 ),
                 alignment: Alignment.center,
-                //height: 65.h, //55.h,
+                height: 70.h, //55.h,
                 //padding: EdgeInsets.all(8),
                 //width: 100.w,
                 child: TextFormField(
@@ -565,7 +565,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   borderRadius: BorderRadius.circular(20.r)
                 ),
                 alignment: Alignment.center,
-                //height: 65.h, //55.h,
+                height: 70.h, //55.h,
                 //padding: EdgeInsets.all(8),
                 //width: 100.w,
                 child: TextFormField(

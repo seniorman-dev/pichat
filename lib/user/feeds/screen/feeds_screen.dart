@@ -698,7 +698,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                         return Row(
                                           children: [
                                             Text(
-                                              reposts >= 0 && reposts <= 999 
+                                              reposts >= 0 && reposts <= 999
                                               ? repostsToString
                                               : reposts >= 1000 && reposts <= 9999
                                               ? "${repostsToString[0]}K"
@@ -724,7 +724,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                             ),
                                             SizedBox(width: 5.w,),
                                             Text(
-                                              reposts >= 0 && reposts <= 1 ? 'save' : 'save',
+                                              reposts >= 0 && reposts <= 1 ? 'save' : 'saves',
                                               style: GoogleFonts.poppins(
                                                 color: AppTheme().blackColor,
                                                 fontSize: 12.sp,

@@ -83,13 +83,10 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
                         // Update userStream when search text changes
                         setState(() {
                           groupChatController.filteredUserGroups = FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(groupChatController.auth.currentUser!.uid)
                           .collection('groups')
+                          .where('groupMembers', arrayContains: groupChatController.auth.currentUser!.uid)
                           .where(
-                            "groupName",
-                            isGreaterThanOrEqualTo: searchText,
-                            isLessThan: '${searchText}z'
+                            "groupName", isEqualTo: searchText
                           )
                           .snapshots();
                         });

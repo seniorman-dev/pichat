@@ -1,6 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +10,6 @@ import 'package:pichat/user/group_chat/widget/group_info_screen.dart';
 import 'package:pichat/user/group_chat/widget/bottom_engine_for_group.dart';
 import 'package:pichat/user/group_chat/widget/chat_list_for_group.dart';
 import 'package:pichat/utils/extract_firstname.dart';
-import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
 
@@ -243,14 +240,14 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
               ),
               onPressed: () {},
             ),
-            IconButton(
+            /*IconButton(
               icon: Icon(
                 CupertinoIcons.phone_down,
                 color: AppTheme().blackColor,
                 size: 24.r,
               ),
               onPressed: () {},
-            ),
+            ),*/
             IconButton(
               icon: Icon(
                 Icons.info_outline_rounded,
