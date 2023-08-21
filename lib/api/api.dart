@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 //import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -26,35 +27,40 @@ class API {
   
   String token = "";
   int tokenRole = 1; // use 1 for Host/Broadcaster, 2 for Subscriber/Audience
-  String serverUrl = ""; // The base URL to your token server, for example "https://agora-token-service-production-92ff.up.railway.app"
+  String serverUrl = "https://agora-token-server-5ta9.onrender.com"; 
+  // The base URL to your token server, for example "https://agora-token-service-production-92ff.up.railway.app"
   int tokenExpireTime = 45; // Expire time in Seconds.
   bool isTokenExpiring = false; // Set to true when the token is about to expire
-  final channelTextController = TextEditingController(text: ''); // To access the TextField
-  
+  //final channelTextController = TextEditingController(text: ''); // To access the TextField
+  //late RtcEngine agoraEngine;
+
+
   //call this when you want to join a voice call
-  /*void setToken(String newToken) async {
+  void setToken({required String newToken, required String channelName, required int uid, required RtcEngine agoraEngine}) async {
     token = newToken;
 
     if (isTokenExpiring) {
       // Renew the token
       agoraEngine.renewToken(token);
       isTokenExpiring = false;
-      showMessage("Token renewed");
+      debugPrint("Token renewed");
     } 
     else {
       /// Join a channel.
-      // showMessage("Token received, joining a channel...");
+      debugPrint("Token received, joining a channel...");
       await agoraEngine.joinChannel(
         token: token,
         channelId: channelName,
-        info: '',
-        uid: uid,
+        //info: '',
+        uid: uid, 
+        options: const ChannelMediaOptions(clientRoleType: ClientRoleType.clientRoleBroadcaster),
       );
     }
-  }*/
+  }
 
   //this function generates token when a user want to make a call or join a channel.
-  Future<String> fetchToken({required int uid, required String channelName, required int tokenRole}) async {
+  Future<void> fetchToken({required int uid, required String channelName, required RtcEngine agoraEngine}) async {
+    int tokenRole = 1; // use 1 for Host/Broadcaster, 2 for Subscriber/Audience
     
     // Prepare the Url
     String url = '$serverUrl/rtc/$channelName/${tokenRole.toString()}/uid/${uid.toString()}?expiry=${tokenExpireTime.toString()}';
@@ -68,10 +74,10 @@ class API {
         Map<String, dynamic> json = jsonDecode(response.body);
         String newToken = json['rtcToken'];
         debugPrint('Token Received: $newToken');
-        return newToken;
+        //return newToken;
 
         // Use the token to join a channel or renew an expiring token
-        //setToken(newToken);
+        setToken(agoraEngine: agoraEngine, channelName: channelName, newToken: newToken, uid: uid,);
     } else {
         // If the server did not return an OK response,
         // then throw an exception.

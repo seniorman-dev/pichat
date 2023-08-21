@@ -30,12 +30,16 @@ class _BottomNavBarState extends State<BottomNavBar> {
       backgroundColor: AppTheme().whiteColor,
       selectedItemColor: AppTheme().mainColor,
       unselectedItemColor: AppTheme().darkGreyColor,
-      selectedLabelStyle: GoogleFonts.poppins(),
-      unselectedLabelStyle: GoogleFonts.poppins(),
+      selectedLabelStyle: GoogleFonts.poppins(
+        fontSize: 13.sp
+      ),
+      unselectedLabelStyle: GoogleFonts.poppins(
+        fontSize: 13.sp
+      ),
       items: _navBarsItems(),
       type: BottomNavigationBarType.fixed,
       currentIndex: widget.selectedIndex,
-      iconSize: 29.r,
+      iconSize: 24.r,
       onTap: widget.onItemTapped,
       elevation: 0, //5,
     );
