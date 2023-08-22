@@ -53,7 +53,10 @@ class API {
         channelId: channelName,
         //info: '',
         uid: uid, 
-        options: const ChannelMediaOptions(clientRoleType: ClientRoleType.clientRoleBroadcaster),
+        options: const ChannelMediaOptions(
+          clientRoleType: ClientRoleType.clientRoleBroadcaster,
+          channelProfile: ChannelProfileType.channelProfileCommunication,
+        ),
       );
     }
   }
@@ -63,9 +66,9 @@ class API {
     int tokenRole = 1; // use 1 for Host/Broadcaster, 2 for Subscriber/Audience
     
     // Prepare the Url
-    String url = '$serverUrl/rtc/$channelName/${tokenRole.toString()}/uid/${uid.toString()}?expiry=${tokenExpireTime.toString()}';
+    String url = "https://agora-token-server-5ta9.onrender.com/rtc/jetify/1/uid/1/?expiry=45";  //'$serverUrl/rtc/$channelName/${tokenRole.toString()}/uid/${uid.toString()}?expiry=${tokenExpireTime.toString()}';
 
-    // Send the request
+    // Send the request (GET REQUEST TO THE SERVER)
     final response = await http.get(Uri.parse(url));
     
     // Check the request response status
