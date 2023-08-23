@@ -216,7 +216,7 @@ class _ChatListState extends State<ChatList> {
                         
                         //the real container gan gan
                         Container(
-                          alignment: Alignment.centerLeft,
+                          alignment: Alignment.bottomLeft,
                           //height: 80.h,
                           width: 225.w,
                           padding: data['messageType'] == 'image' || data['messageType'] == 'video' 
@@ -292,11 +292,12 @@ class _ChatListState extends State<ChatList> {
                               ?
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 5.w,
-                                  vertical: 5.h
+                                  horizontal: 10.w,
+                                  vertical: 10.h
                                 ),
                                 child: Text(
                                   data['message'],
+                                  textAlign: TextAlign.left,
                                   style: GoogleFonts.poppins(  //urbanist
                                     color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
                                     fontSize: 15.sp,

@@ -306,11 +306,12 @@ class _GroupChatListState extends State<GroupChatList> {
                               ?
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 5.w,
-                                  vertical: 5.h
+                                  horizontal: 10.w,
+                                  vertical: 10.h
                                 ),
                                 child: Text(
                                   data['message'],
+                                  textAlign: TextAlign.start,
                                   style: GoogleFonts.poppins(  //urbanist
                                     color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
                                     fontSize: 15.sp,
