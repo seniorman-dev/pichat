@@ -70,7 +70,7 @@ class SuccessfulResetScreen extends StatelessWidget {
           SizedBox(height: 40.h,),
           Text(
             'Congratulations!',
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               color: AppTheme().mainColor,
               fontSize: 15.sp,
               fontWeight: FontWeight.w500
@@ -79,7 +79,7 @@ class SuccessfulResetScreen extends StatelessWidget {
           SizedBox(height: 20.h,),
           Text(
             "Your request was sent. Please check your mail to proceed",
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               color: AppTheme().blackColor,
               fontSize: 14.sp,
               fontWeight: FontWeight.w500

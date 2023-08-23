@@ -88,6 +88,7 @@ class FeedsController extends ChangeNotifier {
     .snapshots();
   }
 
+
   // Fetch logged-in user's connects to be displayed on his/her profile
   Stream<QuerySnapshot<Map<String, dynamic>>> userFriends() async* {
     yield* firestore
@@ -390,39 +391,6 @@ class FeedsController extends ChangeNotifier {
     //////////////////////////////////
     var repostId = (Random().nextInt(100000)).toString();
 
-    //just to show who reposted on the feeds screen
-    /*await firestore
-    .collection('feeds')
-    .doc(postId)
-    .update({
-      'reposters': FieldValue.arrayUnion([
-        {
-          'reposterName': userName,
-          'reposterId': userId,
-          'reposterPhoto': userPhoto,
-        }
-      ])
-    });*/
-    
-    //repost the post on the general TL (to allow user to only repost once)
-    /*await firestore
-    .collection('feeds')
-    .doc(userID)
-    .set({
-      'postId': postId,
-      'repostId': repostId,
-      'posterId': posterId,
-      'posterName': posterName,
-      'posterPhoto': posterPhoto,
-      'postTitle': postTitle,
-      'postContent': postContent,
-      'isReposted': true,
-      'isImage': isImage,
-      'timestamp': Timestamp.now(),
-      'reposterName': userName,
-      'reposterId': userId,
-      'reposterPhoto': userPhoto,
-    });*/
 
     //update the "re-posts" collection reference for posts on the TL (it is this stream that we are going to call for each unique post on the TL or feeds. to dislay their length)
     await firestore
@@ -481,6 +449,7 @@ class FeedsController extends ChangeNotifier {
 
   //stream for the re-posts that a logged-in user made by re-posting feeds from the TL
   Stream<QuerySnapshot<Map<String, dynamic>>> repostStreamForUserProfile() async* {
+    
     yield* firestore
     .collection('users')
     .doc(userID)
@@ -524,6 +493,8 @@ class FeedsController extends ChangeNotifier {
     await firestore
     .collection('users')
     .doc(userId)
+    .collection('posts')
+    .doc(postId)
     .collection('reposts')
     .doc(postId)
     .update({
@@ -549,6 +520,8 @@ class FeedsController extends ChangeNotifier {
     await firestore
     .collection('users')
     .doc(userId)
+    .collection('posts')
+    .doc(postId)
     .collection('reposts')
     .doc(postId)
     .delete();

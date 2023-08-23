@@ -5,8 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
-//import 'package:pichat/user/chat/agora/audio/audio_call.txr';
-import 'package:pichat/user/chat/agora/video/video_call.txt';
+//import 'package:pichat/user/chat/agora/audio/audio_call.dart';
+//import 'package:pichat/user/chat/agora/video/video_call.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/widget/bottom_engine.dart';
 import 'package:pichat/user/chat/widget/chat_list.dart';
@@ -22,11 +22,11 @@ import 'package:provider/provider.dart';
 
 
 class DMScreen extends StatefulWidget {
-  const DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName, required this.senderId,});
+  const DMScreen({super.key, required this.receiverProfilePic, required this.receiverName, required this.receiverID, required this.isOnline, required this.senderName, required this.senderId, required this.receiverFCMToken,});
   final String receiverProfilePic;
   final String receiverName;
   final String receiverID;
-  //final String lastActive;
+  final String receiverFCMToken;
   final String senderName;
   final String senderId;
   final bool isOnline;
@@ -167,7 +167,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                 size: 24.r,
               ),
               onPressed: () {
-                Get.to(() => ChatVideoCall());
+                //Get.to(() => ChatVideoCall());
               },
             ),
             IconButton(
@@ -253,7 +253,8 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                   receiverName: widget.receiverName, 
                   receiverId: widget.receiverID, 
                   receiverPhoto: widget.receiverProfilePic, 
-                  chatTextController: chatServiceController.chatTextController,
+                  chatTextController: chatServiceController.chatTextController, 
+                  receiverFCMToken: widget.receiverFCMToken,
                 ),
               ),
               //give it small height

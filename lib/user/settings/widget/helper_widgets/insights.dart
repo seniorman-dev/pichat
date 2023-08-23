@@ -4,117 +4,87 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pichat/theme/app_theme.dart';
+import 'package:pichat/utils/elevated_button.dart';
 
 
 
 
 
 
-//Alert Dialog for insights page (coming soons)
-  Future showInsightsDialogue(BuildContext context) async{
-    return showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: AppTheme().whiteColor,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 30.w, //50.w
-            vertical: 40.h, //50.h
-          ),
-          content: SizedBox(
-            height: 280.h, //260.h,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //icon
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 50.h,
-                        width: 40.w,
-                        alignment: Alignment.center,
-                        /*padding: EdgeInsets.symmetric(
-                          vertical: 18.h,
-                          horizontal: 18.w
-                        ),*/
-                        decoration: BoxDecoration(
-                          color: AppTheme().lightestOpacityBlue,  
-                          borderRadius: BorderRadius.circular(15.r),
-                          /*boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
-                              spreadRadius: 0.1.r,
-                              blurRadius: 8.0.r,
-                            )
-                          ],*/
-                          //border: Border.all(color: AppTheme.opacityOfMainColor, width: 2)
-                        ),
-                        child: Icon(
-                          CupertinoIcons.graph_square,
-                          color: AppTheme().mainColor,
-                        )                   
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 30.h,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Explore detailed statistics of \nyour account as it thrives.\n(Coming Soon👌)',
-                        style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                            overflow: TextOverflow.visible,
-                          ),
-                          color: AppTheme().blackColor, //.normalGreyColor,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15.sp,
-                        ),
-                      ),
-                    ],
-                  ),
 
-                  SizedBox(
-                    height: 40.h,
-                  ),
-                  
-                  //OK Button
-                  ElevatedButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(15.r) //5.r
-                        )
-                      ),
-                      side: BorderSide(
-                        width: 1.5,
-                        color: AppTheme().mainColor,
-                        style: BorderStyle.solid
-                      ),
-                      backgroundColor: AppTheme().mainColor,
-                      foregroundColor: AppTheme().mainColor,
-                      minimumSize:const Size(double.infinity, 50)
-                    ),
-                    child: Text(
-                      "OK",
-                      style: GoogleFonts.poppins(
-                        color: AppTheme().whiteColor,
-                        fontSize: 16.sp,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }
+
+class InsightScreen extends StatelessWidget {
+  const InsightScreen ({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        extendBody: true,
+        extendBodyBehindAppBar: true,
+        //appBar: const CustomAppBar(title: 'Withdrawal',),
+        backgroundColor: AppTheme().whiteColor,
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: buildBody(context),
+        )
+      ),
     );
   }
+
+  //buildBody
+  Widget buildBody(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 25.w,
+        vertical: 20.h,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: 100.h,), //120.h
+          CircleAvatar(
+            radius: 150.r,
+            backgroundColor: AppTheme().lightestOpacityBlue,  //.opacityBlue,
+            child: Icon(
+              CupertinoIcons.graph_circle,
+              size: 140.r,
+              color: AppTheme().mainColor,
+            )                   
+          ),
+          /*SvgPicture.asset(
+            'assets/svg/green_check.svg',
+          ),*/
+          SizedBox(height: 40.h,),
+          Text(
+            'View your account analytics on the go',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: AppTheme().blackColor,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500
+            ),
+          ),
+          SizedBox(height: 20.h,),
+          Text(
+            "Explore detailed statistics of \nyour account as it thrives\n(Coming Soon)",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: AppTheme().greyColor,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.normal
+            ),
+          ),
+          SizedBox(height: 120.h,),
+          CustomElevatedButton(
+            text: 'Got It', 
+            onPressed: () {
+              Get.back();
+            }
+          ),
+          SizedBox(height: 40.h,),
+        ]
+      )
+    );
+  }
+}

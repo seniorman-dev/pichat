@@ -1,5 +1,6 @@
 import 'dart:io';
 //import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pichat/api/api.dart';
 import 'package:pichat/theme/app_theme.dart';
 import 'package:pichat/user/chat/controller/chat_service_controller.dart';
 import 'package:pichat/user/chat/widget/send_picture_or_video_dialogue.dart';
@@ -26,10 +28,11 @@ import 'package:record/record.dart';
 
 
 class BottomEngine extends StatefulWidget {
-  BottomEngine({super.key, required this.receiverName, required this.receiverId, required this.receiverPhoto, required this.chatTextController,});
+  BottomEngine({super.key, required this.receiverName, required this.receiverId, required this.receiverPhoto, required this.chatTextController, required this.receiverFCMToken,});
   final String receiverName;
   final String receiverId;
   final String receiverPhoto;
+  final String receiverFCMToken;
   final TextEditingController chatTextController;
 
   @override
@@ -106,6 +109,13 @@ class _BottomEngineState extends State<BottomEngine> {
 
     //only send messages when there is something to send
     Future<void> sendMessage() async{
+      //do this if you want to get any logged in user property 
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(chatServiceController.auth.currentUser!.uid)
+      .get();
+      String userName = snapshot.get('name');
+
       if(chatServiceController.chatTextController.text.isNotEmpty) {
         //then send the intended message
         chatServiceController.sendDirectMessages(
@@ -117,11 +127,17 @@ class _BottomEngineState extends State<BottomEngine> {
         //.then((val) => textController.clear())
         .then((value) => chatServiceController.makeKeyboardDisappear());
         chatServiceController.chatTextController.clear();
+        API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: userName, content: chatServiceController.chatTextController.text);
       }
     }
 
     Future<void> sendPictureOrVideo() async{
-      
+      //do this if you want to get any logged in user property 
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(chatServiceController.auth.currentUser!.uid)
+      .get();
+      String userName = snapshot.get('name');
       //then send the intended message
       chatServiceController.sendPictureOrVideoWithOrWithoutAText(
         receiverId: widget.receiverId, 
@@ -132,7 +148,8 @@ class _BottomEngineState extends State<BottomEngine> {
         )
         .then((value) => chatServiceController.makeKeyboardDisappear()
       );
-      chatServiceController.chatTextController.clear(); 
+      chatServiceController.chatTextController.clear();
+      API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: userName, content: '📷/🎬 content'); 
     }
 
 
@@ -236,7 +253,7 @@ class _BottomEngineState extends State<BottomEngine> {
             SizedBox(width: 5.w,),
             IconButton(
               icon: const Icon(
-                CupertinoIcons.location_north_line_fill,
+                Icons.send_rounded,
                 //Icons.send
               ),
               onPressed: () {

@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -26,12 +27,31 @@ import 'utils/loader.dart';
 
 
 
+//flutter local notifications fuckkinngg worked.. finallyyyyy
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 
 
 //Top level non-anonymous function for FCM push notifications for background mode
 Future<void> backgroundHandler(RemoteMessage message) async {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel', //id
+    'High Importance Notification', //title
+    importance: Importance.high
+  );
   debugPrint('Handling a background message ${message.messageId}');
+
+  //added this to catch the back ground push notification and display it in foreground cause user may be using the app
+  flutterLocalNotificationsPlugin.show(
+    message.data.hashCode, 
+    message.data['title'], 
+    message.data['body'], 
+    NotificationDetails(
+      android: AndroidNotificationDetails(channel.id, channel.name,)
+    )
+  );
+
 }
 
 
@@ -55,6 +75,7 @@ void main() async{
 
   //initialize firebase cloud messaging
   API().initFCM(backgroundHandler: backgroundHandler);
+
 
   //run multi provider here to add all your providers
   runApp(
@@ -87,10 +108,75 @@ void main() async{
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> { 
   // This widget is the root of your application.
+
+  FirebaseMessaging fcm = FirebaseMessaging.instance;
+  //FirebaseMessaging fc = FirebaseMessaging();
+
+  //get FCM Token
+  getToken() async{
+    String? token = await fcm.getToken();
+    debugPrint('token for foreground: $token');
+    return token;
+  }
+
+  String? notifTitle;
+  String? notifBody;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    API().initFLNP(flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin);
+
+    //did this specifically to show fcm push notifications when the app is in foreground mode
+    FirebaseMessaging.onMessage.listen((RemoteMessage message){
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      
+      if(notification != null && android != null) {
+        
+        FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+        
+        const AndroidNotificationChannel channel = AndroidNotificationChannel(
+          'high_importance_channel', //id
+          'High Importance Notification', //title
+          importance: Importance.high
+        );
+
+        AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+          channel.id, //'channel_id',
+          channel.name, //'channel_name',
+          importance: Importance.max,
+          priority: Priority.high,
+          playSound: true,
+          //sound: RawResourceAndroidNotificationSound('notification')
+        );
+        
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode, 
+          notification.title, 
+          notification.body, 
+          NotificationDetails(
+            android: androidNotificationDetails,
+            iOS: DarwinNotificationDetails()
+          )
+        );
+      }
+    });
+
+    getToken();
+    
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -105,6 +191,7 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+  
 }
 
 

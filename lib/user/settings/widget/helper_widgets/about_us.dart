@@ -1,18 +1,23 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pichat/theme/app_theme.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:pichat/main_page/screen/main_page.dart';
 import 'package:pichat/utils/elevated_button.dart';
-import '../../../../../../../theme/app_theme.dart';
 
 
 
 
 
-class SuccessfulRegistrationScreen extends StatelessWidget {
-  const SuccessfulRegistrationScreen({super.key});
+
+
+
+
+
+class AboutUsScreen extends StatelessWidget {
+  const AboutUsScreen ({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,25 +45,14 @@ class SuccessfulRegistrationScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 55.h,),
-          Center(
-            child: Text(
-              'Registration Successful',
-              style: GoogleFonts.poppins(
-                color: AppTheme().blackColor,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w500
-              ),
-            ),
-          ),
-          SizedBox(height: 120.h,),
+          SizedBox(height: 100.h,), //120.h
           CircleAvatar(
             radius: 150.r,
-            backgroundColor: AppTheme().lightGreyColor, //.lightestOpacityBlue,
+            backgroundColor: AppTheme().lightestOpacityBlue,  //.opacityBlue,
             child: Icon(
-              CupertinoIcons.checkmark_seal_fill,
+              CupertinoIcons.rocket,
               size: 140.r,
-              color: AppTheme().greenColor,
+              color: AppTheme().mainColor,
             )                   
           ),
           /*SvgPicture.asset(
@@ -66,29 +60,32 @@ class SuccessfulRegistrationScreen extends StatelessWidget {
           ),*/
           SizedBox(height: 40.h,),
           Text(
-            'Congratulations!',
+            'Jetify Inc',
+            textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              color: AppTheme().mainColor,
-              fontSize: 15.sp,
+              color: AppTheme().blackColor,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w500
             ),
           ),
           SizedBox(height: 20.h,),
           Text(
-            "Your account has been created successfully",
+            "we are a reliable and emerging software solutions company that strives to give our clients the absolute best ❤\n(Our site will be live real soon 🤗)",
+            textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              color: AppTheme().blackColor,
+              color: AppTheme().greyColor,
               fontSize: 14.sp,
-              fontWeight: FontWeight.w500
+              fontWeight: FontWeight.normal
             ),
           ),
           SizedBox(height: 120.h,),
           CustomElevatedButton(
-            text: 'Go To Home', 
+            text: 'Got It', 
             onPressed: () {
-              Get.offAll(() => const MainPage());
+              Get.back();
             }
-          )
+          ),
+          SizedBox(height: 40.h,),
         ]
       )
     );

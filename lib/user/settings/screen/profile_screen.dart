@@ -11,12 +11,14 @@ import 'package:pichat/user/feeds/controller/feeds_controller.dart';
 import 'package:pichat/user/settings/controller/profile_controller.dart';
 import 'package:pichat/user/settings/widget/activities/connects.dart';
 import 'package:pichat/user/settings/widget/action_screens/edit_profile_screen.dart';
+import 'package:pichat/user/settings/widget/helper_widgets/about_us.dart';
 import 'package:pichat/user/settings/widget/helper_widgets/insights.dart';
 import 'package:pichat/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
 import 'package:pichat/user/settings/widget/helper_widgets/notifications_for_profile.dart';
 import 'package:pichat/user/settings/widget/activities/posts.dart';
 import 'package:pichat/user/settings/widget/helper_widgets/profile_item.dart';
 import 'package:pichat/user/settings/widget/activities/re-posts.dart';
+import 'package:pichat/user/settings/widget/helper_widgets/wallets.dart';
 import 'package:pichat/user/settings/widget/success_screens/succesfully_uploaded_feed.dart';
 import 'package:pichat/user/settings/widget/helper_widgets/view_posts.dart';
 import 'package:pichat/utils/error_loader.dart';
@@ -691,7 +693,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileItem(
                         icon: CupertinoIcons.creditcard, 
                         onPressed: () {
-                          //Get.to(() => CreateGroupScreen());
+                          Get.to(() => WalletScreen());
                         }, 
                         title: 'Wallet', //will imlement in the feature
                       ),
@@ -699,7 +701,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileItem(
                         icon: CupertinoIcons.graph_square, 
                         onPressed: () {
-                          showInsightsDialogue(context);
+                          Get.to(() => InsightScreen());
                         }, 
                         title: 'Insights',
                       ),
@@ -715,7 +717,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileItem(
                         icon: CupertinoIcons.person_crop_circle, 
                         onPressed: () {
-                          //Get.to(() => AboutUsPage());
+                          Get.to(() => AboutUsScreen());
                         }, 
                         title: 'About us',
                       ),

@@ -509,7 +509,7 @@ class GroupChatController extends ChangeNotifier {
   bool isAdded = false;
   
   //list to store all the indices of friends to be added to a group
-  Set<DocumentSnapshot> selectedIndicesForFriends= {};
+  Set<String> selectedIndicesForFriends= {};
 
   ////////////////add friends to the group chat(make it exclusive that only the admin can do this)
   Future<void> addFriendToGroupChat({required String groupId, required String groupName, required String groupPhoto, required String friendId, required String friendName, required String friendPhoto,}) async{

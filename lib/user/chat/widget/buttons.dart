@@ -18,11 +18,11 @@ import 'package:provider/provider.dart';
 class SendOrCancelRequestButton extends StatefulWidget {
   final String receiverName;
   final String receiverID;
-  final String FCMToken;
+  final String receiverFCMToken;
   bool isSelected;
   
 
-  SendOrCancelRequestButton({super.key, required this.receiverID, required this.isSelected, required this.FCMToken, required this.receiverName,});
+  SendOrCancelRequestButton({super.key, required this.receiverID, required this.isSelected, required this.receiverFCMToken, required this.receiverName,});
 
   @override
   _SendOrCancelRequestButtonState createState() => _SendOrCancelRequestButtonState();
@@ -46,7 +46,7 @@ class _SendOrCancelRequestButtonState extends State<SendOrCancelRequestButton> {
                         ////////////////////////
       await chatServiceController.sendFriendRequest(recipientId: widget.receiverID)
       .then(
-        (value) => API().sendPushNotificationWithFirebaseAPI(content: '${getFirstName(fullName: userName)} wants to connect with you 🎈', receiverFCMToken: widget.FCMToken, title: 'Hi, ${widget.receiverName}')
+        (value) => API().sendPushNotificationWithFirebaseAPI(content: '${getFirstName(fullName: userName)} wants to connect with you 🎈', receiverFCMToken: widget.receiverFCMToken, title: 'Hi, ${widget.receiverName}')
       )
       .then(
         (value) => chatServiceController.firestore.collection('users').doc(widget.receiverID).collection('notifications')
@@ -145,10 +145,12 @@ class AcceptRequestButton extends StatefulWidget {
   final String receiverID;
   final String receiverName;
   final String receiverProfilePic;
+  final String receiverFCMToken;
+  final String receiverEmail;
   bool isSelected;
   
 
-  AcceptRequestButton({super.key, required this.receiverID, required this.receiverName, required this.receiverProfilePic,required this.isSelected});
+  AcceptRequestButton({super.key, required this.receiverID, required this.receiverName, required this.receiverProfilePic,required this.isSelected, required this.receiverFCMToken, required this.receiverEmail});
 
   @override
   _AcceptRequestButtonState createState() => _AcceptRequestButtonState();
@@ -167,7 +169,9 @@ class _AcceptRequestButtonState extends State<AcceptRequestButton> {
       await chatServiceController.acceptFriendRequest(
         friendName: widget.receiverName, 
         friendId: widget.receiverID, 
-        friendProfilePic: widget.receiverProfilePic
+        friendProfilePic: widget.receiverProfilePic, 
+        friendEmail: widget.receiverEmail, 
+        friendFCMToken: widget.receiverFCMToken
       );
       setState(() {
         _isFriend = true;

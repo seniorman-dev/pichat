@@ -116,7 +116,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
           groupPhoto: widget.groupPhoto
         );
         groupChatController.messageTextController.clear();
-        //.then((value) => groupChatController.messageTextController.clear());
+        
       }
     }
     

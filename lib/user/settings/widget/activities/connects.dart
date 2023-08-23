@@ -99,11 +99,12 @@ class MyConnects extends StatelessWidget {
                   ///////////////////////             
                   Get.to(() => DMScreen(
                     isOnline: isChatBuddyOnline,
+                    receiverFCMToken: data['FCMToken'],
                     receiverProfilePic: data['photo'],
                     receiverID: data['id'],
                     receiverName: data['name'], 
                     senderName: userName, 
-                    senderId: userId, 
+                    senderId: userId,
                     //lastActive: "${formatTime(timestamp: data['lastActive'])} on ${formatDate(timestamp: data['lastActive'])}",
                   ));
                   //chatServiceController.updateisSeenStatus(isSeen: true, receiverId: data['id'],);

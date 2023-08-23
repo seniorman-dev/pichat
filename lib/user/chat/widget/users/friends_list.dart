@@ -102,6 +102,7 @@ class FriendsList extends StatelessWidget {
 
                         Get.to(() => DMScreen(
                           isOnline: isChatBuddyOnline,
+                          receiverFCMToken: data['FCMToken'],
                           receiverProfilePic: data['photo'],
                           receiverID: data['id'],
                           receiverName: data['name'], 

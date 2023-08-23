@@ -230,7 +230,7 @@ class _AddUserToGroupState extends State<AddUserToGroup> {
                                 setState(() {
 
                                   if (isSelected) {
-                                    groupChatController.selectedIndicesForFriends.remove(data);
+                                    groupChatController.selectedIndicesForFriends.remove(data['id']);
                                     groupChatController.removeFriendFromGroupChat(groupId: widget.groupId, friendId: data['id'])
                                     .then((value) => debugPrint('${data['name']} has been removed from ${widget.groupName}'));                          
                                     setState(() {
@@ -238,7 +238,7 @@ class _AddUserToGroupState extends State<AddUserToGroup> {
                                     });
                                   } 
                                   else {
-                                    groupChatController.selectedIndicesForFriends.add(data);
+                                    groupChatController.selectedIndicesForFriends.add(data['id']);
                                     groupChatController.addFriendToGroupChat(
                                       groupId: widget.groupId, 
                                       groupName: widget.groupName, 
@@ -256,11 +256,11 @@ class _AddUserToGroupState extends State<AddUserToGroup> {
 
                               }, 
                               icon: Icon(
-                                groupChatController.isAdded ?
+                                groupChatController.selectedIndicesForFriends.contains(data['id']) ?
                                 CupertinoIcons.check_mark_circled_solid
                                 :CupertinoIcons.add_circled
                               ),
-                              color: groupChatController.isAdded ?
+                              color: groupChatController.selectedIndicesForFriends.contains(data['id']) ?
                               AppTheme().mainColor
                               :AppTheme().greyColor,
                               iconSize: 30.r,

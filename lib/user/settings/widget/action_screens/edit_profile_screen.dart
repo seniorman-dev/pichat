@@ -486,7 +486,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   borderRadius: BorderRadius.circular(20.r)
                 ),
                 alignment: Alignment.center,
-                height: 70.h, //55.h,
+                //height: 70.h, //55.h,
                 //padding: EdgeInsets.all(8),
                 //width: 100.w,
                 child: TextFormField(
@@ -498,11 +498,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     )
                   ),
                   initialValue: widget.bio,
-                  spellCheckConfiguration: SpellCheckConfiguration(),
-                  scrollPadding: EdgeInsets.symmetric(
-                    horizontal: 10.w,
-                    vertical: 5.h
-                  ),  //20        
+                  spellCheckConfiguration: SpellCheckConfiguration(),      
                   scrollPhysics: const BouncingScrollPhysics(),
                   //scrollController: profileController.scrollController,
                   textCapitalization: TextCapitalization.sentences,
@@ -565,7 +561,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   borderRadius: BorderRadius.circular(20.r)
                 ),
                 alignment: Alignment.center,
-                height: 70.h, //55.h,
+                //height: 70.h, //55.h,
                 //padding: EdgeInsets.all(8),
                 //width: 100.w,
                 child: TextFormField(
@@ -577,11 +573,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     )
                   ),
                   initialValue: widget.link,
-                  spellCheckConfiguration: SpellCheckConfiguration(),
-                  scrollPadding: EdgeInsets.symmetric(
-                    horizontal: 10.w,
-                    vertical: 5.h
-                  ),  //20        
+                  spellCheckConfiguration: SpellCheckConfiguration(),        
                   scrollPhysics: const BouncingScrollPhysics(),
                   //scrollController: profileController.scrollController,
                   textInputAction: TextInputAction.done,

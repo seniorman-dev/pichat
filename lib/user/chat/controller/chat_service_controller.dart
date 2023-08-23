@@ -105,7 +105,7 @@ class ChatServiceController extends ChangeNotifier {
 
 
   //acceptFriendRequest of the sender
-  Future acceptFriendRequest({required String friendName, required String friendId, required String friendProfilePic,}) async {
+  Future acceptFriendRequest({required String friendName, required String friendId, required String friendProfilePic, required String friendEmail, required String friendFCMToken}) async {
     try {
 
       //do this if you want to get any logged in user property 
@@ -116,6 +116,8 @@ class ChatServiceController extends ChangeNotifier {
       String userName = snapshot.get('name');
       String userId = snapshot.get('id');
       String userPhoto = snapshot.get('photo');
+      String userEmail = snapshot.get('email');
+      String userFCMToken = snapshot.get('FCMToken');
       bool userOnline = snapshot.get('isOnline');
       //////////////////////////////////
 
@@ -129,6 +131,8 @@ class ChatServiceController extends ChangeNotifier {
         'name': friendName,
         'id': friendId,
         'photo': friendProfilePic,
+        'email': friendEmail,
+        'FCMToken': friendFCMToken,
       });
       // Add receiver of the request or current user to the sender's friend list
       await firestore
@@ -139,7 +143,9 @@ class ChatServiceController extends ChangeNotifier {
       .set({
         'name': userName,   
         'id': userId, //auth.currentUser!.uid,
-        'photo': userPhoto, 
+        'photo': userPhoto,
+        'email': userEmail,
+        'FCMToken': userFCMToken, 
       });
 
       //Remove sender of the request from the current user / receipient's friendRequests collection
@@ -221,7 +227,7 @@ class ChatServiceController extends ChangeNotifier {
   Stream<QuerySnapshot<Map<String, dynamic>>>? recentChatsStream;
   
   //(to be placed inside "sendDirectMessages" function)//
-  Future<void> addUserToRecentChats({required String receiverId, required String receiverName, required String receiverPhoto, required String lastMessage, required Timestamp timestamp, required String sentBy}) async{
+  Future<void> addUserToRecentChats({required String receiverId, required String receiverName, required String receiverPhoto, required String receiverFCMToken, required String lastMessage, required Timestamp timestamp, required String sentBy}) async{
     //do this if you want to get any logged in user property 
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
     .collection('users')
@@ -229,6 +235,7 @@ class ChatServiceController extends ChangeNotifier {
     .get();
     String userName = snapshot.get('name');
     String userId = snapshot.get('id');
+    String userFCMToken = snapshot.get('FCMToken');
     String userPhoto = snapshot.get('photo');
     //bool userOnline = snapshot.get('isOnline');
     //////////////////////////////////
@@ -244,7 +251,8 @@ class ChatServiceController extends ChangeNotifier {
       'photo': receiverPhoto,
       'lastMessage': lastMessage,
       'sentBy': sentBy,
-      'timestamp': timestamp
+      'timestamp': timestamp,
+      'FCMToken': receiverFCMToken
     });
 
     //add myself to receiver's recent chat stream  (update isMessageSeen later)
@@ -259,6 +267,7 @@ class ChatServiceController extends ChangeNotifier {
       'lastMessage': lastMessage,
       'sentBy': sentBy,
       'timestamp': timestamp,
+      'FCMToken': userFCMToken
     });
   }
 
@@ -307,7 +316,7 @@ class ChatServiceController extends ChangeNotifier {
     .collection('users')
     .doc(receiverId)
     .get();
-    String FCMToken = receiverSnapshot.get('FCMToken');
+    String receiverFCMToken = receiverSnapshot.get('FCMToken');
     /////////////////////////////////////////////
     
     //did this to get the name and email of the current user
@@ -388,9 +397,9 @@ class ChatServiceController extends ChangeNotifier {
       /////////////////////////////////////////////
 
       //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
-      addUserToRecentChats(timestamp: timeofLastMessageSent, lastMessage: '📷 Image ~ $lastMessageSent', receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy);
+      addUserToRecentChats(timestamp: timeofLastMessageSent, lastMessage: '📷 Image ~ $lastMessageSent', receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy, receiverFCMToken: receiverFCMToken);
       //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
-      API().sendPushNotificationWithFirebaseAPI(content: '📷 Image ~ $lastMessageSent', receiverFCMToken: FCMToken, title: name);
+      API().sendPushNotificationWithFirebaseAPI(content: '📷 Image ~ $lastMessageSent', receiverFCMToken: receiverFCMToken, title: name);
     
       // Scroll to the newly added message to make it visible.
       messageController.jumpTo(messageController.position.maxScrollExtent);
@@ -451,9 +460,9 @@ class ChatServiceController extends ChangeNotifier {
         /////////////////////////////////////////////
 
       //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
-      addUserToRecentChats(timestamp: timeofLastMessageSent, lastMessage: '🎬 Video ~ $lastMessageSent', receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy);
+      addUserToRecentChats(timestamp: timeofLastMessageSent, lastMessage: '🎬 Video ~ $lastMessageSent', receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy, receiverFCMToken: receiverFCMToken);
       //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
-      API().sendPushNotificationWithFirebaseAPI(content: '🎬 Video ~ $lastMessageSent', receiverFCMToken: FCMToken, title: name);
+      API().sendPushNotificationWithFirebaseAPI(content: '🎬 Video ~ $lastMessageSent', receiverFCMToken: receiverFCMToken, title: name);
     
       // Scroll to the newly added message to make it visible.
       messageController.jumpTo(messageController.position.maxScrollExtent);
@@ -481,7 +490,7 @@ class ChatServiceController extends ChangeNotifier {
     .collection('users')
     .doc(receiverId)
     .get();
-    String FCMToken = receiverSnapshot.get('FCMToken');
+    String receiverFCMToken = receiverSnapshot.get('FCMToken');
     /////////////////////////////////////////////
     
     //did this to get the name and email of the current user
@@ -546,9 +555,9 @@ class ChatServiceController extends ChangeNotifier {
     /////////////////////////////////////////////
 
     //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
-    addUserToRecentChats(timestamp: timeofLastMessageSnet, lastMessage: lastMessageSent, receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy);
+    addUserToRecentChats(timestamp: timeofLastMessageSnet, lastMessage: lastMessageSent, receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy, receiverFCMToken: receiverFCMToken);
     //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
-    API().sendPushNotificationWithFirebaseAPI(content: lastMessageSent, receiverFCMToken: FCMToken, title: name);
+    API().sendPushNotificationWithFirebaseAPI(content: lastMessageSent, receiverFCMToken: receiverFCMToken, title: name);
     
     // Scroll to the newly added message to make it visible.
     messageController.jumpTo(messageController.position.maxScrollExtent);
@@ -625,7 +634,7 @@ class ChatServiceController extends ChangeNotifier {
       .collection('users')
       .doc(receiverId)
       .get();
-      String FCMToken = receiverSnapshot.get('FCMToken');
+      String receiverFCMToken = receiverSnapshot.get('FCMToken');
       
       //did this to get the name and email of the current user
       DocumentSnapshot senderSnapshot = await FirebaseFirestore.instance
@@ -687,9 +696,9 @@ class ChatServiceController extends ChangeNotifier {
       /////////////////////////////////////////////
 
       //function that adds who ever you are chatting with to 'recent_chats" and vice-versa
-      addUserToRecentChats(timestamp: timeofLastMessageSent, lastMessage: '🎵 Audio ', receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy);
+      addUserToRecentChats(timestamp: timeofLastMessageSent, lastMessage: '🎵 Audio ', receiverId: receiverId, receiverName: receiverName, receiverPhoto: receiverPhoto, sentBy: sentBy, receiverFCMToken: receiverFCMToken);
       //call FCM REST API to send a message notification to the receiver of the message, if he/she is in background mode (will implement foreground mode later)
-      API().sendPushNotificationWithFirebaseAPI(content: '🎵 Audio ', receiverFCMToken: FCMToken, title: name);
+      API().sendPushNotificationWithFirebaseAPI(content: '🎵 Audio ', receiverFCMToken: receiverFCMToken, title: name);
     
       // Scroll to the newly added message to make it visible.
       messageController.jumpTo(messageController.position.maxScrollExtent);

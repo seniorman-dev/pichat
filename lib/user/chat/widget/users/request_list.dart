@@ -257,7 +257,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                           child: ElevatedButton(
                                             onPressed: () {
                                               chatController.selectedDocumentIdForAllUsers.add(data['id']);
-                                              chatController.acceptFriendRequest(friendName: data['name'], friendId: data['id'], friendProfilePic: data['photo']);  //data['photo']
+                                              chatController.acceptFriendRequest(friendName: data['name'], friendId: data['id'], friendProfilePic: data['photo'], friendEmail: data['email'], friendFCMToken: data['FCMToken']);  //data['photo']
                                             },
                                             style: ElevatedButton.styleFrom(
                                               elevation: 2,

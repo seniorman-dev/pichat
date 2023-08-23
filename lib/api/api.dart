@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 //import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+//import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -9,7 +9,9 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:pichat/constants/firebase_fcm_keys.dart';
 import 'package:pichat/constants/one_signal_keys.dart';
+import 'package:pichat/main.dart';
 import 'package:pichat/main_page/screen/main_page.dart';
+import 'package:pichat/theme/app_theme.dart';
 
 
 
@@ -36,7 +38,8 @@ class API {
 
 
   //call this when you want to join a voice call
-  void setToken({required String newToken, required String channelName, required int uid, required RtcEngine agoraEngine}) async {
+  
+  /*void setToken({required String newToken, required String channelName, required int uid, required RtcEngine agoraEngine}) async {
     token = newToken;
 
     if (isTokenExpiring) {
@@ -88,14 +91,53 @@ class API {
           'Failed to fetch a token. Make sure that your server URL is valid'
         );
     }
+  }*/
+
+
+
+
+  Future initFLNP({required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin}) async{
+    //FLNP Instance
+    //FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    //FLNP component
+    //This is used to define the initialization settings for iOS and android
+    var initializationSettingsAndroid = const AndroidInitializationSettings('mip_map/ic_lancher.png');
+    var initializationSettingsIOS = const DarwinInitializationSettings();
+    var initializationSettings = InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
   }
 
+  Future<void> showFLNP({var id = 0, required String title, required String body, var payload, required FlutterLocalNotificationsPlugin fln}) async{
+    
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', //id
+      'High Importance Notification', //title
+      importance: Importance.high,
+      enableLights: true,
+      ledColor: Colors.white
+    );
+    
+    AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+      channel.id, //'channel_id',
+      channel.name, //'channel_name',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      //sound: RawResourceAndroidNotificationSound('notification')
+    );
 
 
+    var notification = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: DarwinNotificationDetails()
+    );
+    
+    await fln.show(id, title, body, notification);
+  }
 
-
-
-
+  //to be used for 'messages notification", 'friend request notifications e.t.c'
   Future<void> sendPushNotificationWithFirebaseAPI({required String receiverFCMToken, required String title, required String content}) async {
   //TODO: make the notification display in foreground
   
@@ -127,14 +169,14 @@ class API {
     );
   }
   
-  //header
+  //header for the end point
   final Map<String, String> headers = {
     'Authorization': 'key=$firebaseServerKeyFromTheConsole',
     'Content-type': 'application/json',
     'Accept': '/',
   };
 
-  // notificationData or body
+  // notificationData or body for the end point
   final Map<String, dynamic> notificationData = {
     "to": receiverFCMToken,
     "priority": "high",
@@ -151,6 +193,20 @@ class API {
     // Add other optional parameters for customizing your notification
     }
   };
+  
+  //show notification with 'flutter_local_notification" plugin
+  RemoteNotification? notification = const RemoteNotification();
+
+  
+  //flutter local notifications fuckkinngg worked.. finallyyyyy
+  await showFLNP(title: title, body: content, fln: flutterLocalNotificationsPlugin);
+
+  //Enable foreground Notifications for iOS
+  await messaging.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
 
   //send a POST request
   final http.Response response = await http.post(
@@ -271,9 +327,32 @@ Future<void> initFCM({required Future<void> Function(RemoteMessage) backgroundHa
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     debugPrint('Got a message whilst in the foreground!');
     debugPrint('Message data: ${message.data}'); //save to firebase
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
 
     if (message.notification != null) {
       debugPrint('Message also contained a notification: ${message.notification}'); //save to firebase
+    }
+    if(notification != null && android != null) {
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'high_importance_channel', //id
+        'High Importance Notification', //title
+        importance: Importance.high
+      );
+        
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode, 
+        notification.title, 
+        notification.body, 
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id, 
+            channel.name,
+            //icon: 'launch_background'
+          )
+        )
+      );
     }
   });
   //Enable foreground Notifications for iOS

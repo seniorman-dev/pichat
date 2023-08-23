@@ -275,7 +275,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                                 receiverName: data2['name'],                                       
                                                 receiverID: data2['id'], 
                                                 isSelected: true, 
-                                                FCMToken: data2['FCMToken'],  
+                                                receiverFCMToken: data2['FCMToken'],  
                                               )                            
                                             ]
                                           )

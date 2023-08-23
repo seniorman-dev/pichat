@@ -116,14 +116,14 @@ class _ChatListState extends State<ChatList> {
 
           return Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: 15.w, //20.w
+              horizontal: 15.w, //15.w
               vertical: 5.h  //20.h
             ),
             child: ListView.separated(
-              padding: EdgeInsets.symmetric(
+              /*padding: EdgeInsets.symmetric(
                 horizontal: 10.w, //20.w
                 vertical: 10.h  //20.h
-              ),
+              ),*/
               controller: chatServiceController.messageController,
               //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               physics: const BouncingScrollPhysics(),
@@ -218,11 +218,11 @@ class _ChatListState extends State<ChatList> {
                         Container(
                           alignment: Alignment.centerLeft,
                           //height: 80.h,
-                          width: 200.w,
+                          width: 225.w,
                           padding: data['messageType'] == 'image' || data['messageType'] == 'video' 
                           ?EdgeInsets.symmetric(
-                            vertical: 5.h,
-                            horizontal: 5.w
+                            vertical: 1.h,
+                            horizontal: 1.w
                           )
                           :EdgeInsets.symmetric(
                             vertical: 10.h, //15.h
@@ -260,13 +260,13 @@ class _ChatListState extends State<ChatList> {
                               :data['messageType'] == 'image' ?
                               SizedBox(
                                 height: 300.h,
-                                width: 200.w,//MediaQuery.of(context).size.width, //double.infinity,
+                                width: 240.w,//MediaQuery.of(context).size.width, //double.infinity,
                                 child: Card(
                                   color: AppTheme().lightGreyColor,
                                   semanticContainer: true,
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0.r), //20.r
+                                    borderRadius: BorderRadius.circular(15.0.r), //20.r
                                   ),
                                   elevation: 0,
                                   child: CachedNetworkImage(

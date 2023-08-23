@@ -20,7 +20,7 @@ import '../../../../utils/error_loader.dart';
 
 
 class RePosts extends StatefulWidget {
-  const RePosts({super.key});
+  const RePosts({super.key,});
 
   @override
   State<RePosts> createState() => _RePostsState();

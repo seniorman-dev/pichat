@@ -13,7 +13,6 @@ import 'package:pichat/utils/error_loader.dart';
 import 'package:pichat/utils/firestore_timestamp_formatter.dart';
 import 'package:pichat/utils/loader.dart';
 import 'package:provider/provider.dart';
-
 import 'search_textfield.dart';
 
 
@@ -187,7 +186,8 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                             isOnline: isChatBuddyOnline, 
                             receiverName: data2['name'],
                             receiverProfilePic: data2['photo'],
-                            receiverID: data2['id'], 
+                            receiverID: data2['id'],
+                            receiverFCMToken: data2['id'],  //
                             senderName: userName,
                             senderId: userId, 
                             //lastActive: chatServiceController.isSearchingRecentChats ? "${formatTime(timestamp: data['lastActive'])} on ${formatDate(timestamp: data['lastActive'])}" : "${formatTime(timestamp: data2['lastActive'])} on ${formatDate(timestamp: data2['lastActive'])}",
