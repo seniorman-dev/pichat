@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pichat/theme/app_theme.dart';
@@ -72,19 +73,53 @@ Future<void> takePhotoBottomSheet({required BuildContext context, required VoidC
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     ////////////////////////
-                    Center(
-                      child: TextButton(
-                        onPressed: onPressedForCamera, 
-                        child: Text(
-                          'Take Photo',
-                          style: TextStyle(
-                            color: AppTheme().mainColor,
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500
-                          ),
-                        )
+                    InkWell(
+                      onTap: onPressedForCamera,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 15.w,
+                          vertical: 20.h
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: 50.h,
+                              width: 40.w,
+                              alignment: Alignment.center,
+                              /*padding: EdgeInsets.symmetric(
+                                vertical: 18.h,
+                                horizontal: 18.w
+                              ),*/
+                              decoration: BoxDecoration(
+                                color: AppTheme().lightestOpacityBlue,  
+                                borderRadius: BorderRadius.circular(15.r)
+                              ),
+                              child: Icon(
+                                CupertinoIcons.camera_viewfinder,
+                                color: AppTheme().mainColor,
+                              )                   
+                            ),
+                            SizedBox(width: 20.w,),
+                            Expanded(
+                              child: Text(
+                                'Take Photo',
+                                style: TextStyle(
+                                  color: AppTheme().blackColor,
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500
+                                ),
+                              )
+                            ),
+                            Icon(
+                              CupertinoIcons.forward,
+                              size: 20.r,
+                            )
+                          ],
+                        ),
                       ),
                     ),
+                    /////////////////
                     SizedBox(
                       width: double.infinity,
                       child: Divider(
@@ -92,23 +127,60 @@ Future<void> takePhotoBottomSheet({required BuildContext context, required VoidC
                         color: AppTheme().darkGreyColor,
                       ),
                     ),
-                    Center(
-                      child: TextButton(
-                        onPressed: onPressedForGallery,
-                        child: Text(
-                          'Select Photo From Gallery',
-                          style: TextStyle(
-                            color: AppTheme().mainColor,
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500
-                          ),
-                        )
+                    ////////////////////////
+                    InkWell(
+                      onTap: onPressedForGallery,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 15.w,
+                          vertical: 20.h
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: 50.h,
+                              width: 40.w,
+                              alignment: Alignment.center,
+                              /*padding: EdgeInsets.symmetric(
+                                vertical: 18.h,
+                                horizontal: 18.w
+                              ),*/
+                              decoration: BoxDecoration(
+                                color: AppTheme().lightestOpacityBlue,  
+                                borderRadius: BorderRadius.circular(15.r)
+                              ),
+                              child: Icon(
+                                CupertinoIcons.camera_circle,
+                                color: AppTheme().mainColor,
+                              )                   
+                            ),
+                            SizedBox(width: 20.w,),
+                            Expanded(
+                              child: Text(
+                                'Select From Gallery',
+                                style: TextStyle(
+                                  color: AppTheme().blackColor,
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500
+                                ),
+                              )
+                            ),
+                            Icon(
+                              CupertinoIcons.forward,
+                              size: 20.r,
+                            )
+                          ],
+                        ),
                       ),
                     ),
+                    /////////////////
                   ],
                 ),           
               ),
+
               SizedBox(height: 50.h),
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[

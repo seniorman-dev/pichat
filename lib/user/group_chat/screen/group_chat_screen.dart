@@ -275,7 +275,7 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
                                   ),
                                   decoration: BoxDecoration(
                                     color: AppTheme().whiteColor,
-                                    borderRadius: BorderRadius.circular(20.r),
+                                    borderRadius: BorderRadius.circular(30.r),
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.grey.withOpacity(0.2),
@@ -329,7 +329,10 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
                                                   style: GoogleFonts.poppins(
                                                     color: AppTheme().blackColor,
                                                     fontSize: 14.sp,
-                                                    fontWeight: FontWeight.w500
+                                                    fontWeight: FontWeight.w500,
+                                                    textStyle: const TextStyle(
+                                                      overflow: TextOverflow.ellipsis
+                                                    )
                                                   ),
                                                 ),
                                                 Text(
@@ -344,36 +347,30 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
                                             ),
       
                                             SizedBox(height: 4.h,),
-                                            //Row 2
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                //figure this out
-                                                //show when a receiver sends a new message then disappear when the current user taps on it
-                                                Text(
-                                                  data['lastMessage'],
-                                                  style: GoogleFonts.poppins(
-                                                    color: AppTheme().greyColor,
-                                                    fontSize: 12.sp,
-                                                    fontWeight: FontWeight.w500,
-                                                    textStyle: const TextStyle(
-                                                      overflow: TextOverflow.ellipsis
-                                                    )
-                                                  ),
-                                                ),
-                                                data['sentBy'] == groupChatController.auth.currentUser!.uid
-                                                ? SizedBox()
-                                                //find a way to show this status bar when your chat partner sends you a message
-                                                :CircleAvatar(
-                                                  backgroundColor: AppTheme().mainColor,
-                                                  radius: 7.r,
+
+                                            Text(
+                                              data['lastMessage'],
+                                              style: GoogleFonts.poppins(
+                                                color: AppTheme().greyColor,
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w500,
+                                                textStyle: const TextStyle(
+                                                  overflow: TextOverflow.ellipsis
                                                 )
-                                              ],
+                                              ),
                                             ),
                                             
                                           ]
                                         ),
                                       ),
+                                      SizedBox(width: 8.w,),
+                                      data['sentBy'] == groupChatController.auth.currentUser!.uid
+                                      ? SizedBox()
+                                      //find a way to show this status bar when your chat partner sends you a message
+                                      :CircleAvatar(
+                                        backgroundColor: AppTheme().mainColor,
+                                          radius: 7.r,
+                                      )
                                     ],
                                   ),
                                 ),

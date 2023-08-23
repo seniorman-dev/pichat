@@ -80,10 +80,10 @@ class _SendOrCancelRequestButtonState extends State<SendOrCancelRequestButton> {
         child: ElevatedButton(
           onPressed: () => _cancelFriendRequest(),
           style: ElevatedButton.styleFrom(
-            elevation: 2,
-            backgroundColor: AppTheme().mainColor,
+            elevation: 0,
+            backgroundColor: AppTheme().lightestOpacityBlue,
             minimumSize: Size.copy(Size(100.w, 50.h)),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),                                          
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),                                          
           ),        
           /*icon: Icon(
             chatServiceController.isAdded ? CupertinoIcons.clear_thick_circled: CupertinoIcons.person_crop_circle_fill_badge_plus,
@@ -94,7 +94,7 @@ class _SendOrCancelRequestButtonState extends State<SendOrCancelRequestButton> {
             'cancel',
             style: GoogleFonts.poppins(
               textStyle: TextStyle(
-                color: AppTheme().whiteColor,
+                color: AppTheme().blackColor,
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w500
               )
@@ -110,10 +110,10 @@ class _SendOrCancelRequestButtonState extends State<SendOrCancelRequestButton> {
         child: ElevatedButton(
           onPressed: () => _sendFriendRequest(),
           style: ElevatedButton.styleFrom(
-            elevation: 2,
-            backgroundColor: AppTheme().mainColor,
+            elevation: 0,
+            backgroundColor: AppTheme().lightestOpacityBlue,
             minimumSize: Size.copy(Size(100.w, 50.h)),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),                                          
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),                                          
           ),        
           /*icon: Icon(
             chatServiceController.isAdded ? CupertinoIcons.clear_thick_circled: CupertinoIcons.person_crop_circle_fill_badge_plus,
@@ -124,7 +124,7 @@ class _SendOrCancelRequestButtonState extends State<SendOrCancelRequestButton> {
             'connect',
             style: GoogleFonts.poppins(
               textStyle: TextStyle(
-                color: AppTheme().whiteColor,
+                color: AppTheme().blackColor,
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w500
               )
@@ -203,10 +203,10 @@ class _AcceptRequestButtonState extends State<AcceptRequestButton> {
         child: ElevatedButton(
           onPressed: () => _removerUserFromFriendList(),
           style: ElevatedButton.styleFrom(
-            elevation: 2,
-            backgroundColor: AppTheme().mainColor,
+            elevation: 0,
+            backgroundColor: AppTheme().lightestOpacityBlue,
             minimumSize: Size.copy(Size(100.w, 50.h)),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),                                          
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),                                          
           ),        
           /*icon: Icon(
             chatServiceController.isAdded ? CupertinoIcons.clear_thick_circled: CupertinoIcons.person_crop_circle_fill_badge_plus,
@@ -217,7 +217,7 @@ class _AcceptRequestButtonState extends State<AcceptRequestButton> {
             'remove',
             style: GoogleFonts.poppins(
               textStyle: TextStyle(
-                color: AppTheme().whiteColor,
+                color: AppTheme().blackColor,
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w500
               )
@@ -233,10 +233,10 @@ class _AcceptRequestButtonState extends State<AcceptRequestButton> {
         child: ElevatedButton(
           onPressed: () => _acceptFriendRequest(),
           style: ElevatedButton.styleFrom(
-            elevation: 2,
-            backgroundColor: AppTheme().mainColor,
+            elevation: 0,
+            backgroundColor: AppTheme().lightestOpacityBlue,
             minimumSize: Size.copy(Size(100.w, 50.h)),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),                                          
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),                                          
           ),        
           /*icon: Icon(
             chatServiceController.isAdded ? CupertinoIcons.clear_thick_circled: CupertinoIcons.person_crop_circle_fill_badge_plus,
@@ -247,7 +247,7 @@ class _AcceptRequestButtonState extends State<AcceptRequestButton> {
             'accept',
             style: GoogleFonts.poppins(
               textStyle: TextStyle(
-                color: AppTheme().whiteColor,
+                color: AppTheme().blackColor,
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w500
               )
@@ -301,10 +301,10 @@ class _DeclineRequestButtonState extends State<AcceptRequestButton> {
       child: ElevatedButton(
         onPressed: () => _declineFriendRequest(),
         style: ElevatedButton.styleFrom(
-          elevation: 2,
-          backgroundColor: AppTheme().mainColor,
+          elevation: 0,
+          backgroundColor: AppTheme().lightestOpacityBlue,
           minimumSize: Size.copy(Size(100.w, 50.h)),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),                                          
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),                                          
         ),        
         /*icon: Icon(
           chatServiceController.isAdded ? CupertinoIcons.clear_thick_circled: CupertinoIcons.person_crop_circle_fill_badge_plus,
@@ -315,7 +315,7 @@ class _DeclineRequestButtonState extends State<AcceptRequestButton> {
           'decline',
           style: GoogleFonts.poppins(
             textStyle: TextStyle(
-              color: AppTheme().whiteColor,
+              color: AppTheme().blackColor,
               fontSize: 10.sp,
               fontWeight: FontWeight.w500
             )

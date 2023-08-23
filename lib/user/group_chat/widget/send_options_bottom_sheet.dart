@@ -57,6 +57,7 @@ Future<void> showSendOptionsBottomSheetForGroup({required BuildContext context, 
                   color: AppTheme().darkGreyColor,
                 ),
               ),
+              
               SizedBox(height: 20.h),
 
               Container(
@@ -187,6 +188,7 @@ Future<void> showSendOptionsBottomSheetForGroup({required BuildContext context, 
                   ],
                 ),           
               ),
+
               SizedBox(height: 20.h), //50.h
             ],
           ),

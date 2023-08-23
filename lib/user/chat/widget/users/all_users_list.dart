@@ -195,12 +195,12 @@ class _AllUsersListState extends State<AllUsersList> {
                               Container(
                                 //height: 100.h,
                                 padding: EdgeInsets.symmetric(
-                                  vertical: 15.h, //20.h
-                                  horizontal: 15.w  //20.h
+                                  vertical: 20.h, //15.h
+                                  horizontal: 15.w  //15.w
                                 ),
                                 decoration: BoxDecoration(
                                   color: AppTheme().whiteColor,
-                                  borderRadius: BorderRadius.circular(20.r),
+                                  borderRadius: BorderRadius.circular(30.r),
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.grey.withOpacity(0.2),
@@ -214,10 +214,10 @@ class _AllUsersListState extends State<AllUsersList> {
                                   children: [
                                     ////profilePic  ===>> chatServiceontroller.isSearchingForUsers ? data['photo'] : data2['photo'],
                                     CircleAvatar(
-                                      radius: 32.r,
+                                      radius: 38.r,
                                       backgroundColor: AppTheme().opacityBlue,
                                       child: CircleAvatar(
-                                        radius: 30.r,
+                                        radius: 36.r,
                                         backgroundColor: data2['photo'] == null ? AppTheme().darkGreyColor : AppTheme().blackColor,
                                         child: data2['photo'] == null 
                                         ?null

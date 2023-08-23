@@ -136,7 +136,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
             }
             
             return SizedBox(
-                height: 370.h,  //250.h
+                height: 370.h,  //370.h
                 child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.vertical,
@@ -195,8 +195,8 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                         },
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 20.h,
-                            vertical: 8.w
+                            horizontal: 20.w,
+                            vertical: 8.h
                           ),
                           child: Container(
                             //height: 100.h,
@@ -246,7 +246,9 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                     ),
                                   ),
                                 ),
+
                                 SizedBox(width: 10.w,),
+
                                 //details
                                 Expanded(
                                   child: Column(
@@ -261,7 +263,10 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().blackColor,
                                               fontSize: 14.sp,
-                                              fontWeight: FontWeight.w500
+                                              fontWeight: FontWeight.w500,
+                                              textStyle: const TextStyle(
+                                                overflow: TextOverflow.ellipsis
+                                              )
                                             ),
                                           ),
                                           Text(
@@ -276,33 +281,23 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                       ),
 
                                       SizedBox(height: 4.h,),
-                                      //Row 2
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          //figure this out
-                                          //show when a receiver sends a new message then disappear when the current user taps on it
-                                          Text(
-                                            data2['lastMessage'],
-                                            style: GoogleFonts.poppins(
-                                              color: AppTheme().greyColor,
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w500,
-                                              textStyle: const TextStyle(
-                                                overflow: TextOverflow.ellipsis
-                                              )
-                                            ),
-                                          ),
-                                          
-                                          data2['sentBy'] == chatServiceController.auth.currentUser!.uid
-                                          ? SizedBox()
-                                          //find a way to show this status bar when your chat partner sends you a message
-                                          :CircleAvatar(
-                                            backgroundColor: AppTheme().mainColor,
-                                            radius: 7.r,
+
+                                      Text(
+                                        data2['lastMessage'],
+                                        style: GoogleFonts.poppins(
+                                          color: AppTheme().greyColor,
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w500,
+                                          textStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis
                                           )
-                                        ],
+                                        ),
                                       ),
+
+                                  
+
+
+
                                       /*SizedBox(height: 3.h,),
                                       Text(
                                         chatServiceController.isSearchingRecentChats ? "${formatDate(timestamp: data['timestamp'])}" : "${formatDate(timestamp: data2['timestamp'])}",
@@ -315,6 +310,15 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                     ]
                                   ),
                                 ),
+
+                                SizedBox(width: 8.w,),
+                                data2['sentBy'] == chatServiceController.auth.currentUser!.uid
+                                ? SizedBox()
+                                //find a way to show this status bar when your chat partner sends you a message
+                                :CircleAvatar(
+                                  backgroundColor: AppTheme().mainColor,
+                                  radius: 7.r,
+                                )
                               ],
                             ),
                           ),

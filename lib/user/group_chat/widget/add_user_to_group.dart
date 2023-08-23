@@ -140,7 +140,7 @@ class _AddUserToGroupState extends State<AddUserToGroup> {
                   itemBuilder: (context, index) {
                     var data = snapshot.data!.docs[index];
                     //
-                    bool isSelected = groupChatController.selectedIndicesForFriends.contains(data);
+                    bool isSelected = groupChatController.selectedIndicesForFriends.contains(data['id']);
 
 
                     return Padding(
@@ -178,7 +178,7 @@ class _AddUserToGroupState extends State<AddUserToGroup> {
                                 child: data['photo'] == null 
                                 ?null
                                 :ClipRRect(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
+                                  borderRadius: BorderRadius.all(Radius.circular(30.r)), //.circular(20.r),
                                   clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
                                   child: CachedNetworkImage(
                                     imageUrl: data['photo'],
@@ -204,17 +204,17 @@ class _AddUserToGroupState extends State<AddUserToGroup> {
                                     getFirstName(fullName: data['name']),
                                     style: GoogleFonts.poppins(
                                       color: AppTheme().blackColor,
-                                      fontSize: 14.sp,
+                                      fontSize: 15.sp,
                                       fontWeight: FontWeight.w500
                                     ),
                                   ),
                                   SizedBox(height: 4.h,),
                                   Text(
-                                    data['id'],
+                                    data['email'],
                                     style: GoogleFonts.poppins(
                                       color: AppTheme().greyColor,
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.normal,
                                       textStyle: const TextStyle(
                                         overflow: TextOverflow.ellipsis
                                       )

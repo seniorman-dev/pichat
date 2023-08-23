@@ -158,7 +158,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                   child: data['photo'] == null 
                                   ?null
                                   :ClipRRect(
-                                    borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
+                                    borderRadius: BorderRadius.all(Radius.circular(20.r)), //.circular(20.r),
                                     clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
                                     child: CachedNetworkImage(
                                       imageUrl: data['photo'],
@@ -185,7 +185,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                       data['name'],  //data['name'] or //data['id']
                                       style: GoogleFonts.poppins(
                                         color: AppTheme().blackColor,
-                                        fontSize: 14.sp,
+                                        fontSize: 15.sp,
                                         fontWeight: FontWeight.w500
                                       ),
                                     ),
@@ -227,8 +227,8 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                               });*/
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              elevation: 2,
-                                              backgroundColor: AppTheme().mainColor,
+                                              elevation: 0,
+                                              backgroundColor: AppTheme().lightestOpacityBlue,
                                               minimumSize: Size.copy(Size(100.w, 50.h)),
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),                                          
                                             ),        
@@ -241,7 +241,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                               'decline',
                                               style: GoogleFonts.poppins(
                                                 textStyle: TextStyle(
-                                                  color: AppTheme().whiteColor,
+                                                  color: AppTheme().blackColor,
                                                   fontSize: 10.sp,
                                                   fontWeight: FontWeight.w500
                                                 )
@@ -260,8 +260,8 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                               chatController.acceptFriendRequest(friendName: data['name'], friendId: data['id'], friendProfilePic: data['photo'], friendEmail: data['email'], friendFCMToken: data['FCMToken']);  //data['photo']
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              elevation: 2,
-                                              backgroundColor: AppTheme().mainColor,
+                                              elevation: 0,
+                                              backgroundColor: AppTheme().lightestOpacityBlue,
                                               minimumSize: Size.copy(Size(100.w, 50.h)),
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),                                          
                                             ),        
@@ -274,7 +274,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                               'accept',
                                               style: GoogleFonts.poppins(
                                                 textStyle: TextStyle(
-                                                  color: AppTheme().whiteColor,
+                                                  color: AppTheme().blackColor,
                                                   fontSize: 10.sp,
                                                   fontWeight: FontWeight.w500
                                                 )
