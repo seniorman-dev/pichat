@@ -154,6 +154,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 },
               ),
+              SizedBox(height: 10.h),
+              //text "or"
+              Text(
+                'or',
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    color: AppTheme().greyColor,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 12.sp,
+                    //decoration: TextDecoration.underline
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 10.h),
+
+              //google_icon
+              InkWell(
+                onTap: () {
+                  controller.handleGoogleSignIn(context: context);
+                },
+                child: Image.asset(
+                  'asset/img/google.png',
+                  //height: 40.h,
+                  //width: 40.w,
+                ),
+              ),
+
               SizedBox(height: 20.h,),
               //already have account?
               Row(
