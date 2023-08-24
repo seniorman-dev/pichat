@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:pichat/constants/firebase_fcm_keys.dart';
-import 'package:pichat/constants/one_signal_keys.dart';
-import 'package:pichat/main.dart';
-import 'package:pichat/main_page/screen/main_page.dart';
-import 'package:pichat/theme/app_theme.dart';
+import 'package:Ezio/constants/firebase_fcm_keys.dart';
+import 'package:Ezio/constants/one_signal_keys.dart';
+import 'package:Ezio/main.dart';
+import 'package:Ezio/main_page/screen/main_page.dart';
+import 'package:Ezio/theme/app_theme.dart';
 
 
 
@@ -21,7 +21,7 @@ import 'package:pichat/theme/app_theme.dart';
 
 class API {
   
-  
+
 
   //REST API GET request to generate token from my heroku server for agora voice/video call
 
@@ -103,18 +103,24 @@ class API {
 
     //FLNP component
     //This is used to define the initialization settings for iOS and android
-    var initializationSettingsAndroid = const AndroidInitializationSettings('mip_map/ic_lancher.png');
-    var initializationSettingsIOS = const DarwinInitializationSettings();
+    var initializationSettingsAndroid = const AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = const DarwinInitializationSettings(requestAlertPermission: true, requestBadgePermission: true, requestSoundPermission: true);
     var initializationSettings = InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    //await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+    //AndroidFlutterLocalNotificationsPlugin>()!.requestPermission();
 
   }
 
-  Future<void> showFLNP({var id = 0, required String title, required String body, var payload, required FlutterLocalNotificationsPlugin fln}) async{
+  void showFLNP({required String title, required String body, var payload, required FlutterLocalNotificationsPlugin fln}) async{
     
+    //flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+    //AndroidFlutterLocalNotificationsPlugin>()!.requestPermission();
+
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'high_importance_channel', //id
       'High Importance Notification', //title
+      description: 'This is used to send messages notification',
       importance: Importance.high,
       enableLights: true,
       ledColor: Colors.white
@@ -123,6 +129,7 @@ class API {
     AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
       channel.id, //'channel_id',
       channel.name, //'channel_name',
+      channelDescription: channel.description,
       importance: Importance.max,
       priority: Priority.high,
       playSound: true,
@@ -132,10 +139,14 @@ class API {
 
     var notification = NotificationDetails(
       android: androidNotificationDetails,
-      iOS: DarwinNotificationDetails()
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true
+      )
     );
     
-    await fln.show(id, title, body, notification);
+    await fln.show(0, title, body, notification);
   }
 
   //to be used for 'messages notification", 'friend request notifications e.t.c'
@@ -200,7 +211,7 @@ class API {
 
   
   //flutter local notifications fuckkinngg worked.. finallyyyyy
-  await showFLNP(title: title, body: content, fln: flutterLocalNotificationsPlugin);
+  showFLNP(title: title, body: content, fln: flutterLocalNotificationsPlugin);
 
   //Enable foreground Notifications for iOS
   await messaging.setForegroundNotificationPresentationOptions(

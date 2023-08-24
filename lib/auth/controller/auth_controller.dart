@@ -3,14 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:pichat/auth/screen/login_screen.dart';
-import 'package:pichat/auth/screen/successful_registration_screen.dart';
-import 'package:pichat/main_page/screen/main_page.dart';
-import 'package:pichat/utils/snackbar.dart';
-import 'package:pichat/utils/toast.dart';
+import 'package:Ezio/api/api.dart';
+import 'package:Ezio/auth/screen/login_screen.dart';
+import 'package:Ezio/auth/screen/successful_registration_screen.dart';
+import 'package:Ezio/main_page/screen/main_page.dart';
+import 'package:Ezio/utils/extract_firstname.dart';
+import 'package:Ezio/utils/snackbar.dart';
+import 'package:Ezio/utils/toast.dart';
 
 
 
@@ -20,6 +23,8 @@ import 'package:pichat/utils/toast.dart';
 
 
 class AuthController extends ChangeNotifier{
+
+  FlutterLocalNotificationsPlugin fln = FlutterLocalNotificationsPlugin();
   
   //locage storage courtesy of GetX, used to persist little amount of data
   final box = GetStorage('auth');
@@ -136,6 +141,7 @@ class AuthController extends ChangeNotifier{
             'timestamp': Timestamp.now()
           })
           .then((val) async => await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token}))
+          .then((value) {API().showFLNP(title: 'Registration Successful', body: "Welcome onboard ${getFirstName(fullName: registerNameController.text)}", fln: fln);})
           .then((val) {
             Get.offAll(() => const SuccessfulRegistrationScreen());
             registerNameController.clear();

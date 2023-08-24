@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pichat/main_page/widget/bottom_nav_bar.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/calls/screen/calls.dart';
-import 'package:pichat/user/chat/screen/home_screen.dart';
-import 'package:pichat/user/feeds/screen/feeds_screen.dart';
-import 'package:pichat/user/group_chat/screen/group_chat_screen.dart';
-import 'package:pichat/user/settings/screen/profile_screen.dart';
+import 'package:Ezio/main_page/widget/bottom_nav_bar.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/user/calls/screen/calls.dart';
+import 'package:Ezio/user/chat/screen/home_screen.dart';
+import 'package:Ezio/user/feeds/screen/feeds_screen.dart';
+import 'package:Ezio/user/group_chat/screen/group_chat_screen.dart';
+import 'package:Ezio/user/settings/screen/profile_screen.dart';
 
 
 

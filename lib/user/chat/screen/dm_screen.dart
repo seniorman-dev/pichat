@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/theme/app_theme.dart';
-//import 'package:pichat/user/chat/agora/audio/audio_call.dart';
-//import 'package:pichat/user/chat/agora/video/video_call.dart';
-import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/user/chat/widget/bottom_engine.dart';
-import 'package:pichat/user/chat/widget/chat_list.dart';
-import 'package:pichat/utils/loader.dart';
+import 'package:Ezio/theme/app_theme.dart';
+//import 'package:Ezio/user/chat/agora/audio/audio_call.dart';
+//import 'package:Ezio/user/chat/agora/video/video_call.dart';
+import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
+import 'package:Ezio/user/chat/widget/bottom_engine.dart';
+import 'package:Ezio/user/chat/widget/chat_list.dart';
+import 'package:Ezio/utils/loader.dart';
 import 'package:provider/provider.dart';
 
 

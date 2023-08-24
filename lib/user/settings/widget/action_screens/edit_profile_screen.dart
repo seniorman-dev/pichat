@@ -8,12 +8,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pichat/auth/controller/auth_controller.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/settings/controller/profile_controller.dart';
-import 'package:pichat/user/settings/widget/helper_widgets/upload_photo_bottom_sheet.dart';
-import 'package:pichat/utils/loader.dart';
-import 'package:pichat/utils/toast.dart';
+import 'package:Ezio/auth/controller/auth_controller.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/user/settings/controller/profile_controller.dart';
+import 'package:Ezio/user/settings/widget/helper_widgets/upload_photo_bottom_sheet.dart';
+import 'package:Ezio/utils/loader.dart';
+import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 import '../success_screens/successful_profile_update_screen.dart';
 

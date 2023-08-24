@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/auth/screen/login_screen.dart';
-import 'package:pichat/utils/elevated_button.dart';
+import 'package:Ezio/auth/screen/login_screen.dart';
+import 'package:Ezio/utils/elevated_button.dart';
 import '../../../../../../../theme/app_theme.dart';
 
 

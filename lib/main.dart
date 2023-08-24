@@ -7,21 +7,24 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:pichat/api/api.dart';
-import 'package:pichat/auth/controller/auth_controller.dart';
-import 'package:pichat/auth/screen/splash_screen.dart';
-import 'package:pichat/auth/screen/splash_screen_2.dart';
-import 'package:pichat/main_page/controller/main_page_controller.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/user/feeds/controller/feeds_controller.dart';
-import 'package:pichat/user/settings/controller/profile_controller.dart';
+import 'package:Ezio/api/api.dart';
+import 'package:Ezio/auth/controller/auth_controller.dart';
+import 'package:Ezio/auth/screen/splash_screen.dart';
+import 'package:Ezio/auth/screen/splash_screen_2.dart';
+import 'package:Ezio/main_page/controller/main_page_controller.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
+import 'package:Ezio/user/feeds/controller/feeds_controller.dart';
+import 'package:Ezio/user/settings/controller/profile_controller.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'user/group_chat/controller/group_chat_controller.dart';
 import 'user/notifications/controller/notifications_controller.dart';
 import 'utils/error_loader.dart';
 import 'utils/loader.dart';
+
+
+
 
 
 
@@ -108,6 +111,9 @@ void main() async{
   );
 }
 
+
+
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -173,7 +179,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     getToken();
-    
+
     super.initState();
   }
 

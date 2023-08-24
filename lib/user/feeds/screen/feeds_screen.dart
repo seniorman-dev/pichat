@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/feeds/controller/feeds_controller.dart';
-import 'package:pichat/user/feeds/widget/comment_screen.dart';
-import 'package:pichat/user/chat/widget/video/video_player_widget.dart';
-import 'package:pichat/utils/error_loader.dart';
-import 'package:pichat/utils/firestore_timestamp_formatter.dart';
-import 'package:pichat/utils/loader.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/user/feeds/controller/feeds_controller.dart';
+import 'package:Ezio/user/feeds/widget/comment_screen.dart';
+import 'package:Ezio/user/chat/widget/video/video_player_widget.dart';
+import 'package:Ezio/utils/error_loader.dart';
+import 'package:Ezio/utils/firestore_timestamp_formatter.dart';
+import 'package:Ezio/utils/loader.dart';
 import 'package:provider/provider.dart';
 
 

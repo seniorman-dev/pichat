@@ -7,9 +7,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/utils/toast.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
+import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 
 

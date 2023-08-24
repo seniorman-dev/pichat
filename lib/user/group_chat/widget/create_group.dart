@@ -9,11 +9,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/group_chat/controller/group_chat_controller.dart';
-import 'package:pichat/user/group_chat/widget/search_textfield.dart';
-import 'package:pichat/utils/elevated_button.dart';
-import 'package:pichat/utils/toast.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/user/group_chat/controller/group_chat_controller.dart';
+import 'package:Ezio/user/group_chat/widget/search_textfield.dart';
+import 'package:Ezio/utils/elevated_button.dart';
+import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 import 'successful_group_creation_screen.dart';
 

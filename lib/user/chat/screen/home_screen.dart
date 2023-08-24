@@ -7,16 +7,16 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/auth/controller/auth_controller.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/user/chat/widget/users/all_users_list.dart';
-import 'package:pichat/user/chat/widget/users/friends_list.dart';
-import 'package:pichat/user/chat/widget/recent_chats_list.dart';
-import 'package:pichat/user/chat/widget/users/request_list.dart';
-import 'package:pichat/user/chat/widget/search_textfield.dart';
-import 'package:pichat/user/notifications/screen/notifications_sceen.dart';
-import 'package:pichat/utils/extract_firstname.dart';
+import 'package:Ezio/auth/controller/auth_controller.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
+import 'package:Ezio/user/chat/widget/users/all_users_list.dart';
+import 'package:Ezio/user/chat/widget/users/friends_list.dart';
+import 'package:Ezio/user/chat/widget/recent_chats_list.dart';
+import 'package:Ezio/user/chat/widget/users/request_list.dart';
+import 'package:Ezio/user/chat/widget/search_textfield.dart';
+import 'package:Ezio/user/notifications/screen/notifications_sceen.dart';
+import 'package:Ezio/utils/extract_firstname.dart';
 import 'package:provider/provider.dart';
 
 

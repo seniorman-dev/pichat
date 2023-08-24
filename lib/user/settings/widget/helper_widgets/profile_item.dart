@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pichat/theme/app_theme.dart';
+import 'package:Ezio/theme/app_theme.dart';
 
 
 

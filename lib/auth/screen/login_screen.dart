@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/auth/controller/auth_controller.dart';
-import 'package:pichat/auth/screen/forgot_password_screen.dart';
-import 'package:pichat/auth/screen/register_screen.dart';
-import 'package:pichat/auth/widget/textfield.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/utils/elevated_button.dart';
-import 'package:pichat/utils/loader.dart';
+import 'package:Ezio/auth/controller/auth_controller.dart';
+import 'package:Ezio/auth/screen/forgot_password_screen.dart';
+import 'package:Ezio/auth/screen/register_screen.dart';
+import 'package:Ezio/auth/widget/textfield.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/utils/elevated_button.dart';
+import 'package:Ezio/utils/loader.dart';
 import 'package:provider/provider.dart';
 
 

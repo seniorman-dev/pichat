@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/api/api.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/utils/extract_firstname.dart';
+import 'package:Ezio/api/api.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
+import 'package:Ezio/utils/extract_firstname.dart';
 import 'package:provider/provider.dart';
 
 

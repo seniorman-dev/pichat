@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:pichat/api/api.dart';
+import 'package:Ezio/api/api.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:pichat/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
-import 'package:pichat/utils/toast.dart';
+import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
+import 'package:Ezio/utils/toast.dart';
 
 
 

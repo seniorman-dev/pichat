@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/utils/loader.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/utils/loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 

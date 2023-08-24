@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get_storage/get_storage.dart';
@@ -11,11 +12,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/user/group_chat/controller/group_chat_controller.dart';
-import 'package:pichat/user/group_chat/widget/send_options_bottom_sheet.dart';
-import 'package:pichat/utils/toast.dart';
+import 'package:Ezio/api/api.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
+import 'package:Ezio/user/group_chat/controller/group_chat_controller.dart';
+import 'package:Ezio/user/group_chat/widget/send_options_bottom_sheet.dart';
+import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 import 'package:record/record.dart';
 
@@ -43,6 +45,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
   
   late Record audioRecord;
   late AudioPlayer audioPlayer;
+   FlutterLocalNotificationsPlugin fln = FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -116,7 +119,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
           groupPhoto: widget.groupPhoto
         );
         groupChatController.messageTextController.clear();
-        
+        API().showFLNP(title: widget.groupName, body: groupChatController.messageTextController.text, fln: fln);
       }
     }
     
@@ -130,7 +133,8 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
         groupName: widget.groupName, 
         groupPhoto: widget.groupPhoto       
       );
-      groupChatController.messageTextController.clear(); 
+      groupChatController.messageTextController.clear();
+      API().showFLNP(title: widget.groupName, body: '📷 ~ 🎬', fln: fln); 
     }
 
 

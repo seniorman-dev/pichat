@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pichat/auth/controller/auth_controller.dart';
-import 'package:pichat/theme/app_theme.dart';
-import 'package:pichat/user/chat/controller/chat_service_controller.dart';
-import 'package:pichat/utils/error_loader.dart';
-import 'package:pichat/utils/loader.dart';
+import 'package:Ezio/auth/controller/auth_controller.dart';
+import 'package:Ezio/theme/app_theme.dart';
+import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
+import 'package:Ezio/utils/error_loader.dart';
+import 'package:Ezio/utils/loader.dart';
 import 'package:provider/provider.dart';
 
 
