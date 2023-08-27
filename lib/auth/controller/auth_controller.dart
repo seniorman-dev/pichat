@@ -240,8 +240,8 @@ class AuthController extends ChangeNotifier{
   //ResetPassword Method
   Future resetPassword () async {
     try {  
-      await firebase.sendPasswordResetEmail(email: resetPasswordController.text)
-      .whenComplete(() => customGetXSnackBar(title: 'Request Successful', subtitle: "we've sent a link to your mail to reset your password"));
+      await firebase.sendPasswordResetEmail(email: resetPasswordController.text);
+      //.whenComplete(() => customGetXSnackBar(title: 'Request Successful', subtitle: "we've sent a link to your mail to reset your password"));
     } on FirebaseAuthException catch (e) {
       customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }
@@ -287,10 +287,10 @@ class AuthController extends ChangeNotifier{
           "timestamp": Timestamp.now()
         })
         .then((val) async => await firestore.collection('users').doc(firebaseUser.uid).update({'FCMToken': token}))
+        .then((value) {API().showFLNP(title: 'Sign In Successful', body: "Welcome onboard ${getFirstName(fullName: firebaseUser.displayName!)} ✨", fln: fln);})
         .then((val) {
           Get.offAll(() => const SuccessfulRegistrationScreen());
-        });
-        
+        });  
       } 
       else{
         Get.to(() => MainPage());

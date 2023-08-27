@@ -18,27 +18,7 @@ class SplashePage2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       splash: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              CupertinoIcons.chart_pie_fill,
-              color: AppTheme().mainColor,
-              size: 50.r, //40.r
-            ),
-            SizedBox(width: 10.w,),
-            Text(
-              'P I C H A T',
-              style: GoogleFonts.comfortaa(
-                textStyle: TextStyle(
-                  color: AppTheme().blackColor,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold
-                )
-              ),
-            )
-          ],
-        ),
+        child: Image.asset('asset/img/my_icon.png'),
       ), 
       nextScreen: const MainPage(), 
       duration: 2000, //4000

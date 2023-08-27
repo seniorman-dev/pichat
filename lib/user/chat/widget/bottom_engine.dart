@@ -28,6 +28,9 @@ import 'package:record/record.dart';
 
 
 
+
+
+
 class BottomEngine extends StatefulWidget {
   BottomEngine({super.key, required this.receiverName, required this.receiverId, required this.receiverPhoto, required this.chatTextController, required this.receiverFCMToken,});
   final String receiverName;
@@ -42,53 +45,88 @@ class BottomEngine extends StatefulWidget {
 
 class _BottomEngineState extends State<BottomEngine> {
   
-  late Record audioRecord;
-  late AudioPlayer audioPlayer;
 
   FlutterLocalNotificationsPlugin fln = FlutterLocalNotificationsPlugin();
 
+
   @override
   void initState() {
-    audioPlayer = AudioPlayer();
-    audioRecord = Record();
+    initRecording();
     super.initState();
   }
 
   @override
   void dispose() {
-    audioPlayer.dispose();
-    audioRecord.dispose();
+    var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
+    chatServiceController.recorder.closeRecorder();
     super.dispose();
+  }
+
+  Future<void> initRecording() async{
+    var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
+    final status = await Permission.microphone.request();
+    if(status != PermissionStatus.granted) {
+      throw RecordingPermissionException ('Permission not granted');
+    }
+    await chatServiceController.recorder.openRecorder();
+    chatServiceController.recorder.setSubscriptionDuration(Duration(milliseconds: 500));
   }
 
   Future<void> startRecording() async{
     var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
     try {
-      if(await audioRecord.hasPermission()) {
-        await audioRecord.start();
-        setState(() {
-          chatServiceController.isRecording = true;
-        });
-      }
+      await chatServiceController.recorder.startRecorder(toFile: 'audio');
+      setState(() {
+        chatServiceController.isRecording = true;
+      });
     }
     catch (e) {
-      print('error: $e');
+      throw ('error: $e');
     }
   }
 
   Future<void> stopRecording() async{
     var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
     try {
-      //await audioRecord.stop();
-      String? path = await audioRecord.stop();
+
+      Timestamp serverTimestamp = Timestamp.now();
+
+      //did this to get the name and email of the current user
+      DocumentSnapshot senderSnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(chatServiceController.auth.currentUser!.uid)
+      .get();
+      String name = senderSnapshot.get('name');
+      String userEmail = senderSnapshot.get('email');
+
+      final filePath = await chatServiceController.recorder.stopRecorder();
+      final file = File(filePath!);
+      debugPrint("Recorded file File: $file");
 
       setState(() {
         chatServiceController.isRecording = false;
-        chatServiceController.audioPath = path!;
+        chatServiceController.audioPath = filePath;
       });
+
+      //////THIS IS WHERE IMAGE/VIDEO UPLOADING IMPLEMETATION COMES IN
+      //name of the folder we are first storing the file to
+      String? folderName = userEmail;
+      //name the file we are sending to firebase cloud storage
+      String fileName = "${serverTimestamp}dm_audio";
+      //set the storage reference as "" and the "filename" as the image reference
+      firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('$folderName/$fileName');
+      //upload the image to the cloud storage
+      firebase_storage.UploadTask uploadTask = ref.putFile(file);
+      //call the object and then show that it has already been uploaded to the cloud storage or bucket
+      firebase_storage.TaskSnapshot taskSnapshot = 
+      await uploadTask
+      .whenComplete(() => debugPrint("content uploaded succesfully to fire storage"));
+      //get the imageUrl from the above taskSnapshot
+      String contentUrl = await taskSnapshot.ref.getDownloadURL();
+
       // ignore: use_build_context_synchronously
       chatServiceController.uploadAudioToFireStorage(
-        contentUrl: chatServiceController.audioPath, 
+        contentUrl: contentUrl, 
         context: context, 
         receiverId: widget.receiverId, 
         message: chatServiceController.chatTextController.text, 
@@ -97,7 +135,7 @@ class _BottomEngineState extends State<BottomEngine> {
       );
     }
     catch (e) {
-      print('error: $e');
+      throw ('error: $e');
     }
   }
 
@@ -118,6 +156,7 @@ class _BottomEngineState extends State<BottomEngine> {
       .doc(chatServiceController.auth.currentUser!.uid)
       .get();
       String userName = snapshot.get('name');
+      String userId = snapshot.get('id');
 
       if(chatServiceController.chatTextController.text.isNotEmpty) {
         //then send the intended message
@@ -127,10 +166,10 @@ class _BottomEngineState extends State<BottomEngine> {
           receiverPhoto: widget.receiverPhoto, 
           message: chatServiceController.chatTextController.text, 
         )
-        //.then((val) => textController.clear())
-        .then((value) => chatServiceController.makeKeyboardDisappear());
+        .then((value) => chatServiceController.makeKeyboardDisappear())
+        .then((value) {API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: userName, content: chatServiceController.chatTextController.text);});
+        //API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: userName, content: chatServiceController.chatTextController.text);
         chatServiceController.chatTextController.clear();
-        API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: userName, content: chatServiceController.chatTextController.text);
         //API().showFLNP(title: userName, body: chatServiceController.chatTextController.text, fln: fln);
       }
     }
@@ -151,9 +190,10 @@ class _BottomEngineState extends State<BottomEngine> {
         file: chatServiceController.file  
         )
         .then((value) => chatServiceController.makeKeyboardDisappear()
-      );
+      )
+      .then((value) {API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: userName, content: '📷/🎬 content'); });
+      //API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: userName, content: '📷/🎬 content'); 
       chatServiceController.chatTextController.clear();
-      API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: userName, content: '📷/🎬 content'); 
     }
 
 
@@ -207,25 +247,31 @@ class _BottomEngineState extends State<BottomEngine> {
                 );
               },
             ),
-            /*const SizedBox(width: 5,),
+            const SizedBox(width: 3,),
             GestureDetector(
-              onTap: (){
-                setState(() {
+              onTap: () async{
+                /*setState(() {
                   chatServiceController.isRecording = !chatServiceController.isRecording;
-                });
+                });*/
 
                 if(chatServiceController.isRecording){
-                  startRecording();
+                  await stopRecording();
+                  setState(() {
+                    chatServiceController.isRecording = false;
+                  });
                 }
                 else {
-                  stopRecording();
+                  await startRecording();
+                  setState(() {
+                    chatServiceController.isRecording = true;
+                  });
                 }
               },
               child: Icon(
                 chatServiceController.isRecording ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
                 color: chatServiceController.isRecording ? AppTheme().mainColor: AppTheme().blackColor,
               ),
-            ),*/
+            ),
             SizedBox(width: 5.w,),
             VerticalDivider(color: AppTheme().darkGreyColor, thickness: 1,),
             SizedBox(width: 5.w,),

@@ -470,8 +470,10 @@ class ChatServiceController extends ChangeNotifier {
     }
 
   }
+  
 
 
+  
 
   ////////////////send direct messages
   Future<void> sendDirectMessages({
@@ -619,6 +621,7 @@ class ChatServiceController extends ChangeNotifier {
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
   //bool isTimeElasped = false;
+  FlutterSoundRecorder recorder = FlutterSoundRecorder();
 
 
   //upload and save to fire storage

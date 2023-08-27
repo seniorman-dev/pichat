@@ -54,38 +54,16 @@ import 'package:Ezio/utils/snackbar.dart';
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  //icon
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 50.h,
-                        width: 40.w,
-                        alignment: Alignment.center,
-                        /*padding: EdgeInsets.symmetric(
-                          vertical: 18.h,
-                          horizontal: 18.w
-                        ),*/
-                        decoration: BoxDecoration(
-                          color: AppTheme().lightestOpacityBlue,  
-                          borderRadius: BorderRadius.circular(15.r),
-                          /*boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
-                              spreadRadius: 0.1.r,
-                              blurRadius: 8.0.r,
-                            )
-                          ],*/
-                          //border: Border.all(color: AppTheme.opacityOfMainColor, width: 2)
-                        ),
-                        child: Icon(
-                          Icons.logout_rounded,
-                          color: AppTheme().mainColor,
-                        )                   
-                      ),
-                    ],
+                  CircleAvatar(
+                    radius: 30.r,
+                    backgroundColor: AppTheme().lightestOpacityBlue,  //.opacityBlue,
+                    child: Icon(
+                      Icons.logout_rounded,
+                      size: 20.r,
+                      color: AppTheme().mainColor,
+                    )                   
                   ),
                   SizedBox(height: 20.h,),
                   Row(

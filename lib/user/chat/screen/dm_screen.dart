@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Ezio/theme/app_theme.dart';
@@ -36,7 +37,7 @@ class DMScreen extends StatefulWidget {
 }
 
 class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
-
+  
   
   double keyboardHeight = 0;
   double keyboardTop = 0;
@@ -243,7 +244,51 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
               )
               : SizedBox(),
               
-        
+              chatServiceController.isRecording ?
+              Center(
+                child: StreamBuilder<RecordingDisposition>(
+                  stream: chatServiceController.recorder.onProgress,
+                  builder: (context, snapshot) {
+                    final duration = snapshot.hasData ? snapshot.data!.duration : Duration.zero;
+                    String twoDigits (int n) => n.toString().padLeft(2, '0');
+                    final twoDigitsMinutes =  twoDigits(duration.inMinutes.remainder(60));
+                    final twoDigitsSeconds =  twoDigits(duration.inSeconds.remainder(60));
+
+                    return Container(
+                      height: 30.h,
+                      width: 60.w, //140.w
+                      padding: EdgeInsets.symmetric(
+                        vertical: 0.h, //0.h
+                        horizontal: 5.w  //10.w
+                      ),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: AppTheme().lightestOpacityBlue,
+                        borderRadius: BorderRadius.circular(30.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            spreadRadius: 0.1.r,
+                            blurRadius: 8.0.r,
+                          )
+                        ],
+                      ),
+                      child: Text(
+                        '$twoDigitsMinutes:$twoDigitsSeconds',
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            color: AppTheme().blackColor,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 11.sp, //12.sp
+                            overflow: TextOverflow.ellipsis
+                          )
+                        )
+                      ),
+                    
+                    );
+                  }
+                ),
+              ) : SizedBox(),
               //bottom textfield
               Padding(
                 padding: EdgeInsets.only(

@@ -11,6 +11,8 @@ import 'package:Ezio/theme/app_theme.dart';
 import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
 import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
+import 'package:audio_waveforms/audio_waveforms.dart';
+
 
 
 
@@ -30,37 +32,17 @@ class AudioWidget extends StatefulWidget {
 
 class _AudioWidgetState extends State<AudioWidget> {
 
+  AudioPlayer audioPlayer = AudioPlayer();
 
-  late AudioPlayer audioPlayer;
 
   @override
   void initState() {
     var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
-    audioPlayer = AudioPlayer();
-    audioPlayer.onPlayerStateChanged.listen((event) {
-      event == PlayerState.playing;
-      /*setState(() {
-        event == PlayerState.playing;
-      });*/
-    });
-    //duration event listener
-    audioPlayer.onDurationChanged.listen((newDuration) {
-      setState(() {
-        chatServiceController.duration = newDuration;
-      });
-    });
-    //position event listener
-    audioPlayer.onPositionChanged.listen((newPosition) {
-      setState(() {
-        chatServiceController.position = newPosition;
-      });
-    });
     super.initState();
   }
 
   @override
   void dispose() {
-    audioPlayer.dispose();
     super.dispose();
   }
 
@@ -74,17 +56,13 @@ class _AudioWidgetState extends State<AudioWidget> {
     var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
     try {
       Source urlSourcce = UrlSource(chatServiceController.audioPath);
+      await audioPlayer.play(urlSourcce);
       //await audioPlayer.pause(); implement
       //await audioPlayer.resume(); implement
       //await audioPlayer.seek(position)
-      await audioPlayer.play(
-        urlSourcce,
-        //volume: 10,
-        //mode: PlayerMode.lowLatency
-      );
     }
     catch (e) {
-      print('error: $e');
+      debugPrint('error: $e');
     }
   }
 
@@ -98,32 +76,17 @@ class _AudioWidgetState extends State<AudioWidget> {
         GestureDetector(
           onTap: () async{
             if(chatServiceController.isPlaying) {
-              //don't mind the dead code,it's because of StatelessWidget
-              await audioPlayer.pause();
+             await audioPlayer.pause();
               setState(() {
                 chatServiceController.isPlaying = false;
               });
             }
             else {
               playRecording();
-              //await audioPlayer.play(UrlSource(widget.message));
               setState(() {
                 chatServiceController.isPlaying = true;
               });
             }
-            //////
-            /*setState(() {
-              chatServiceController.isPlaying = !chatServiceController.isPlaying;
-            });
-            if(chatServiceController.isPlaying) {
-              audioPlayer.pause();
-              //audioPlayer.resume();
-              //audioPlayer.stop();
-            }
-            else {
-              playRecording();
-            }*/
-
           },
           child: Icon(
             chatServiceController.isPlaying 

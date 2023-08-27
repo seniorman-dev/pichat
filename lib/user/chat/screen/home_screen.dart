@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+//import 'package:geocoding/geocoding.dart';
+//import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Ezio/auth/controller/auth_controller.dart';
@@ -17,6 +17,7 @@ import 'package:Ezio/user/chat/widget/users/request_list.dart';
 import 'package:Ezio/user/chat/widget/search_textfield.dart';
 import 'package:Ezio/user/notifications/screen/notifications_sceen.dart';
 import 'package:Ezio/utils/extract_firstname.dart';
+//import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 
@@ -39,94 +40,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
 
   final auth = FirebaseAuth.instance;
   
-  //seek for permission before getting location
-  Future seekPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the 
-      // App to enable the location services.
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale 
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
-      }
-    }
-  
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately. 
-      return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
-    } 
-
-    return _getCurrentLocation();
-  }
-
-
-  //get the user location neat
-  Future<void> _getCurrentLocation() async {
-    try {
-      // Get the current position (latitude and longitude)
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      // Get the human-readable address from the position
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-
-      // Format the address
-      String formattedAddress = placemarks.first.street ?? '';
-      if (placemarks.first.subLocality != null) {
-        formattedAddress += ', ${placemarks.first.subLocality!}';
-      }
-      if (placemarks.first.locality != null) {
-        formattedAddress += ', ${placemarks.first.locality!}';
-      }
-      if (placemarks.first.administrativeArea != null) {
-        formattedAddress += ', ${placemarks.first.administrativeArea!}';
-      }
-      if (placemarks.first.country != null) {
-        formattedAddress += ', ${placemarks.first.country!}';
-      }
-
-      setState(() {
-        location = formattedAddress;
-      });
-    } catch (e) {
-      setState(() {
-        location = "couldn't fetch location";
-        debugPrint("i got this location error: $e");
-      });
-    }
-  }
-
-  String location= '....';
-
   //check if logged in user is online
   bool _isOnline = false;
+
 
   @override
   void initState() {
     // TODO: implement initState
     WidgetsBinding.instance.addObserver(this);
-    //listenToUserOnlineStatus();
-    seekPermission();
     super.initState();
   }
 
@@ -374,7 +295,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                         ),
                         SizedBox(width: 5.w,),*/
                         Text(
-                          'Pichat message',
+                          'Ezio',
                           style: GoogleFonts.poppins(
                             color: AppTheme().blackColor,
                             fontSize: 18.sp,

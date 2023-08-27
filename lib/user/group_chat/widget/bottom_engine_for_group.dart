@@ -1,5 +1,6 @@
 import 'dart:io';
 //import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,65 +44,98 @@ class BottomEngineForGroup extends StatefulWidget {
 
 class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
   
-  late Record audioRecord;
-  late AudioPlayer audioPlayer;
-   FlutterLocalNotificationsPlugin fln = FlutterLocalNotificationsPlugin();
 
-  @override
+  FlutterLocalNotificationsPlugin fln = FlutterLocalNotificationsPlugin();
+
+   @override
   void initState() {
-    audioPlayer = AudioPlayer();
-    audioRecord = Record();
+    initRecording();
     super.initState();
   }
 
   @override
   void dispose() {
-    audioPlayer.dispose();
-    audioRecord.dispose();
+    var groupChatController = Provider.of<GroupChatController>(context, listen: false);
+    groupChatController.recorder.closeRecorder();
     super.dispose();
+  }
+
+  Future<void> initRecording() async{
+    var groupChatController = Provider.of<GroupChatController>(context, listen: false);
+    final status = await Permission.microphone.request();
+    if(status != PermissionStatus.granted) {
+      throw RecordingPermissionException ('Permission not granted');
+    }
+    await groupChatController.recorder.openRecorder();
+    groupChatController.recorder.setSubscriptionDuration(Duration(milliseconds: 500));
   }
 
   Future<void> startRecording() async{
     var groupChatController = Provider.of<GroupChatController>(context, listen: false);
     try {
-      if(await audioRecord.hasPermission()) {
-        await audioRecord.start();
-        setState(() {
-          groupChatController.isRecording = true;
-        });
-      }
+      await groupChatController.recorder.startRecorder(toFile: 'audio');
+      setState(() {
+        groupChatController.isRecording = false;
+      });
     }
     catch (e) {
-      debugPrint('error: $e');
+      throw ('error: $e');
     }
   }
 
   Future<void> stopRecording() async{
     var groupChatController = Provider.of<GroupChatController>(context, listen: false);
     try {
-      //await audioRecord.stop();
-      String? path = await audioRecord.stop();
+
+      Timestamp serverTimestamp = Timestamp.now();
+
+      //did this to get the name and email of the current user
+      DocumentSnapshot senderSnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(groupChatController.auth.currentUser!.uid)
+      .get();
+      String name = senderSnapshot.get('name');
+      String userEmail = senderSnapshot.get('email');
+      final filePath = await groupChatController.recorder.stopRecorder();
+      final file = File(filePath!);
+      debugPrint("Recorded file path: $filePath");
+      debugPrint("Recorded file File: $file");
 
       setState(() {
         groupChatController.isRecording = false;
-        groupChatController.audioPath = path!;
+        groupChatController.audioPath = filePath;
       });
+
+       //////THIS IS WHERE IMAGE/VIDEO UPLOADING IMPLEMETATION COMES IN
+      //name of the folder we are first storing the file to
+      String? folderName = userEmail;
+      //name the file we are sending to firebase cloud storage
+      String fileName = "${serverTimestamp}group_audio";
+      //set the storage reference as "" and the "filename" as the image reference
+      firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('$folderName/$fileName');
+      //upload the image to the cloud storage
+      firebase_storage.UploadTask uploadTask = ref.putFile(file);
+      //call the object and then show that it has already been uploaded to the cloud storage or bucket
+      firebase_storage.TaskSnapshot taskSnapshot = 
+      await uploadTask
+      .whenComplete(() => debugPrint("content uploaded succesfully to fire storage"));
+      //get the imageUrl from the above taskSnapshot
+      String contentUrl = await taskSnapshot.ref.getDownloadURL();
+
       // ignore: use_build_context_synchronously
       groupChatController.sendAudioToFireStorage(
-        contentUrl: groupChatController.audioPath, 
+        contentUrl: contentUrl, 
         context: context, 
-        groupId: widget.groupId,
-        groupName: widget.groupName,
-        groupPhoto: widget.groupPhoto, 
-        message: groupChatController.messageTextController.text 
+        groupId: widget.groupId, 
+        message: groupChatController.messageTextController.text, 
+        groupName: widget.groupName, 
+        groupPhoto: widget.groupPhoto
       );
     }
     catch (e) {
-      debugPrint('error: $e');
+      throw ('error: $e');
     }
   }
-
-  //use 'isRecording' to change icon of recording and its color, then call the "sendAudioToStorage()"
 
 
   @override
@@ -117,9 +151,10 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
           groupId: widget.groupId, 
           groupName: widget.groupName, 
           groupPhoto: widget.groupPhoto
-        );
+        )
+        .then((value) {API().showFLNP(title: widget.groupName, body: groupChatController.messageTextController.text, fln: fln);});
+        //API().showFLNP(title: widget.groupName, body: groupChatController.messageTextController.text, fln: fln);
         groupChatController.messageTextController.clear();
-        API().showFLNP(title: widget.groupName, body: groupChatController.messageTextController.text, fln: fln);
       }
     }
     
@@ -132,9 +167,10 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
         groupId: widget.groupId, 
         groupName: widget.groupName, 
         groupPhoto: widget.groupPhoto       
-      );
-      groupChatController.messageTextController.clear();
-      API().showFLNP(title: widget.groupName, body: '📷 ~ 🎬', fln: fln); 
+      )
+      .then((value) {API().showFLNP(title: widget.groupName, body: '📷 ~ 🎬', fln: fln);});
+      //API().showFLNP(title: widget.groupName, body: '📷 ~ 🎬', fln: fln);
+      groupChatController.messageTextController.clear(); 
     }
 
 
@@ -188,25 +224,29 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
                 );
               },
             ),
-            /*const SizedBox(width: 5,),
-            GestureDetector(
-              onTap: (){
-                setState(() {
-                  groupChatController.isRecording = !groupChatController.isRecording;
-                });
+            const SizedBox(width: 3,),
 
+            GestureDetector(
+              onTap: () async{
                 if(groupChatController.isRecording){
-                  startRecording();
+                  await stopRecording();
+                  setState(() {
+                    groupChatController.isRecording = false;
+                  });
                 }
                 else {
-                  stopRecording();
+                  await startRecording();
+                  setState(() {
+                    groupChatController.isRecording = true;
+                  });
                 }
               },
               child: Icon(
                 groupChatController.isRecording ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
                 color: groupChatController.isRecording ? AppTheme().mainColor: AppTheme().blackColor,
               ),
-            )*/
+            ),
+
             SizedBox(width: 5.w,),
             VerticalDivider(color: AppTheme().darkGreyColor, thickness: 1,),
             SizedBox(width: 5.w,),

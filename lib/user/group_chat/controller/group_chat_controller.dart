@@ -8,6 +8,7 @@ import 'package:Ezio/api/api.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
 import 'package:Ezio/utils/extract_firstname.dart';
 import 'package:Ezio/utils/toast.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_util.dart';
@@ -636,6 +637,7 @@ class GroupChatController extends ChangeNotifier {
   String audioPath = "" ;  //save to db
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
+  FlutterSoundRecorder recorder = FlutterSoundRecorder();
   //bool isTimeElasped = false;
 
 

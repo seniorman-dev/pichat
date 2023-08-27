@@ -38,7 +38,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
   double calculateBottomPadding(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double minPadding = 0;
-    double maxPadding = screenHeight * 0.37; // Adjust the value as needed (0.41 is an example)
+    double maxPadding = screenHeight * 0.38; // Adjust the value as needed (0.37 is an example)
 
     return keyboardHeight > MediaQuery.of(context).padding.bottom + 10 ? maxPadding : minPadding;
   }
@@ -113,8 +113,8 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20.h,),
-
-
+        
+        
             //Comment on the post stream
             Expanded(
               child: Padding(
@@ -126,7 +126,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                 child: StreamBuilder(
                   stream: feedsController.postComments(postId: widget.postId),
                   builder: (context, snapshot) {
-
+        
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       // Show a loading indicator while waiting for data
                       return const Loader();
@@ -136,43 +136,45 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                       return const ErrorLoader();
                     }
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 25.w,
-                          vertical: 20.h,
-                        ),
-                        child: SizedBox(
-                          child: Center(
-                            child: Column(
-                              //mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(height: 150.h,),
-                                CircleAvatar(
-                                  radius: 100.r,
-                                  backgroundColor: AppTheme().lightestOpacityBlue,
-                                  child: Icon(
-                                    CupertinoIcons.text_bubble,
-                                    color: AppTheme().mainColor,
-                                    size: 70.r,
+                      return SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 25.w,
+                            vertical: 20.h,
+                          ),
+                          child: SizedBox(
+                            child: Center(
+                              child: Column(
+                                //mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 150.h,),
+                                  CircleAvatar(
+                                    radius: 100.r,
+                                    backgroundColor: AppTheme().lightestOpacityBlue,
+                                    child: Icon(
+                                      CupertinoIcons.text_bubble,
+                                      color: AppTheme().mainColor,
+                                      size: 70.r,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 40.h),
-                                Text(
-                                  "No comments yet on ${getFirstName(fullName: widget.posterName)}'s post 😔",
-                                  style: GoogleFonts.poppins(
-                                    color: AppTheme().greyColor,
-                                    fontSize: 14.sp,
-                                    //fontWeight: FontWeight.w500
-                                  ),
-                                )
-                              ],
+                                  SizedBox(height: 40.h),
+                                  Text(
+                                    "No comments yet on ${getFirstName(fullName: widget.posterName)}'s post 😔",
+                                    style: GoogleFonts.poppins(
+                                      color: AppTheme().greyColor,
+                                      fontSize: 14.sp,
+                                      //fontWeight: FontWeight.w500
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       );
                     }
-
+        
                     return ListView.separated(
                       scrollDirection: Axis.vertical,
                       physics: BouncingScrollPhysics(),
@@ -190,7 +192,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                           var previousDate = formatDate(timestamp: previousData['timestamp']);
                           showDateHeader = currentDate != previousDate;
                         }
-
+        
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -256,7 +258,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                 child: Container(
                                   //height: 100.h,
                                   //width: 200.w,
-                                  padding: EdgeInsets.symmetric(
+                                  /*padding: EdgeInsets.symmetric(
                                     vertical: 15.h, //20.h
                                     horizontal: 15.w  //15.w
                                   ),
@@ -270,7 +272,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                         blurRadius: 8.0.r,
                                       )
                                     ],
-                                  ),
+                                  ),*/
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -473,9 +475,9 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                 ),
               )
             ),
-
-
-
+        
+        
+        
             ////////////////////////
             //textfield to send comment
             Padding(
@@ -523,7 +525,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                         sendMessage();
                       },
                       child: Icon(
-                        CupertinoIcons.location_north_line_fill,
+                        Icons.send_rounded,
                         size: 35.r, 
                         color: AppTheme().blackColor,
                       )
@@ -533,7 +535,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                 ),
               ),
             ),
-
+        
             //give it small height
             SizedBox(height: 5.h,)
           ],
