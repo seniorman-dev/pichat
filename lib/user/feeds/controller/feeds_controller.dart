@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -210,7 +211,7 @@ class FeedsController extends ChangeNotifier {
       debugPrint("ContentURL: $contentUrl");
     }
     catch(e) {
-      getToast(context: context, text:"Error: $e" );
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Something went wrong');
     }
   }
 
@@ -229,7 +230,7 @@ class FeedsController extends ChangeNotifier {
       .delete();
     }
     catch (e) {
-      getToast(context: context, text:"Error: $e" );
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Something went wrong');
     }
   }
 

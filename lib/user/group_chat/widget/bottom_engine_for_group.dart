@@ -1,5 +1,6 @@
 import 'dart:io';
 //import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:audioplayers/audioplayers.dart';
@@ -20,7 +21,7 @@ import 'package:Ezio/user/group_chat/controller/group_chat_controller.dart';
 import 'package:Ezio/user/group_chat/widget/send_options_bottom_sheet.dart';
 import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
-import 'package:record/record.dart';
+
 
 
 
@@ -204,6 +205,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
         child: Row(
           children: [
             IconButton(
+              iconSize: 20.r,
               icon: const Icon(
                 CupertinoIcons.link
               ),
@@ -242,6 +244,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
                 }
               },
               child: Icon(
+                size: 20.r,
                 groupChatController.isRecording ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
                 color: groupChatController.isRecording ? AppTheme().mainColor: AppTheme().blackColor,
               ),
@@ -331,7 +334,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
       }
     }
     catch (e) {
-      getToast(context: context, text: 'Error picking image from gallery: $e');
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Error picking image from gallery: $e');
     }
   }
 
@@ -357,7 +360,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
       }
     }
     catch (e) {
-      getToast(context: context, text: 'Error picking video from gallery: $e');
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Error picking video from gallery: $e');
     }
   }
 }

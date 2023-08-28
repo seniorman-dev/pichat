@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,14 +57,14 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
         debugPrint("image was picked from gallery");
         //update it sharps
         groupChatController.updateGroupPicture(groupId: widget.groupId, groupName: widget.groupName)
-        .then((value) => getToast(context: context, text: 'Image updated successfully'));
+        .then((value) => customGetXSnackBar(title: 'Nice', subtitle: 'Image updated successfully'));
       }
       else {
         debugPrint("no image was picked from gallery");
       }
     }
     catch (e) {
-      getToast(context: context, text: 'Error picking image from gallery: $e');
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Error picking image from gallery: $e');
     }
   }
 
@@ -389,10 +390,13 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                                 groupId: widget.groupId, 
                                 friendId: data['memberId']
                               )
-                              .then((value) => getToast(context: context, text: 'you removed ${data['memberName']}'));
+                              .then((value) 
+                                
+                              => customGetXSnackBar(title: 'Removal', subtitle: 'you removed ${data['memberName']}')
+                            );
                             }
                             else {
-                              getToast(context: context, text: 'only admin can remove members');
+                              customGetXSnackBar(title: 'Uh-Oh', subtitle: 'only admin can remove members');
                             }
                           },
                           child: InkWell(

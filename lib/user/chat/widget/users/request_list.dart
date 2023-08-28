@@ -162,8 +162,8 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                     clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
                                     child: CachedNetworkImage(
                                       imageUrl: data['photo'],
-                                      width: 40.w,
-                                      height: 40.h,
+                                      width: 50.w,
+                                      height: 50.h,
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) => Loader(),
                                       errorWidget: (context, url, error) => Icon(

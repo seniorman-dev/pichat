@@ -11,7 +11,7 @@ import 'package:Ezio/theme/app_theme.dart';
 import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
 import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
-import 'package:audio_waveforms/audio_waveforms.dart';
+
 
 
 

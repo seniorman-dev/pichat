@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -348,8 +349,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
       }
     }
     catch (e) {
-      getToast(context: context, text: 'Error picking image from gallery: $e');
-      debugPrint("Error Pickig Image From Gallery: $e");
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Error picking image from gallery: $e');
     }
   }
 
@@ -374,7 +374,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
       }
     }
     catch (e) {
-      getToast(context: context, text: 'Error picking video from gallery: $e');
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Error picking video from gallery: $e');
       debugPrint("Error Pickig Video From Gallery: $e");
     }
   }

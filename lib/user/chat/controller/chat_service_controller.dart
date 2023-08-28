@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -756,7 +757,7 @@ class ChatServiceController extends ChangeNotifier {
       debugPrint("audio url: $contentUrl");
     }
     on FirebaseException catch (e) {
-      getToast(context: context, text: 'Error uploading audio: $e');
+      customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Error uploading audio: $e');
     }
   }
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 //import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:audioplayers/audioplayers.dart';
@@ -19,7 +20,7 @@ import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
 import 'package:Ezio/user/chat/widget/send_picture_or_video_dialogue.dart';
 import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
-import 'package:record/record.dart';
+
 
 
 
@@ -49,6 +50,11 @@ class _BottomEngineState extends State<BottomEngine> {
   FlutterLocalNotificationsPlugin fln = FlutterLocalNotificationsPlugin();
 
 
+  bool isRecorderInitialized = false;
+  //bool isRecording = false;
+
+
+
   @override
   void initState() {
     initRecording();
@@ -59,6 +65,7 @@ class _BottomEngineState extends State<BottomEngine> {
   void dispose() {
     var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
     chatServiceController.recorder.closeRecorder();
+    isRecorderInitialized = false;
     super.dispose();
   }
 
@@ -70,15 +77,22 @@ class _BottomEngineState extends State<BottomEngine> {
     }
     await chatServiceController.recorder.openRecorder();
     chatServiceController.recorder.setSubscriptionDuration(Duration(milliseconds: 500));
+    isRecorderInitialized = true;
   }
 
   Future<void> startRecording() async{
     var chatServiceController = Provider.of<ChatServiceController>(context, listen: false);
     try {
-      await chatServiceController.recorder.startRecorder(toFile: 'audio');
+      var tempDirectory = await getTemporaryDirectory();
+      var path = '${tempDirectory.path}/flutter_sound.aac';
+      await chatServiceController.recorder.startRecorder(toFile: path);
       setState(() {
         chatServiceController.isRecording = true;
       });
+      //final file = File(path);
+      if(!isRecorderInitialized) {
+        return;
+      }
     }
     catch (e) {
       throw ('error: $e');
@@ -99,13 +113,16 @@ class _BottomEngineState extends State<BottomEngine> {
       String name = senderSnapshot.get('name');
       String userEmail = senderSnapshot.get('email');
 
-      final filePath = await chatServiceController.recorder.stopRecorder();
-      final file = File(filePath!);
+      var tempDirectory = await getTemporaryDirectory();
+      var path = '${tempDirectory.path}/flutter_sound.aac';
+      
+      //final filePath = await chatServiceController.recorder.stopRecorder();
+      final file = File(path);
       debugPrint("Recorded file File: $file");
 
       setState(() {
         chatServiceController.isRecording = false;
-        chatServiceController.audioPath = filePath;
+        chatServiceController.audioPath = path;
       });
 
       //////THIS IS WHERE IMAGE/VIDEO UPLOADING IMPLEMETATION COMES IN
@@ -116,7 +133,7 @@ class _BottomEngineState extends State<BottomEngine> {
       //set the storage reference as "" and the "filename" as the image reference
       firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('$folderName/$fileName');
       //upload the image to the cloud storage
-      firebase_storage.UploadTask uploadTask = ref.putFile(file);
+      firebase_storage.UploadTask uploadTask = ref.putFile(File(path));
       //call the object and then show that it has already been uploaded to the cloud storage or bucket
       firebase_storage.TaskSnapshot taskSnapshot = 
       await uploadTask
@@ -230,6 +247,7 @@ class _BottomEngineState extends State<BottomEngine> {
               icon: const Icon(
                 CupertinoIcons.link
               ),
+              iconSize: 20.r,
               color: AppTheme().blackColor,
               //iconSize: 30.r, 
               onPressed: () {
@@ -250,6 +268,7 @@ class _BottomEngineState extends State<BottomEngine> {
             const SizedBox(width: 3,),
             GestureDetector(
               onTap: () async{
+
                 /*setState(() {
                   chatServiceController.isRecording = !chatServiceController.isRecording;
                 });*/
@@ -270,6 +289,7 @@ class _BottomEngineState extends State<BottomEngine> {
               child: Icon(
                 chatServiceController.isRecording ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
                 color: chatServiceController.isRecording ? AppTheme().mainColor: AppTheme().blackColor,
+                size: 20.r,
               ),
             ),
             SizedBox(width: 5.w,),
@@ -356,7 +376,7 @@ class _BottomEngineState extends State<BottomEngine> {
       }
     }
     catch (e) {
-      getToast(context: context, text: 'Error picking image from gallery: $e');
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Error picking image from gallery: $e');
     }
   }
 
@@ -381,7 +401,7 @@ class _BottomEngineState extends State<BottomEngine> {
       }
     }
     catch (e) {
-      getToast(context: context, text: 'Error picking video from gallery: $e');
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Error picking video from gallery: $e');
     }
   }
 }

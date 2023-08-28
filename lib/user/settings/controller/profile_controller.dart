@@ -132,7 +132,7 @@ class ProfileController extends ChangeNotifier {
       });
     }
     catch (e) {
-      getToast(context: context, text: "Uh-Oh,$e");
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: '$e');
     }
   }
   

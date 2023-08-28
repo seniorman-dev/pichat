@@ -20,7 +20,6 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
-  #sdk: ">=2.12.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,14 +31,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
 
   #back-end component
   cupertino_icons: ^1.0.2
   internet_connection_checker: ^1.0.0+1
-  #data_connection_checker: ^0.3.4
   url_launcher: ^6.1.10
   http: ^0.13.5
   firebase_auth: ^4.1.4
@@ -49,71 +46,67 @@ dependencies:
   cloud_functions: ^4.3.4
   firebase_crashlytics: ^3.0.15
   google_sign_in: ^6.1.4
+
+  #image display
   cached_network_image: ^3.2.3
   image_picker: ^0.8.6
   
-  #local storage
-  shared_preferences: ^2.2.0
 
-  #statemanagement and routing
+  #state management and routing
   provider: ^6.0.5
   get: ^4.6.5
 
   #local storage
-  get_storage: ^2.1.1
+  shared_preferences: ^2.2.0
+  get_storage: ^2.1.1  #used this cause i prefer it 
 
-  #unique id cretaion
+  #unique id creation
   uuid: ^3.0.7
 
-  #for converting DateTime object to string
+  #for converting DateTime object or Firestore Timestamp object to string
   date_time_format: ^2.0.1
   intl: ^0.17.0
 
-  #ui responsiveness
+  #UI responsiveness and Text Design
   flutter_screenutil: ^5.7.0
   google_fonts: ^4.0.4
   
   #for nice loadimg animations
   loading_animation_widget: ^1.2.0+4
-
-  #package to put launcher icons
-  #flutter_launcher_icons: ^0.13.1
   
   #for svg assets (just in case i make use of them)
   flutter_svg: ^2.0.4
 
-  #for onboarding screen
+  #for onboarding screen & splash screen
   smooth_page_indicator: ^1.0.0+2
+  animated_splash_screen: ^1.3.0
   
   #push notifications and local notifications
   firebase_messaging: ^14.2.5
   flutter_local_notifications: ^15.1.0+1
   #awesome_notifications: ^0.7.4+1
 
-  #bottom navbar
-  hidable: ^1.0.4
+  #location
   geolocator: ^9.0.2
-  animated_splash_screen: ^1.3.0
   geocoding: ^2.1.0
   google_maps_flutter: ^2.4.0
 
-  #### date time pickers
+  # date picker
   flutter_holo_date_picker: ^1.1.0
+
+  # video display
   cached_video_player: ^2.0.4
   
 
-  #country code picker
+  # country code picker
   country_code_picker: ^3.0.0
-  sliding_sheet: ^0.5.2
 
 
-  #audio players
+  #for playing and recording audio
   audioplayers: ^5.1.0
   permission_handler: ^10.4.3
   path_provider: ^2.1.0
   flutter_sound: ^9.2.13
-  record: ^4.4.4
-  audio_waveforms: ^1.0.4
   file_picker: ^5.3.3
 
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -261,7 +262,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                   });
                 }
                 else {
-                  getToast(context: context, text: 'Incomplete credentials'); 
+                  customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Incomplete credentials');
                 }
               }
             )
@@ -290,7 +291,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       }
     }
     catch (e) {
-      getToast(context: context, text: 'Error picking image from gallery: $e');
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Error picking image from gallery: $e');
     }
   }
 

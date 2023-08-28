@@ -1,4 +1,5 @@
 import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -247,7 +248,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                   feedsController.makePosterDeleteCommentsFromPost(postId: widget.postId, commentId: data['commentId']);
                                 }
                                 else {
-                                  getToast(context: context, text: 'Only the owner of the post can delete comments here');
+                                  customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Only the owner of the post can delete comments here');
                                 }
                               },
                               child: InkWell(
@@ -256,7 +257,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                     feedsController.makeCommenterDeleteCommentOnAPost(postId: widget.postId, commentId: data['commentId']);
                                   }
                                   else {
-                                    getToast(context: context, text: "You can not delete this person's comment");
+                                    customGetXSnackBar(title: 'Uh-oh', subtitle: 'You are not in position to do that');
                                   }
                                 },
                                 child: Container(

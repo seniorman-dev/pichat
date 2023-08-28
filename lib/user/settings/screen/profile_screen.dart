@@ -1,4 +1,5 @@
 import 'package:Ezio/user/settings/widget/helper_widgets/profile_item.dart';
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -609,7 +610,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             //feedsController.postTextController.clear();
                                           }
                                           else{
-                                            getToast(text: 'Incomplete Credentials', context: context);
+                                            customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Incomplete Credentials');
                                           }
                                         },
                                       ));

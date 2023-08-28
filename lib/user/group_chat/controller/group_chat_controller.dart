@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -748,7 +749,7 @@ class GroupChatController extends ChangeNotifier {
       debugPrint("audio url: $contentUrl");
     }
     on FirebaseException catch (e) {
-      getToast(context: context, text: 'Error uploading audio: $e');
+      customGetXSnackBar(title: 'Error', subtitle: 'Error uploading audio: $e');
     }
   }
 

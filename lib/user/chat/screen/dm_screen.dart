@@ -247,7 +247,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
               chatServiceController.isRecording ?
               Center(
                 child: StreamBuilder<RecordingDisposition>(
-                  stream: chatServiceController.recorder.onProgress,
+                  stream: chatServiceController.recorder!.onProgress,
                   builder: (context, snapshot) {
                     final duration = snapshot.hasData ? snapshot.data!.duration : Duration.zero;
                     String twoDigits (int n) => n.toString().padLeft(2, '0');

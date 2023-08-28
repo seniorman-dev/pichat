@@ -1,3 +1,4 @@
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -100,7 +101,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 text: 'Reset Password', 
                 onPressed: () {
                   if(controller.resetPasswordController.text.isEmpty) {
-                    getToast(context: context, text: 'Invalid Credentials');
+                    customGetXSnackBar(title: 'Error', subtitle: 'Invalid Credentials');
                   }
                   else {
                     controller.resetPassword()

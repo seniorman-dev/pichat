@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:Ezio/utils/snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -183,7 +184,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 : controller.uploadImageToFirebaseStorage(imageFile: controller.imageFromCamera!).whenComplete(() => Get.back());
                               }
                               else {
-                                getToast(context: context, text: 'No image was selected');
+                                customGetXSnackBar(title: 'Uh-Oh', subtitle: 'No image was selected');
                               }
                               
                             }
@@ -717,7 +718,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ).then((value) => Get.to(() => ProfileUpdatedSuccessScreen()));
                     }
                     else {
-                      getToast(context: context, text: "Invalid Credentials");
+                      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Invalid Credentials');
                     }
                   },
                   style: ElevatedButton.styleFrom(

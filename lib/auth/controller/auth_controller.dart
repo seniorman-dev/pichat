@@ -321,9 +321,8 @@ class AuthController extends ChangeNotifier{
       else{
         Get.to(() => MainPage());
       }
-    }
-    else {
-      getToast(context: context, text: 'User does not exit');
+    } else {
+      customGetXSnackBar(title: 'Uh-Oh', subtitle: 'User does not exit');
     }
 
   }
