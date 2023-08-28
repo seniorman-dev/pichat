@@ -151,7 +151,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.r)
               ),
-              height: 68.h,
+              //height: 68.h,
               //width: 100.w,
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,          
@@ -173,7 +173,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     borderSide: BorderSide.none
                   ),
                   hintText: 'Enter group name',
-                  hintStyle: GoogleFonts.poppins(color: AppTheme().greyColor, fontSize: 13.sp),              
+                  hintStyle: GoogleFonts.poppins(color: AppTheme().greyColor, fontSize: 14.sp),              
                   filled: true,
                   fillColor: AppTheme().lightGreyColor,
                   prefixIcon: Icon(CupertinoIcons.person, color: AppTheme().blackColor,)
@@ -201,13 +201,18 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.r)
               ),
-              height: 68.h,
+              //height: 68.h, //
               //width: 100.w,
               child: TextFormField(
+                 spellCheckConfiguration: SpellCheckConfiguration(),
                 autovalidateMode: AutovalidateMode.onUserInteraction,          
                 scrollPhysics: const BouncingScrollPhysics(),
-                //scrollController: groupChatController.createGroupScrollController, //ScrollController(),
-                textInputAction: TextInputAction.newline,
+                scrollController: ScrollController(),  //groupChatController.createGroupScrollController, //ScrollController(),
+                scrollPadding: EdgeInsets.symmetric(
+                  horizontal: 10.h,
+                  vertical: 5.h
+                ), //20 
+                textInputAction: TextInputAction.done,
                 textCapitalization: TextCapitalization.sentences,
                 enabled: true,
                 controller: groupChatController.groupBioController,
@@ -218,6 +223,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 enableSuggestions: true,
                 enableInteractiveSelection: true,
                 cursorColor: AppTheme().blackColor,
+                cursorRadius: Radius.circular(10.r),
                 style: GoogleFonts.poppins(color: AppTheme().blackColor),
                 decoration: InputDecoration(        
                   border: OutlineInputBorder(
@@ -225,7 +231,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     borderSide: BorderSide.none
                   ),
                   hintText: "What's this group all about ?",
-                  hintStyle: GoogleFonts.poppins(color: AppTheme().greyColor, fontSize: 13.sp),              
+                  hintStyle: GoogleFonts.poppins(color: AppTheme().greyColor, fontSize: 14.sp),              
                   filled: true,
                   fillColor: AppTheme().lightGreyColor,
                   prefixIcon: Icon(CupertinoIcons.square, color: AppTheme().blackColor,)
@@ -234,7 +240,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 //onChanged: (),
               ),
             ),
-            SizedBox(height: 40.h,),
+            SizedBox(height: 60.h,),
             //submit button
             CustomElevatedButton(
               text: 'Create Group', 

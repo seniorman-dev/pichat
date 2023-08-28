@@ -88,6 +88,13 @@ class AuthController extends ChangeNotifier{
 
   ///FOR RESET PASSWORD SCREEN
   final TextEditingController resetPasswordController = TextEditingController();
+
+  //Registration screen focus node
+  final FocusNode nameRegNode = FocusNode();
+  final FocusNode emailRegNode =  FocusNode();
+  final FocusNode passwordRegNode =  FocusNode();
+  final FocusNode cpasswordRegNode =  FocusNode();
+
   
 
   ///dispose all
@@ -138,6 +145,7 @@ class AuthController extends ChangeNotifier{
             'location': 'location', //get from geolocator,
             'agreedToT&C': isChecked,
             'isProfileUpdated': false,
+            'friend_requests': [],
             'timestamp': Timestamp.now()
           })
           .then((val) async => await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token}))

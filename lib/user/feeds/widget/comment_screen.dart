@@ -1,3 +1,4 @@
+import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -192,6 +193,9 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                           var previousDate = formatDate(timestamp: previousData['timestamp']);
                           showDateHeader = currentDate != previousDate;
                         }
+
+                        //to keep track if a comment under a post is liked by user or not
+                        List<dynamic> likesList = data['likes'];
         
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,7 +394,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                                     ),
                                                   );
                                                 }
-                                                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                                if (!snapshot.hasData || snapshot.data!.docs.isEmpty || likesList.isEmpty) {
                                                   return Text(
                                                     '...',
                                                     style: GoogleFonts.poppins(
@@ -443,7 +447,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                       InkWell(
                                         onTap: () {
                                           setState(() {                   
-                                            if (feedsController.selectedItems.contains(index)){
+                                            if (feedsController.selectedItems.contains(index) || likesList.contains(userID)){
                                               feedsController.isCommentLiked = false;
                                               feedsController.selectedItems.remove(index);
                                               feedsController.unlikeACommentUnderAPost(postId: data['postId'], commentId: data['commentId'],);
@@ -456,9 +460,9 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                 
                                         }, 
                                         child: Icon(
-                                          feedsController.selectedItems.contains(index) ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                                          feedsController.selectedItems.contains(index) || likesList.contains(userID) ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
                                           size: 24.r,
-                                          color: feedsController.selectedItems.contains(index) ? AppTheme().mainColor: AppTheme().darkGreyColor,
+                                          color: feedsController.selectedItems.contains(index) || likesList.contains(userID) ? AppTheme().mainColor: AppTheme().darkGreyColor,
                                         )
                                       )
                                     ],

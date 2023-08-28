@@ -489,6 +489,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                                           style: GoogleFonts.poppins(
                                             color: AppTheme().greyColor,
                                             fontSize: 14.sp,
+                                            fontWeight: FontWeight.normal,
                                             //fontWeight: FontWeight.w500,
                                             textStyle: TextStyle(
                                               overflow: TextOverflow.ellipsis

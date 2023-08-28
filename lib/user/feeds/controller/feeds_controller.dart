@@ -145,6 +145,9 @@ class FeedsController extends ChangeNotifier {
           'posterPhoto': userPhoto,
           'postTitle': postTextController.text,
           'postContent': contentUrl,
+          'likes': [],
+          'reposts': [],
+          'comments': [],
           'isImage':true,
           'timestamp': Timestamp.now()
         });
@@ -179,6 +182,9 @@ class FeedsController extends ChangeNotifier {
           'posterPhoto': userPhoto,
           'postTitle': postTextController.text,
           'postContent': contentUrl,
+          'likes': [],
+          'reposts': [],
+          'comments': [],
           'isImage': false,
           'timestamp': Timestamp.now()
         });
@@ -239,7 +245,7 @@ class FeedsController extends ChangeNotifier {
 
 
   //list to store all the indices of reposted post liked
-  List<int> selectedIndicesForLikes= [];
+  Set<int> selectedIndicesForLikes= {};
   //Like a post function
   Future<void> likeAPost({required String postId}) async{
     //do this if you want to get any logged in user property 
@@ -253,7 +259,16 @@ class FeedsController extends ChangeNotifier {
     //bool userOnline = snapshot.get('isOnline');
     //////////////////////////////////
     
+    //
+    await firestore
+    .collection('feeds')
+    .doc(postId)
+    .update({
+      'likes': FieldValue.arrayUnion([userId])
+    });
+
     //like post on the general TL (will call this query snapshot stream in logged in users profile)
+
     await firestore
     .collection('feeds')
     .doc(postId)
@@ -330,6 +345,13 @@ class FeedsController extends ChangeNotifier {
     String userName = snapshot.get('name');
     String userId = snapshot.get('id');
     //////////////////////////////////
+    ///
+    await firestore
+    .collection('feeds')
+    .doc(postId)
+    .update({
+      'likes': FieldValue.arrayRemove([userId])
+    });
     
     ///update userLiked boolean to false
     await firestore
@@ -375,7 +397,7 @@ class FeedsController extends ChangeNotifier {
 
 
   //list to store all the indices of reposted post liked
-  List<int> selectedIndicesForReposts= [];
+  Set<int> selectedIndicesForReposts= {};
   ////////////////////////////////////////////////////////////////////////////////////////////
   //repost a post function
   Future<void> rePostAPost({required bool isImage, required String postId, required String posterId, required String posterName, required String posterPhoto, required String postTitle, required String postContent}) async{
@@ -390,7 +412,14 @@ class FeedsController extends ChangeNotifier {
     bool userOnline = snapshot.get('isOnline');
     //////////////////////////////////
     var repostId = (Random().nextInt(100000)).toString();
+    
 
+    await firestore
+    .collection('feeds')
+    .doc(postId)
+    .update({
+      'reposts': FieldValue.arrayUnion([userId])
+    });
 
     //update the "re-posts" collection reference for posts on the TL (it is this stream that we are going to call for each unique post on the TL or feeds. to dislay their length)
     await firestore
@@ -481,6 +510,14 @@ class FeedsController extends ChangeNotifier {
     //////////////////////////////////
     
     ///
+    /*await firestore
+    .collection('feeds')
+    .doc(postId)
+    .update({
+      'reposts': FieldValue.arrayRemove([userId])
+    });
+
+    ///
     await firestore
     .collection('feeds')
     .doc(postId)
@@ -499,7 +536,7 @@ class FeedsController extends ChangeNotifier {
     .doc(postId)
     .update({
       'isReposted': false,
-    });
+    });*/
 
     //deletes the main reposted post from the TL(i used the poster's document id to tail it)
     /*await firestore
@@ -520,8 +557,6 @@ class FeedsController extends ChangeNotifier {
     await firestore
     .collection('users')
     .doc(userId)
-    .collection('posts')
-    .doc(postId)
     .collection('reposts')
     .doc(postId)
     .delete();
@@ -548,6 +583,7 @@ class FeedsController extends ChangeNotifier {
     String userPhoto = snapshot.get('photo');
     bool userOnline = snapshot.get('isOnline');
     //////////////////////////////////
+    ///
     
     //comment on a post on the general TL (will call this query snapshot stream in logged in users profile)
     await firestore
@@ -607,6 +643,16 @@ class FeedsController extends ChangeNotifier {
     String userPhoto = snapshot.get('photo');
     bool userOnline = snapshot.get('isOnline');
     //////////////////////////////////
+    ///
+    ///
+    await firestore
+    .collection('feeds')
+    .doc(postId)
+    .collection('comments')
+    .doc(commentId)
+    .update({
+      'likes': FieldValue.arrayUnion([userId])
+    });
     
     await firestore
     .collection('feeds')
@@ -650,6 +696,16 @@ class FeedsController extends ChangeNotifier {
 
     String userId = snapshot.get('id');
     //////////////////////////////////
+  
+    ///
+    await firestore
+    .collection('feeds')
+    .doc(postId)
+    .collection('comments')
+    .doc(commentId)
+    .update({
+      'likes': FieldValue.arrayRemove([userId])
+    });
     
     await firestore
     .collection('feeds')

@@ -141,7 +141,8 @@ class _AddUserToGroupState extends State<AddUserToGroup> {
                     var data = snapshot.data!.docs[index];
                     //
                     bool isSelected = groupChatController.selectedIndicesForFriends.contains(data['id']);
-
+                    //to keep track if a post is liked or saved by user or not
+                    List<dynamic> memebersList = data['groups'];
 
                     return Padding(
                       padding: EdgeInsets.symmetric(
@@ -229,7 +230,7 @@ class _AddUserToGroupState extends State<AddUserToGroup> {
 
                                 setState(() {
 
-                                  if (isSelected) {
+                                  if (isSelected || memebersList.contains(widget.groupId)) {
                                     groupChatController.selectedIndicesForFriends.remove(data['id']);
                                     groupChatController.removeFriendFromGroupChat(groupId: widget.groupId, friendId: data['id'])
                                     .then((value) => debugPrint('${data['name']} has been removed from ${widget.groupName}'));                          
@@ -256,11 +257,11 @@ class _AddUserToGroupState extends State<AddUserToGroup> {
 
                               }, 
                               icon: Icon(
-                                groupChatController.selectedIndicesForFriends.contains(data['id']) ?
+                                isSelected || memebersList.contains(widget.groupId) ?
                                 CupertinoIcons.check_mark_circled_solid
                                 :CupertinoIcons.add_circled
                               ),
-                              color: groupChatController.selectedIndicesForFriends.contains(data['id']) ?
+                              color: isSelected || memebersList.contains(widget.groupId) ?
                               AppTheme().mainColor
                               :AppTheme().greyColor,
                               iconSize: 30.r,

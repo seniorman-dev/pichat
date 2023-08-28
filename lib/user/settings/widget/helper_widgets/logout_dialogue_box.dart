@@ -50,7 +50,7 @@ import 'package:Ezio/utils/snackbar.dart';
             vertical: 40.h, //50.h
           ),
           content: SizedBox(
-            height: 200.h, //180.h
+            height: 210.h, //180.h
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,

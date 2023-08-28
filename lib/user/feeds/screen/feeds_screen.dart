@@ -1,3 +1,4 @@
+import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -137,6 +138,10 @@ class _FeedScreenState extends State<FeedScreen> {
                     var previousDate = formatDate(timestamp: previousData['timestamp']);
                     showDateHeader = currentDate != previousDate;
                   }
+                  
+                  //to keep track if a post is liked or saved by user or not
+                  List<dynamic> likesList = data['likes'];
+                  List<dynamic> repostsList = data['reposts'];
 
                   return Column(
                     children: [
@@ -356,8 +361,9 @@ class _FeedScreenState extends State<FeedScreen> {
                                     //like button
                                     InkWell(
                                       onTap: () {
+                                        //List<String> likes = data['likes'][index];
                                         setState(() {
-                                          if (controller.selectedIndicesForLikes.contains(index)){
+                                          if (controller.selectedIndicesForLikes.contains(index) || likesList.contains(userID)){
                                             controller.unLikeAPost(postId: data['postId']);
                                             controller.selectedIndicesForLikes.remove(index);
                                             controller.isLiked = false;
@@ -369,8 +375,8 @@ class _FeedScreenState extends State<FeedScreen> {
                                         });
                                       },
                                       child: Icon(
-                                        controller.selectedIndicesForLikes.contains(index) ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                                        color: controller.selectedIndicesForLikes.contains(index) ? AppTheme().mainColor: AppTheme().darkGreyColor,
+                                        controller.selectedIndicesForLikes.contains(index) || likesList.contains(userID) ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                                        color: controller.selectedIndicesForLikes.contains(index) || likesList.contains(userID) ? AppTheme().mainColor: AppTheme().darkGreyColor,
                                         size: 30.r,
                                       ),
                                     ),
@@ -398,7 +404,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                     InkWell(
                                       onTap: () {
                                         setState(() {
-                                        if (controller.selectedIndicesForReposts.contains(index)){
+                                        if (controller.selectedIndicesForReposts.contains(index) || repostsList.contains(userID)){
                                           controller.deleteRepost(postId: data['postId']);
                                           controller.selectedIndicesForReposts.remove(index);
                                           controller.isReposted = false;
@@ -432,8 +438,8 @@ class _FeedScreenState extends State<FeedScreen> {
                                         );
                                       },
                                       child: Icon(
-                                        controller.selectedIndicesForReposts.contains(index) ? CupertinoIcons.arrow_2_circlepath_circle_fill : CupertinoIcons.arrow_2_circlepath,
-                                        color: controller.selectedIndicesForReposts.contains(index) ? AppTheme().mainColor: AppTheme().darkGreyColor,
+                                        controller.selectedIndicesForReposts.contains(index) || repostsList.contains(userID) ? CupertinoIcons.arrow_2_circlepath_circle_fill : CupertinoIcons.arrow_2_circlepath,
+                                        color: controller.selectedIndicesForReposts.contains(index) || repostsList.contains(userID) ? AppTheme().mainColor: AppTheme().darkGreyColor,
                                         size: 30.r,
                                       ),
                                     )
@@ -481,7 +487,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                             ),
                                           );
                                         }
-                                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty || likesList.isEmpty) {
                                           return Text(
                                             '...',
                                             style: GoogleFonts.poppins(
@@ -678,7 +684,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                             ),
                                           );
                                         }
-                                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty || repostsList.isEmpty) {
                                           return Text(
                                             //posts
                                             '...',

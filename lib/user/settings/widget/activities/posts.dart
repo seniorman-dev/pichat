@@ -574,7 +574,7 @@ class _MyPostsState extends State<MyPosts> {
                                         ),
                                         SizedBox(width: 5.w,),
                                         Text(
-                                          reposts >= 0 && reposts <= 1 ? 're-post' : 're-posts',
+                                          reposts >= 0 && reposts <= 1 ? 'save' : 'saves',
                                           style: GoogleFonts.poppins(
                                             color: AppTheme().blackColor,
                                             fontSize: 12.sp,

@@ -242,7 +242,26 @@ class _GroupChatListState extends State<GroupChatList> {
                               :Row(
                                 mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.start : MainAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  data['messageType'] == 'image' || data['messageType'] == 'video'
+                                  ?
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 10.w,
+                                      vertical: 10.h
+                                    ),
+                                    child: Text(
+                                      getFirstName(fullName: data['senderName']),
+                                      style: GoogleFonts.poppins(  //urbanist
+                                        color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.bold,
+                                        textStyle: TextStyle(
+                                          overflow: TextOverflow.visible
+                                        )
+                                      ),
+                                    ),
+                                  )
+                                  :Text(
                                     getFirstName(fullName: data['senderName']),
                                     style: GoogleFonts.poppins(  //urbanist
                                       color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters

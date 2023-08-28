@@ -31,6 +31,7 @@ class CustomTextField extends StatelessWidget {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
+        focusNode: controller.emailRegNode,
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             color: AppTheme().blackColor,
@@ -92,6 +93,7 @@ class _CustomTextField2State extends State<CustomTextField2> {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
+        focusNode: controller.passwordRegNode,
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             color: AppTheme().blackColor,
@@ -163,6 +165,7 @@ class _CustomTextField3State extends State<CustomTextField3> {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
+        focusNode: controller.cpasswordRegNode,
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             color: AppTheme().blackColor,
@@ -231,6 +234,7 @@ class CustomTextField4 extends StatelessWidget {
       //height: 70.h,
       width: double.infinity,
       child: TextFormField(
+        focusNode: controller.nameRegNode,
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             color: AppTheme().blackColor,

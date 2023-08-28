@@ -43,28 +43,39 @@ class MyConnects extends StatelessWidget {
           return const ErrorLoader();
         }
         else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 25.r,
-                backgroundColor: AppTheme().lightestOpacityBlue,
-                child: Icon(
-                  CupertinoIcons.person_badge_plus,
-                  color: AppTheme().mainColor,
-                  size: 25.r,
-                ),
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 25.w,
+              vertical: 20.h,
+            ),
+            child: Center(
+              child: Column(
+                //mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                //mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 210.h,),
+                  CircleAvatar(
+                    radius: 100.r,
+                    backgroundColor: AppTheme().lightestOpacityBlue,
+                    child: Icon(
+                      CupertinoIcons.person_badge_plus,
+                      color: AppTheme().mainColor,
+                      size: 70.r,
+                    ),
+                  ),
+                  SizedBox(height: 50.h),
+                  Text(
+                    "No connects found",
+                    style: GoogleFonts.poppins(
+                      color: AppTheme().greyColor,
+                      fontSize: 14.sp,
+                      //fontWeight: FontWeight.w500
+                    ),
+                  )
+                ],
               ),
-              SizedBox(width: 10.w),
-              Text(
-                'No connections found',
-                style: GoogleFonts.poppins(
-                  color: AppTheme().greyColor,
-                  fontSize: 13.sp,
-                  //fontWeight: FontWeight.w500
-                ),
-              )
-            ],
+            ),
           );
         }
         else {

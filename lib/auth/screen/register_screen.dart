@@ -23,9 +23,32 @@ class RegisterScreen extends StatefulWidget {
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
+
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  
+  @override
+  void initState() {
+    var controller = Provider.of<AuthController>(context, listen: false);
+    controller.nameRegNode.addListener(() {controller.nameRegNode.hasFocus;});
+    controller.emailRegNode.addListener(() {controller.emailRegNode.hasFocus;});
+    controller.passwordRegNode.addListener(() {controller.passwordRegNode.hasFocus;});
+    controller.cpasswordRegNode.addListener(() {controller.cpasswordRegNode.hasFocus;});
+    super.initState();
+  }
+  
+  @override
+  void dispose() {
+    var controller = Provider.of<AuthController>(context, listen: false);
+    controller.nameRegNode.removeListener(() {controller.nameRegNode.hasFocus;});
+    controller.emailRegNode.removeListener(() {controller.emailRegNode.hasFocus;});
+    controller.passwordRegNode.removeListener(() {controller.passwordRegNode.hasFocus;});
+    controller.cpasswordRegNode.removeListener(() {controller.cpasswordRegNode.hasFocus;});
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     var controller = Provider.of<AuthController>(context);

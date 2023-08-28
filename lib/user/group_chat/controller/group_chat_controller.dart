@@ -525,6 +525,7 @@ class GroupChatController extends ChangeNotifier {
       String myId = mySnapshot.get('id');
       String myPhoto = mySnapshot.get('photo');
       String myEmail = mySnapshot.get('email');
+
       //then i did this to get the snapshot of the person to be added
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
       .collection('users')
@@ -543,6 +544,16 @@ class GroupChatController extends ChangeNotifier {
 
       //server timestamp
       Timestamp timestamp = Timestamp.now();
+      
+      //
+      await firestore
+      .collection('users')
+      .doc(myId)
+      .collection('friends')
+      .doc(friendId)
+      .update({
+        'groups': FieldValue.arrayUnion([groupId])
+      });
       
       //update the group members list
       await firestore
@@ -586,13 +597,17 @@ class GroupChatController extends ChangeNotifier {
   Future<void> removeFriendFromGroupChat({required String groupId, required String friendId,}) async{
 
     try {
-      //remove the person from the 'members' collection
+
+      //
       await firestore
-      .collection('groups')
-      .doc(groupId)
-      .collection('members')
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .collection('friends')
       .doc(friendId)
-      .delete();
+      .update({
+        'groups': FieldValue.arrayRemove([groupId])
+      });
+
       //update the group members list
       await firestore
       .collection('groups')
@@ -600,6 +615,14 @@ class GroupChatController extends ChangeNotifier {
       .update({
         'groupMembers': FieldValue.arrayRemove([friendId]),
       });
+
+      //remove the person from the 'members' collection
+      await firestore
+      .collection('groups')
+      .doc(groupId)
+      .collection('members')
+      .doc(friendId)
+      .delete();
     }
     catch(e) {
       debugPrint('Error removing friend from group: $e');

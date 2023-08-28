@@ -15,6 +15,9 @@ import 'package:Ezio/utils/error_loader.dart';
 import 'package:Ezio/utils/loader.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../api/api.dart';
+import '../../../../utils/extract_firstname.dart';
+
 
 
 
@@ -56,6 +59,7 @@ class _AllUsersListState extends State<AllUsersList> {
     //providers
     //var controller = Provider.of<AuthController>(context);
     var chatServiceController = Provider.of<ChatServiceController>(context);
+
     
     return SafeArea(
       child: Scaffold(
@@ -181,7 +185,35 @@ class _AllUsersListState extends State<AllUsersList> {
 
                         var data2 = snapshot.data!.docs[index];  //normal list
 
-                        //var data = filteredList[index];  //filtered list
+                        List<dynamic> requestList = data2['friend_requests'];
+
+                        Future<void> _sendFriendRequest() async {
+                          //did this to retrieve logged in user information
+                          DocumentSnapshot snapshot = await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(chatServiceController.auth.currentUser!.uid)
+                          .get();
+                          String userName = snapshot.get('name');
+                          String userId = snapshot.get('id');
+                          ////////////////////////
+                          await chatServiceController.sendFriendRequest(recipientId: data2['id'])
+                          .then(
+                            (value) => API().sendPushNotificationWithFirebaseAPI(content: '${getFirstName(fullName: userName)} wants to connect with you 🎈', receiverFCMToken: data2['FCMToken'], title: 'Hi, ${data2['name']}')
+                          )
+                          .then(
+                            (value) => chatServiceController.firestore.collection('users').doc(data2['id']).collection('notifications')
+                            .doc(userId)
+                            .set({
+                              'title': 'Hi, ${getFirstName(fullName: data2['name'])}',
+                              'body': '${getFirstName(fullName: userName)} wants to connect with you 🎈',
+                              'timestamp': Timestamp.now(),
+                          })
+                        );  
+                      }
+
+                      Future<void> _cancelFriendRequest() async {
+                        await chatServiceController.cancelFriendRequest(recipientId: data2['id']);
+                      }
                          
                         return Padding(
                           padding: EdgeInsets.symmetric(
@@ -248,7 +280,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                             data2['name'],
                                             style: GoogleFonts.poppins(
                                               color: AppTheme().blackColor,
-                                              fontSize: 14.sp,
+                                              fontSize: 16.sp,
                                               fontWeight: FontWeight.w500
                                             ),
                                           ),
@@ -263,20 +295,61 @@ class _AllUsersListState extends State<AllUsersList> {
                                                 data2['isOnline'] ? 'online' : 'offline',
                                                 style: GoogleFonts.poppins(
                                                   color: AppTheme().darkGreyColor, //specify color when user is online or offline
-                                                  fontSize: 14.sp, //14.sp
-                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 15.sp, //14.sp
+                                                  fontWeight: FontWeight.normal,
                                                   textStyle: const TextStyle(
                                                     overflow: TextOverflow.ellipsis
                                                   )
                                                 ),
                                               ),
                                               //connect button
-                                              SendOrCancelRequestButton(
+                                              SizedBox(
+                                                height: 35.h,
+                                                //width: 85.w,
+                                                child: ElevatedButton(
+                                                  onPressed: () async{
+
+                                                    if (chatServiceController.selectedDocumentIdForAllUsers.contains(userID) || requestList.contains(userID)){
+                                                      chatServiceController.selectedDocumentIdForAllUsers.remove(userID);
+                                                      _cancelFriendRequest();
+                                                    }
+                                                    else{
+                                                      chatServiceController.selectedDocumentIdForAllUsers.add(userID);
+                                                      _sendFriendRequest();
+                                                    }
+             
+                                                  },  //_sendFriendRequest(),
+                                                  style: ElevatedButton.styleFrom(
+                                                    elevation: 0,
+                                                    backgroundColor: AppTheme().lightestOpacityBlue,
+                                                    minimumSize: Size.copy(Size(100.w, 50.h)),
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),                                          
+                                                  ),        
+                                                  /*icon: Icon(
+                                                    chatServiceController.isAdded ? CupertinoIcons.clear_thick_circled: CupertinoIcons.person_crop_circle_fill_badge_plus,
+                                                    color: AppTheme().whiteColor,
+                                                    size: 18.r,
+                                                  ),*/
+                                                  child: Text(
+                                                    chatServiceController.selectedDocumentIdForAllUsers.contains(userID) || requestList.contains(userID)
+                                                    ?'connected' : 'connect',
+                                                    style: GoogleFonts.poppins(
+                                                      textStyle: TextStyle(
+                                                        color: AppTheme().blackColor,
+                                                        fontSize: 13.sp,
+                                                        fontWeight: FontWeight.w500
+                                                      )
+                                                    ),
+                                                  )
+                                                ),
+                                              )
+                                              /*SendOrCancelRequestButton(
                                                 receiverName: data2['name'],                                       
                                                 receiverID: data2['id'], 
                                                 isSelected: true, 
-                                                receiverFCMToken: data2['FCMToken'],  
-                                              )                            
+                                                receiverFCMToken: data2['FCMToken'], 
+                                                index: index,  
+                                              )*/                           
                                             ]
                                           )
                                         ]

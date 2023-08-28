@@ -51,9 +51,10 @@ class ChatServiceController extends ChangeNotifier {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   
   ///////////////////Set objects for keeping indices in check
-  Set<String> selectedDocumentIdForConnectRequest = <String>{};
-  Set<String> selectedDocumentIdForAllUsers = <String>{};
+  Set<String> selectedDocumentIdForConnectRequest = {};
+  Set<String> selectedDocumentIdForAllUsers = {};
 
+  
 
 
   //sendFriendRequest to a user
@@ -66,6 +67,18 @@ class ChatServiceController extends ChangeNotifier {
       .doc(auth.currentUser!.uid)
       .get();
       String userName = snapshot.get('name');
+      String userEmail = snapshot.get('email');
+      String userId = snapshot.get('id');
+      String userFCMToken = snapshot.get('FCMToken');
+      String userPhoto = snapshot.get('photo');
+
+      ///
+      await firestore
+      .collection('users')
+      .doc(recipientId)
+      .update({
+        'friend_requests': FieldValue.arrayUnion([userId])
+      });
       
       // Add the sender to the receipient's friendRequests collection
       await FirebaseFirestore.instance
@@ -76,9 +89,10 @@ class ChatServiceController extends ChangeNotifier {
       .set({
         //figure out how to add other properties later(very important)
         'name': userName,
-        'email': auth.currentUser!.email,
-        'id': auth.currentUser!.uid,
-        'photo': 'photo'  //getPhotoString
+        'email': userEmail,
+        'id': userId,
+        'photo': userPhoto,
+        'FCMToken': userFCMToken
       });
     } 
     catch (e) {
@@ -90,12 +104,28 @@ class ChatServiceController extends ChangeNotifier {
   //cancelFriendRequest sent to a user
   Future cancelFriendRequest({required String recipientId}) async {
     try {
+      ////
+      
+      //do this if you want to get any logged in user property 
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .get();
+      String userName = snapshot.get('name');
+      String userId = snapshot.get('id');
+      //
+      await firestore
+      .collection('users')
+      .doc(recipientId)
+      .update({
+        'friend_requests': FieldValue.arrayRemove([userId])
+      });
       // delete/remove current user or sender from receipient friend request collection
       await FirebaseFirestore.instance
       .collection('users')
       .doc(recipientId)
       .collection('friend_request')
-      .doc(auth.currentUser!.uid).delete();
+      .doc(userId).delete();
     } 
     catch (e) {
       // Handle any errors that may occur during the request sending
@@ -124,7 +154,7 @@ class ChatServiceController extends ChangeNotifier {
       // Add sender of the request to the current user or receipient's friend list
       await firestore
       .collection('users')
-      .doc(auth.currentUser!.uid)
+      .doc(userId)
       .collection('friends')
       .doc(friendId)
       .set({
@@ -133,25 +163,35 @@ class ChatServiceController extends ChangeNotifier {
         'photo': friendProfilePic,
         'email': friendEmail,
         'FCMToken': friendFCMToken,
+        'groups': []
       });
       // Add receiver of the request or current user to the sender's friend list
       await firestore
       .collection('users')
       .doc(friendId)
       .collection('friends')
-      .doc(auth.currentUser!.uid)
+      .doc(userId)
       .set({
         'name': userName,   
         'id': userId, //auth.currentUser!.uid,
         'photo': userPhoto,
         'email': userEmail,
-        'FCMToken': userFCMToken, 
+        'FCMToken': userFCMToken,
+        'groups': [] 
+      });
+
+      //update the list
+      await FirebaseFirestore.instance
+      .collection('users')
+      .doc(userId)
+      .update({
+        'friend_requests': FieldValue.arrayRemove([friendId])
       });
 
       //Remove sender of the request from the current user / receipient's friendRequests collection
       await FirebaseFirestore.instance
       .collection('users')
-      .doc(auth.currentUser!.uid)
+      .doc(userId)
       .collection('friend_request')
       .doc(friendId).delete();
     } 
@@ -165,6 +205,13 @@ class ChatServiceController extends ChangeNotifier {
   //declineFriendRequest of the sender
   Future declineFriendRequest({required String friendId}) async {
     try {
+      //
+      await FirebaseFirestore.instance
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .update({
+        'friend_requests': FieldValue.arrayRemove([friendId])
+      });
       // Remove sender of the request from receipient/current user friendRequests collection
       await FirebaseFirestore.instance
       .collection('users')

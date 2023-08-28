@@ -195,7 +195,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                       style: GoogleFonts.poppins(
                                         color: AppTheme().greyColor, //specify color when user is online or offline
                                         fontSize: 13.sp, //14.sp
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.normal,
                                         textStyle: const TextStyle(
                                           overflow: TextOverflow.ellipsis
                                         )
@@ -212,7 +212,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                           //width: 85.w,
                                           child: ElevatedButton(
                                             onPressed: () {
-                                              chatController.selectedDocumentIdForAllUsers.remove(data['id']);
+                                              chatController.selectedDocumentIdForConnectRequest.remove(data['id']);
                                               chatController.declineFriendRequest(friendId: data['id']);
                                               /*setState(() {
                                                 //isSelected = !isSelected;
@@ -242,7 +242,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                               style: GoogleFonts.poppins(
                                                 textStyle: TextStyle(
                                                   color: AppTheme().blackColor,
-                                                  fontSize: 10.sp,
+                                                  fontSize: 12.sp,
                                                   fontWeight: FontWeight.w500
                                                 )
                                               ),
@@ -256,7 +256,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                           //width: 85.w,
                                           child: ElevatedButton(
                                             onPressed: () {
-                                              chatController.selectedDocumentIdForAllUsers.add(data['id']);
+                                              chatController.selectedDocumentIdForConnectRequest.add(data['id']);
                                               chatController.acceptFriendRequest(friendName: data['name'], friendId: data['id'], friendProfilePic: data['photo'], friendEmail: data['email'], friendFCMToken: data['FCMToken']);  //data['photo']
                                             },
                                             style: ElevatedButton.styleFrom(
@@ -275,7 +275,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                               style: GoogleFonts.poppins(
                                                 textStyle: TextStyle(
                                                   color: AppTheme().blackColor,
-                                                  fontSize: 10.sp,
+                                                  fontSize: 12.sp,
                                                   fontWeight: FontWeight.w500
                                                 )
                                               ),

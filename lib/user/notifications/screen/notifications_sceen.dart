@@ -237,7 +237,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   style: GoogleFonts.poppins(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.w500,
-                                    color: AppTheme().blackColor
+                                    color: AppTheme().blackColor,
+                                    textStyle: const TextStyle(
+                                      overflow: TextOverflow.ellipsis
+                                    )
                                   ),
                                 ),
                                 SizedBox(height: 10.h),
