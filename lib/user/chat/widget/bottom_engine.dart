@@ -266,7 +266,7 @@ class _BottomEngineState extends State<BottomEngine> {
               },
             ),
             const SizedBox(width: 3,),
-            GestureDetector(
+            /*GestureDetector(
               onTap: () async{
 
                 /*setState(() {
@@ -291,7 +291,7 @@ class _BottomEngineState extends State<BottomEngine> {
                 color: chatServiceController.isRecording ? AppTheme().mainColor: AppTheme().blackColor,
                 size: 20.r,
               ),
-            ),
+            ),*/
             SizedBox(width: 5.w,),
             VerticalDivider(color: AppTheme().darkGreyColor, thickness: 1,),
             SizedBox(width: 5.w,),

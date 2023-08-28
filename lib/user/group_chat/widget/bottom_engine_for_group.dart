@@ -226,9 +226,10 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
                 );
               },
             ),
+            
             const SizedBox(width: 3,),
 
-            GestureDetector(
+            /*GestureDetector(
               onTap: () async{
                 if(groupChatController.isRecording){
                   await stopRecording();
@@ -248,7 +249,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
                 groupChatController.isRecording ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
                 color: groupChatController.isRecording ? AppTheme().mainColor: AppTheme().blackColor,
               ),
-            ),
+            ),*/
 
             SizedBox(width: 5.w,),
             VerticalDivider(color: AppTheme().darkGreyColor, thickness: 1,),
