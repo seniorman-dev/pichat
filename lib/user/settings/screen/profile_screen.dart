@@ -1,3 +1,4 @@
+import 'package:Ezio/user/settings/widget/helper_widgets/profile_item.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,7 +17,6 @@ import 'package:Ezio/user/settings/widget/helper_widgets/insights.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/notifications_for_profile.dart';
 import 'package:Ezio/user/settings/widget/activities/posts.dart';
-import 'package:Ezio/user/settings/widget/helper_widgets/profile_item.dart';
 import 'package:Ezio/user/settings/widget/activities/re-posts.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/wallets.dart';
 import 'package:Ezio/user/settings/widget/success_screens/succesfully_uploaded_feed.dart';

@@ -258,8 +258,8 @@ class _AllUsersListState extends State<AllUsersList> {
                                           clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
                                           child: CachedNetworkImage(
                                             imageUrl: data2['photo'],
-                                            width: 40.w,
-                                            height: 40.h,
+                                            width: 50.w,
+                                            height: 50.h,
                                             fit: BoxFit.cover,
                                             placeholder: (context, url) => Loader(),
                                             errorWidget: (context, url, error) => Icon(

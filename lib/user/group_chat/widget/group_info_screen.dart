@@ -155,7 +155,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                           clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
                           child: CachedNetworkImage(
                             imageUrl: widget.groupPhoto,
-                            width: 80.w,
+                            width: 90.w,
                             height: 90.h,
                             fit: BoxFit.cover,
                             placeholder: (context, url) => Loader(),
@@ -231,7 +231,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                       suffixIcon: InkWell(
                         onTap: () {
                           groupChatController.updateGroupBio(groupId: widget.groupId,)
-                          .then((value) => getToast(context: context, text: 'group description updated'));
+                          .then((value) => debugPrint('group description updated'));
                         },
                         child: Icon(
                           CupertinoIcons.share_solid,

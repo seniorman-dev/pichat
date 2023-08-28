@@ -302,8 +302,8 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
                                             clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
                                             child: CachedNetworkImage(
                                               imageUrl: data['groupPhoto'],
-                                              width: 40.w,
-                                              height: 40.h,
+                                              width: 42.w,
+                                              height: 42.h,
                                               fit: BoxFit.cover,
                                               placeholder: (context, url) => Loader(),
                                               errorWidget: (context, url, error) => Icon(
