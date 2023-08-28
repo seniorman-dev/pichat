@@ -144,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 40.h),
               
               CustomElevatedButton(
-                text: 'Login', 
+                text: controller.isLoading ? '...' : 'Login', 
                 onPressed: () {
                   setState(() {
                     controller.isLoading = true;

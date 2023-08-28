@@ -40,6 +40,7 @@ class AuthController extends ChangeNotifier{
   //final whenACurrentUserSwitchesAccountOrChanges = GoogleSignIn().onCurrentUserChanged;
   //final GoogleSignInAccount? googleUser = GoogleSignIn().currentUser;  //use this to fetch current user details
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+
   
 
 
@@ -149,7 +150,10 @@ class AuthController extends ChangeNotifier{
             'timestamp': Timestamp.now()
           })
           .then((val) async => await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token}))
-          .then((value) {API().showFLNP(title: 'Registration Successful', body: "Welcome onboard ${getFirstName(fullName: registerNameController.text)}", fln: fln);})
+          .then((value) {
+            //API().showFLNP(title: 'Registration Successful', body: "Welcome onboard ${getFirstName(fullName: registerNameController.text)}", fln: fln);
+            API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: token!, title: 'Registration Successful', content: "Welcome onboard ${getFirstName(fullName: registerNameController.text)}");
+          })
           .then((val) {
             Get.offAll(() => const SuccessfulRegistrationScreen());
             registerNameController.clear();
@@ -161,18 +165,15 @@ class AuthController extends ChangeNotifier{
 
         else {
           // ignore: use_build_context_synchronously
-          getToast(context: context, text: 'Uh-oh, something went wrong');
-          //return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
+          return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
         }
       }
       else {
         // ignore: use_build_context_synchronously
-        getToast(context: context, text: 'Invalid credentials');
-        //return customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
+        return customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
       }
     } on FirebaseAuthException catch (e) {
-      getToast(context: context, text: 'Erro: ${e.message}');
-      //customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
+      customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }
   }
   
@@ -203,25 +204,27 @@ class AuthController extends ChangeNotifier{
           await firestore.collection('users').doc(userCredential.user!.uid).update({"isOnline": true});
           //always update fcm_token
           await firestore.collection('users').doc(userCredential.user!.uid).update({'FCMToken': token})
-          .whenComplete(() {
+          .then((value) {
             Get.offAll(() => const MainPage());
             loginEmailController.clear();
             loginPasswordController.clear();
-          });  //.whenComplete(() => getToast(context: context, text: 'logged in as, $userEmail'));
-          getToast(context: context, text: 'logged in as, $userEmail');
+          })
+          .then((value) {
+            //API().showFLNP(title: 'Registration Successful', body: "Welcome onboard ${getFirstName(fullName: registerNameController.text)}", fln: fln);
+            API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: token!, title: 'Login Successful', content: "Welcome Back ${getFirstName(fullName: userName)}!");
+          });
+          customGetXSnackBar(title: 'Yayy! 🎈 ', subtitle: "logged in as, $userEmail");
+          
         }
         else {
-          return getToast(context: context, text: 'Uh-oh, something went wrong');
-          //return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
+          return customGetXSnackBar(title: 'Uh-Oh!', subtitle: 'Something went wrong');
         }
       }
       else {
-        return getToast(context: context, text: 'Invalid credentials');
-        //customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
+        return customGetXSnackBar(title: 'Error', subtitle: "Invalid credentials");
       }
     } on FirebaseAuthException catch (e) {
-      return getToast(context: context, text: 'Error: ${e.message}');
-      //customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
+      return customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }
   }
 
@@ -229,6 +232,15 @@ class AuthController extends ChangeNotifier{
   //SIGN OUT METHOD
   Future<void> signOut({required BuildContext context}) async {
     try {
+      //get fcm token
+      String? token = await messaging.getToken();
+      //do this if you want to get any logged in user property 
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(userID)
+      .get();
+      String userName = snapshot.get('name');
+      String FCMToken = snapshot.get('FCMToken');
       //delete the data of the exiting user so that you create room to persist data for the next user
       box.remove('name');
       box.remove('email');
@@ -237,19 +249,25 @@ class AuthController extends ChangeNotifier{
 
       await firestore.collection('users').doc(userID).update({"isOnline": false});
       await firebase.signOut()
-      .whenComplete(() => Get.offAll(() => LoginScreen())); //.then((value) => getToast(context: context, text: 'user logged out'));
-      getToast(context: context, text: 'user logged out');
+      .then((value) => Get.offAll(() => LoginScreen()))
+      .then((value) {
+        //API().showFLNP(title: 'Registration Successful', body: "Welcome onboard ${getFirstName(fullName: registerNameController.text)}", fln: fln);
+        API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: token!, title: 'Exit Successful', content: "User logged out");
+      });
     } on FirebaseAuthException catch (e) {
-      return getToast(context: context, text: 'Error: ${e.message}');
-      //customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
+      return customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }
   }
 
   //ResetPassword Method
   Future resetPassword () async {
     try {  
-      await firebase.sendPasswordResetEmail(email: resetPasswordController.text);
-      //.whenComplete(() => customGetXSnackBar(title: 'Request Successful', subtitle: "we've sent a link to your mail to reset your password"));
+      //get fcm token
+      String? token = await messaging.getToken();
+      await firebase.sendPasswordResetEmail(email: resetPasswordController.text)
+      .then((value) {
+        API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: token!, title: 'Reset Request Approved', content: "Please check your mail for more information.");
+      });
     } on FirebaseAuthException catch (e) {
       customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }

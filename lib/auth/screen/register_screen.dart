@@ -198,7 +198,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           SizedBox(height: 30.h),
           CustomElevatedButton(
-            text: 'Create account', 
+            text: controller.isLoading ? '...' : 'Create account', 
             onPressed: () {
               setState(() {
                 controller.isLoading = true;

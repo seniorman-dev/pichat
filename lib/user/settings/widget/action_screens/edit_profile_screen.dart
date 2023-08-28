@@ -142,7 +142,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             )
                           : CachedNetworkImage(
                               imageUrl: widget.photo,
-                              width: 80.w,
+                              width: 90.w,
                               height: 90.h,
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Loader(),
@@ -656,16 +656,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         
                   var savedDate = "$datePicked".substring(0, 10);
         
-                  final snackBar = SnackBar(
-                    backgroundColor: AppTheme().whiteColor, //.lightestOpacityBlue,
-                    content: Text(
-                      "Date Picked: $savedDate",
-                      style: GoogleFonts.poppins(
-                        color: AppTheme().blackColor
-                      ),
-                    )
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   debugPrint(savedDate);
         
                   //set the state
