@@ -265,7 +265,7 @@ class _BottomEngineState extends State<BottomEngine> {
                 );
               },
             ),
-            const SizedBox(width: 3,),
+            //const SizedBox(width: 3,),
             /*GestureDetector(
               onTap: () async{
 
@@ -292,7 +292,7 @@ class _BottomEngineState extends State<BottomEngine> {
                 size: 20.r,
               ),
             ),*/
-            SizedBox(width: 5.w,),
+            //SizedBox(width: 5.w,),
             VerticalDivider(color: AppTheme().darkGreyColor, thickness: 1,),
             SizedBox(width: 5.w,),
             Expanded(

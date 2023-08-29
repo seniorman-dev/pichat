@@ -71,37 +71,41 @@ class _ChatListState extends State<ChatList> {
             return const ErrorLoader();
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 25.w,
-                vertical: 20.h,
-              ),
-              child: SizedBox(
-                child: Center(
-                  child: Column(
-                    //mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 150.h,),
-                      CircleAvatar(
-                        radius: 100.r,
-                        backgroundColor: AppTheme().lightestOpacityBlue,
-                          child: Icon(
-                          CupertinoIcons.text_bubble,
-                          color: AppTheme().mainColor,
-                          size: 70.r,
+            return SingleChildScrollView(
+              controller: ScrollController(),
+              physics: BouncingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 25.w,
+                  vertical: 20.h,
+                ),
+                child: SizedBox(
+                  child: Center(
+                    child: Column(
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 150.h,),
+                        CircleAvatar(
+                          radius: 100.r,
+                          backgroundColor: AppTheme().lightestOpacityBlue,
+                            child: Icon(
+                            CupertinoIcons.text_bubble,
+                            color: AppTheme().mainColor,
+                            size: 70.r,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 30.h),
-                      Text(
-                        "Start a conversation with ${getFirstName(fullName: widget.receiverName)} 😊",
-                        style: GoogleFonts.poppins(
-                          color: AppTheme().greyColor,
-                          fontSize: 14.sp,
-                          //fontWeight: FontWeight.w500
-                        ),
-                      )
-                    ],
+                        SizedBox(height: 30.h),
+                        Text(
+                          "Start a conversation with ${getFirstName(fullName: widget.receiverName)} 😊",
+                          style: GoogleFonts.poppins(
+                            color: AppTheme().greyColor,
+                            fontSize: 14.sp,
+                            //fontWeight: FontWeight.w500
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

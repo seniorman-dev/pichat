@@ -228,7 +228,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
               },
             ),
             
-            const SizedBox(width: 3,),
+            //const SizedBox(width: 3,),
 
             /*GestureDetector(
               onTap: () async{
@@ -252,7 +252,7 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
               ),
             ),*/
 
-            SizedBox(width: 5.w,),
+            //SizedBox(width: 5.w,),
             VerticalDivider(color: AppTheme().darkGreyColor, thickness: 1,),
             SizedBox(width: 5.w,),
             Expanded(

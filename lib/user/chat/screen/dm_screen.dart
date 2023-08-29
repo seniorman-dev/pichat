@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Ezio/theme/app_theme.dart';
 //import 'package:Ezio/user/chat/agora/audio/audio_call.dart';
-import 'package:Ezio/user/chat/agora/video/video_call.dart';
+import 'package:Ezio/user/chat/agora/const/video/video_call.dart';
 import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
 import 'package:Ezio/user/chat/widget/bottom_engine.dart';
 import 'package:Ezio/user/chat/widget/chat_list.dart';
