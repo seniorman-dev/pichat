@@ -1,4 +1,7 @@
+import 'package:Ezio/api/api.dart';
+import 'package:Ezio/user/chat/agora/audio/audio_call.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,12 +10,14 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Ezio/theme/app_theme.dart';
 //import 'package:Ezio/user/chat/agora/audio/audio_call.dart';
-//import 'package:Ezio/user/chat/agora/video/video_call.dart';
+import 'package:Ezio/user/chat/agora/video/video_call.dart';
 import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
 import 'package:Ezio/user/chat/widget/bottom_engine.dart';
 import 'package:Ezio/user/chat/widget/chat_list.dart';
 import 'package:Ezio/utils/loader.dart';
 import 'package:provider/provider.dart';
+
+import '../../../utils/extract_firstname.dart';
 
 
 
@@ -167,8 +172,15 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                 color: AppTheme().blackColor,
                 size: 24.r,
               ),
-              onPressed: () {
-                //Get.to(() => ChatVideoCall());
+              onPressed: () async{
+                DocumentSnapshot senderSnapshot = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(chatServiceController.auth.currentUser!.uid)
+                .get();
+                String name = senderSnapshot.get('name');
+                String userEmail = senderSnapshot.get('email');
+                Get.to(() => ChatVideoCall(receiverName: widget.receiverName, receiverProfilePic: widget.receiverProfilePic, receiverId: widget.receiverID,));
+                API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: 'Video Call', content: 'Incoming video call from ${getFirstName(fullName: name)} 📲');
               },
             ),
             IconButton(
@@ -177,8 +189,15 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                 color: AppTheme().blackColor,
                 size: 24.r,
               ),
-              onPressed: () {
-                //Get.to(() => ChatVoiceCall());
+              onPressed: () async{
+                DocumentSnapshot senderSnapshot = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(chatServiceController.auth.currentUser!.uid)
+                .get();
+                String name = senderSnapshot.get('name');
+                String userEmail = senderSnapshot.get('email');
+                Get.to(() => ChatAudioCall(receiverName: widget.receiverName, receiverProfilePic: widget.receiverProfilePic, receiverId: widget.receiverID,));
+                API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: 'Voice Call', content: 'Incoming voice call from ${getFirstName(fullName: name)} 📲');
               },
             ),
             SizedBox(width: 10.w,)  

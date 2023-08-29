@@ -169,7 +169,8 @@ class _BottomEngineForGroupState extends State<BottomEngineForGroup> {
         groupName: widget.groupName, 
         groupPhoto: widget.groupPhoto       
       )
-      .then((value) {API().showFLNP(title: widget.groupName, body: '📷 ~ 🎬', fln: fln);});
+      .then((value) {
+        API().showFLNP(title: widget.groupName, body: '📷 ~ 🎬', fln: fln);});
       //API().showFLNP(title: widget.groupName, body: '📷 ~ 🎬', fln: fln);
       groupChatController.messageTextController.clear(); 
     }

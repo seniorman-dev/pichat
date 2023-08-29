@@ -237,6 +237,96 @@ class API {
 
 
 
+//to be used for 'messages notification", 'friend request notifications e.t.c'
+  Future<void> sendPushNotificationToMultiplePeopleWithFirebaseAPI({required List<dynamic>receiverFCMTokens, required String title, required String content}) async {
+  //TODO: make the notification display in foreground
+  
+  //FCM Instance
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  
+  //grant permission for Android (Android is always automatic)
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+  debugPrint('User granted permission: ${settings.authorizationStatus}');
+
+  //grant permission for iOS
+  if (Platform.isIOS) {
+    await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+  }
+  
+  //header for the end point
+  final Map<String, String> headers = {
+    'Authorization': 'key=$firebaseServerKeyFromTheConsole',
+    'Content-type': 'application/json',
+    'Accept': '/',
+  };
+
+  // notificationData or body for the end point
+  final Map<String, dynamic> notificationData = {
+    "to": receiverFCMTokens,
+    "priority": "high",
+    "notification": {
+      "title": title,
+      "body":content,
+      "sound": "default"
+    },
+    "data": {
+      "title": title,
+      "body": content,
+      "type": "chat",
+      "click_action": "FLUTTER_NOTIFICATION_CLICK"
+    // Add other optional parameters for customizing your notification
+    }
+  };
+  
+  //show notification with 'flutter_local_notification" plugin
+  RemoteNotification? notification = const RemoteNotification();
+
+  
+  //flutter local notifications fuckkinngg worked.. finallyyyyy
+  showFLNP(title: title, body: content, fln: flutterLocalNotificationsPlugin);
+
+  //Enable foreground Notifications for iOS
+  await messaging.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  //send a POST request
+  final http.Response response = await http.post(
+    Uri.parse(apiUrl),
+    headers: headers,
+    body: json.encode(notificationData),  //notificationData
+  );
+
+  if (response.statusCode == 200) {
+    print('Notification sent successfully');
+  } else {
+    print('Error sending notification: ${response.statusCode}\n${response.body}');
+  }
+
+}
+
+
+
+
+
 Future<void> sendPushNotificationWithOneSignalAPI({required String receiverFCMToken, required String title, required String content}) async {
   //final String oneSignalAppId = 'YOUR_ONESIGNAL_APP_ID';
   //final String oneSignalApiKey = 'YOUR_ONESIGNAL_API_KEY';

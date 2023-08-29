@@ -1,3 +1,5 @@
+import 'package:Ezio/utils/extract_firstname.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -83,7 +85,7 @@ class CallScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 50.h),
                   Text(
-                    "You haven't made any calls yet",
+                    "No call sessions found",
                     style: GoogleFonts.poppins(
                       color: AppTheme().greyColor,
                       fontSize: 14.sp,
@@ -115,90 +117,135 @@ class CallScreen extends StatelessWidget {
                     var data = snapshot.data!.docs[index];
                     return InkWell(
                       onTap: () {},
-                      child: Container(
-                        //height: 100.h,
-                        //width: 200.w,
-                        padding: EdgeInsets.symmetric(
-                          vertical: 15.h, //30.h
-                          horizontal: 15.w  //20.h
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppTheme().whiteColor,
-                          borderRadius: BorderRadius.circular(20.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
-                              spreadRadius: 0.1.r,
-                              blurRadius: 8.0.r,
-                            )
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                      child: Dismissible(
+                        key: UniqueKey(),
+                        direction: DismissDirection.endToStart,
+                        background: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            //profilePic
-                            CircleAvatar(
-                              radius: 32.r,
-                              backgroundColor: AppTheme().opacityBlue,
-                              child: CircleAvatar(
-                                radius: 30.r,    //data['photo']
-                                backgroundColor: AppTheme().darkGreyColor,
-                              ),
-                            ),
-                            SizedBox(width: 10.w,),
-                            //details
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //Row 1
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        data['name'],
-                                        style: GoogleFonts.poppins(
-                                          color: AppTheme().blackColor,
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w500
-                                        ),
+                            Icon(
+                              CupertinoIcons.delete_simple,
+                              color: AppTheme().redColor                     
+                            )
+                          ]
+                        ),
+                        onDismissed: (direction) async{
+                          authController
+                          .firestore
+                          .collection('users')
+                          .doc(authController.userID)
+                          .collection('calls')
+                          .doc(data['sessionId'])
+                          .delete();
+                        },
+                        child: Container(
+                          //height: 100.h,
+                          //width: 200.w,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15.h, //30.h
+                            horizontal: 15.w  //20.h
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme().whiteColor,
+                            borderRadius: BorderRadius.circular(30.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                spreadRadius: 0.1.r,
+                                blurRadius: 8.0.r,
+                              )
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              //profilePic
+                              CircleAvatar(
+                                radius: 32.r,
+                                backgroundColor: AppTheme().blackColor,
+                                child: CircleAvatar(
+                                  backgroundColor: AppTheme().blackColor,
+                                  radius: 30.r,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.r)), //.circular(20.r),
+                                    clipBehavior: Clip.antiAlias, //.antiAliasWithSaveLayer,
+                                    child: CachedNetworkImage(
+                                      imageUrl: data['receiverProfilePic'],
+                                      width: 45.w,
+                                      height: 45.h,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Loader(),
+                                      errorWidget: (context, url, error) => Icon(
+                                        Icons.error,
+                                        color: AppTheme().lightestOpacityBlue,
                                       ),
-                                      Text(
-                                        "${formatDate(timestamp: data['timestamp'])}-${formatTime(timestamp: data['timestamp'])}",
-                                        style: GoogleFonts.poppins(
-                                          color: AppTheme().darkGreyColor,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500
-                                        ),
-                                      )
-                                    ],
+                                    ),
                                   ),
-                                  SizedBox(height: 4.h,),
-                                  //Row 2
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        data['session_id'],  //'Session ID: 100000',
-                                        style: GoogleFonts.poppins(
-                                          color: AppTheme().darkGreyColor,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                          textStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis
-                                          )
-                                        ),
-                                      ),
-                                      Icon(
-                                        CupertinoIcons.phone_fill_arrow_up_right,
-                                        color: AppTheme().greenColor,
-                                      )
-                                    ],
-                                  )
-                                ]
+                                ),
                               ),
-                            ),
-                          ],
+                              SizedBox(width: 10.w,),
+                              //details
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //Row 1
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          data['name'],
+                                          //getFirstName(fullName: data['name'],),
+                                          style: GoogleFonts.poppins(
+                                            color: AppTheme().blackColor,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w500
+                                          ),
+                                        ),
+                                        Text(
+                                          "${formatDate(timestamp: data['timestamp'])} ~ ${formatTime(timestamp: data['timestamp'])}",
+                                          style: GoogleFonts.poppins(
+                                            color: AppTheme().greyColor,
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.normal
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 4.h,),
+                                    //Row 2
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'session id: ${data['sessionId']}',  //'Session ID: 100000',
+                                          style: GoogleFonts.poppins(
+                                            color: AppTheme().greyColor,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.normal,
+                                            textStyle: const TextStyle(
+                                              overflow: TextOverflow.ellipsis
+                                            )
+                                          ),
+                                        ),
+                                        data['type'] == 'audio' ?
+                                        Icon(
+                                          CupertinoIcons.phone_fill_arrow_up_right,
+                                          size: 30.r,
+                                          color: AppTheme().greenColor,
+                                        )
+                                        :Icon(
+                                          CupertinoIcons.videocam_fill,
+                                          size: 30.r,
+                                          color: AppTheme().greenColor,
+                                        )
+                                      ],
+                                    )
+                                  ]
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),           
                     );

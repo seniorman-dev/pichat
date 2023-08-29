@@ -1,4 +1,6 @@
+import 'package:Ezio/user/group_chat/agora/video/video_call_group.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -238,7 +240,9 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
                 color: AppTheme().blackColor,
                 size: 24.r,
               ),
-              onPressed: () {},
+              onPressed: () async{
+                Get.to(() => ChatVideoCallGroup(groupName: widget.groupName, groupProfilePic: widget.groupPhoto,));
+              },
             ),
             /*IconButton(
               icon: Icon(
