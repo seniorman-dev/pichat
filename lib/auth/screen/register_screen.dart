@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:Ezio/api/api.dart';
 import 'package:Ezio/auth/controller/auth_controller.dart';
 import 'package:Ezio/auth/screen/login_screen.dart';
 import 'package:Ezio/auth/widget/textfield.dart';

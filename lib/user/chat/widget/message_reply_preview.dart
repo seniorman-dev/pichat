@@ -1,6 +1,5 @@
 import 'package:Ezio/theme/app_theme.dart';
 import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -33,7 +32,7 @@ class _MessageReplyPreviewState extends State<MessageReplyPreview> {
       decoration: BoxDecoration(
         //shape: BoxShape.circle,
         color: AppTheme().backgroundColor,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(15),
           topRight: Radius.circular(15),
         )
@@ -47,7 +46,7 @@ class _MessageReplyPreviewState extends State<MessageReplyPreview> {
       child: Column(
         //crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 5,),
+          const SizedBox(height: 5,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -60,7 +59,7 @@ class _MessageReplyPreviewState extends State<MessageReplyPreview> {
                     color: AppTheme().blackColor,
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
-                    textStyle: TextStyle(
+                    textStyle: const TextStyle(
                       overflow: TextOverflow.ellipsis
                     )
                   )

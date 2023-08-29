@@ -1,6 +1,5 @@
 import 'package:Ezio/user/group_chat/agora/video/video_call_group.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -114,7 +113,7 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
                       width: 40.w,
                       height: 40.h,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Loader(),
+                      placeholder: (context, url) => const Loader(),
                       errorWidget: (context, url, error) => Icon(
                         Icons.error,
                         color: AppTheme().lightestOpacityBlue,
@@ -321,12 +320,12 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
                         width: 65.w,
                         height: 80.h,
                       ) 
-                      :SizedBox(), //show content as video
+                      :const SizedBox(), //show content as video
                     ),
                   ),
                 ),
               )
-              : SizedBox(),
+              : const SizedBox(),
               
         
               //bottom textfield

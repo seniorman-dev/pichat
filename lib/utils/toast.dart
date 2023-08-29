@@ -10,7 +10,7 @@ import 'package:Ezio/theme/app_theme.dart';
 Future<void> getToast({required BuildContext context, required String text}) async {
   final snackBar = SnackBar(
     //action: SnackBarAction(label: label, onPressed: onPressed),
-    duration: Duration(milliseconds: 2000),
+    duration: const Duration(milliseconds: 2000),
     dismissDirection: DismissDirection.down,
     behavior: SnackBarBehavior.fixed,
     //shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
@@ -23,7 +23,7 @@ Future<void> getToast({required BuildContext context, required String text}) asy
         color: AppTheme().blackColor,
         fontSize: 13.sp,
         fontWeight: FontWeight.normal,
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           overflow: TextOverflow.ellipsis
         )
       ),

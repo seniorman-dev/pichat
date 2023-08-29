@@ -73,7 +73,7 @@ class _ChatListState extends State<ChatList> {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return SingleChildScrollView(
               controller: ScrollController(),
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 25.w,
@@ -256,7 +256,7 @@ class _ChatListState extends State<ChatList> {
                                   color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w500,
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     overflow: TextOverflow.visible
                                   )
                                 ),
@@ -278,7 +278,7 @@ class _ChatListState extends State<ChatList> {
                                     //width: 50.w,
                                     //height: 50.h,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) => Loader(),
+                                    placeholder: (context, url) => const Loader(),
                                     errorWidget: (context, url, error) => Icon(
                                       Icons.error,
                                       color: AppTheme().lightestOpacityBlue,
@@ -306,13 +306,13 @@ class _ChatListState extends State<ChatList> {
                                     color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
                                     fontSize: 15.sp,
                                     fontWeight: FontWeight.w500,
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                       overflow: TextOverflow.visible
                                     )
                                   ),
                                 ),
                               )
-                              : SizedBox()
+                              : const SizedBox()
                             ],
                           )  
                         ),

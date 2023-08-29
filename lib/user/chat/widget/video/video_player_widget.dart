@@ -1,8 +1,8 @@
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:Ezio/theme/app_theme.dart';
-import 'package:Ezio/utils/loader.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:cached_video_player/cached_video_player.dart';
+//import 'package:cached_video_player/cached_video_player.dart';
 
 
 
@@ -19,35 +19,35 @@ class VideoPlayerItem extends StatefulWidget {
 
 class _VideoPlayerItemState extends State<VideoPlayerItem> {
 
-  bool isPlaying = false;
+  //bool isPlaying = false;
 
-  late CachedVideoPlayerController videoPlayerController;
+  //late CachedVideoPlayerController videoPlayerController;
 
   @override
   void initState() {
     // TODO: implement initState
-    videoPlayerController = CachedVideoPlayerController
+    /*videoPlayerController = CachedVideoPlayerController
     .network(widget.videoUrl)
     ..initialize()
     .then(
       (value) {
         videoPlayerController.setVolume(1);
       }
-    );
+    );*/
     super.initState();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    videoPlayerController.dispose();
+    //videoPlayerController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onDoubleTap: () {
+      /*onDoubleTap: () {
         videoPlayerController.play();
       },
       onTap: () {
@@ -63,10 +63,19 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
             isPlaying = true;
           });
         }
-      },
+      },*/
       child: AspectRatio(
         aspectRatio: 16/9,
-        child: Stack(
+        child: BetterPlayer.network(
+          widget.videoUrl,
+          betterPlayerConfiguration: BetterPlayerConfiguration(
+            aspectRatio: 16 / 9,
+            autoPlay: true,
+            allowedScreenSleep: true,
+            fullScreenByDefault: false,
+          ),
+        ),
+        /*Stack(
           children: [
             CachedVideoPlayer(videoPlayerController),
             Align(
@@ -94,32 +103,8 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
                 )
               ),
             ),
-            //////////
-            /*Expanded(
-          child: Slider(
-            min: 0,
-            max: chatServiceController.duration.inSeconds.toDouble(),
-            activeColor: widget.senderId == chatServiceController.auth.currentUser!.uid ? AppTheme().whiteColor : AppTheme().blackColor,
-            inactiveColor: AppTheme().greyColor, 
-            value: chatServiceController.position.inSeconds.toDouble(),
-            onChanged: (double value) {
-              final position = Duration(seconds: value.toInt());
-              audioPlayer.seek(position);
-              audioPlayer.resume();
-            },
-          ),
-        ),
-        Text(
-          formatAudioTime(seconds: chatServiceController.position.inSeconds),  //starting time
-          style: GoogleFonts.poppins(
-            fontSize: 13.sp,
-            fontWeight: FontWeight.normal,
-            color: widget.senderId == chatServiceController.auth.currentUser!.uid ? AppTheme().whiteColor : AppTheme().blackColor,
-          ),
-        )*/
-            //////////
           ],
-        ),
+        ),*/
       ),
     );
   }

@@ -164,7 +164,7 @@ class MyConnects extends StatelessWidget {
                                 width: 50.w,
                                 height: 50.h,
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => Loader(),
+                                placeholder: (context, url) => const Loader(),
                                 errorWidget: (context, url, error) => Icon(
                                   Icons.error,
                                   color: AppTheme().lightestOpacityBlue,
@@ -194,7 +194,7 @@ class MyConnects extends StatelessWidget {
                                   color: AppTheme().darkGreyColor,
                                   fontSize: 14.sp,
                                   //fontWeight: FontWeight.w500,
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     overflow: TextOverflow.ellipsis
                                   )
                                 ),

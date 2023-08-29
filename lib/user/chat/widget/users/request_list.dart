@@ -165,7 +165,7 @@ class _FriendsRequestListState extends State<FriendsRequestList> {
                                       width: 50.w,
                                       height: 50.h,
                                       fit: BoxFit.cover,
-                                      placeholder: (context, url) => Loader(),
+                                      placeholder: (context, url) => const Loader(),
                                       errorWidget: (context, url, error) => Icon(
                                         Icons.error,
                                         color: AppTheme().lightestOpacityBlue,

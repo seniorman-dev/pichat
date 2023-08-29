@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:Ezio/utils/snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,9 +14,7 @@ import 'package:Ezio/user/group_chat/controller/group_chat_controller.dart';
 import 'package:Ezio/user/group_chat/widget/add_user_to_group.dart';
 import 'package:Ezio/utils/error_loader.dart';
 import 'package:Ezio/utils/extract_firstname.dart';
-import 'package:Ezio/utils/firestore_timestamp_formatter.dart';
 import 'package:Ezio/utils/loader.dart';
-import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 
 
@@ -159,7 +156,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                             width: 90.w,
                             height: 90.h,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => Loader(),
+                            placeholder: (context, url) => const Loader(),
                             errorWidget: (context, url, error) => Icon(
                               Icons.error,
                               color: AppTheme().lightestOpacityBlue,
@@ -178,7 +175,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                       color: AppTheme().blackColor,
                       fontSize: 15.sp,
                       fontWeight: FontWeight.bold,
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         overflow: TextOverflow.visible
                       )
                     ),
@@ -202,7 +199,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                       )
                     ),
                     initialValue: widget.groupBio,
-                    spellCheckConfiguration: SpellCheckConfiguration(),
+                    spellCheckConfiguration: const SpellCheckConfiguration(),
                     scrollPadding: EdgeInsets.symmetric(
                       horizontal: 10.h,
                       vertical: 5.h
@@ -443,7 +440,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                                           width: 50.w,
                                           height: 50.h,
                                           fit: BoxFit.cover,
-                                          placeholder: (context, url) => Loader(),
+                                          placeholder: (context, url) => const Loader(),
                                           errorWidget: (context, url, error) => Icon(
                                             Icons.error,
                                             color: AppTheme().lightestOpacityBlue,
@@ -467,7 +464,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                                                 color: AppTheme().blackColor,
                                                 fontSize: 14.sp,
                                                 fontWeight: FontWeight.w500,
-                                                textStyle: TextStyle(
+                                                textStyle: const TextStyle(
                                                   overflow: TextOverflow.ellipsis
                                                 )
                                               ),
@@ -479,12 +476,12 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                                                 color: AppTheme().mainColor,
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w500,
-                                                textStyle: TextStyle(
+                                                textStyle: const TextStyle(
                                                   overflow: TextOverflow.ellipsis
                                                 )
                                               ),
                                             )
-                                            :SizedBox(),
+                                            :const SizedBox(),
                                           ],
                                         ),
                                         SizedBox(height: 5.h),
@@ -495,7 +492,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.normal,
                                             //fontWeight: FontWeight.w500,
-                                            textStyle: TextStyle(
+                                            textStyle: const TextStyle(
                                               overflow: TextOverflow.ellipsis
                                             )
                                           ),
@@ -518,7 +515,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                   onTap: () {
                     //exit group
                     groupChatController.exitFromGroupChat(groupId: widget.groupId)
-                    .then((value) => Get.offAll(() => MainPage()));
+                    .then((value) => Get.offAll(() => const MainPage()));
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(
@@ -533,7 +530,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                       alignment: Alignment.centerLeft,
                       height: 68.h, //68.h,
                       //width: 100.w,
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [

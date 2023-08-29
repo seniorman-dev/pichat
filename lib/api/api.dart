@@ -11,7 +11,6 @@ import 'package:Ezio/constants/firebase_fcm_keys.dart';
 import 'package:Ezio/constants/one_signal_keys.dart';
 import 'package:Ezio/main.dart';
 import 'package:Ezio/main_page/screen/main_page.dart';
-import 'package:Ezio/theme/app_theme.dart';
 
 
 
@@ -139,7 +138,7 @@ class API {
 
     var notification = NotificationDetails(
       android: androidNotificationDetails,
-      iOS: DarwinNotificationDetails(
+      iOS: const DarwinNotificationDetails(
         presentAlert: true,
         presentBadge: true,
         presentSound: true

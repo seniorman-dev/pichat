@@ -5,14 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:Ezio/api/api.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
 import 'package:Ezio/utils/extract_firstname.dart';
-import 'package:Ezio/utils/toast.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
-import 'package:uuid/uuid_util.dart';
 
 
 

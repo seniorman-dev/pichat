@@ -1,30 +1,24 @@
 import 'package:Ezio/user/settings/widget/helper_widgets/profile_item.dart';
 import 'package:Ezio/utils/snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:Ezio/auth/controller/auth_controller.dart';
 import 'package:Ezio/theme/app_theme.dart';
 import 'package:Ezio/user/feeds/controller/feeds_controller.dart';
 import 'package:Ezio/user/settings/controller/profile_controller.dart';
-import 'package:Ezio/user/settings/widget/activities/connects.dart';
 import 'package:Ezio/user/settings/widget/action_screens/edit_profile_screen.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/about_us.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/insights.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/notifications_for_profile.dart';
-import 'package:Ezio/user/settings/widget/activities/posts.dart';
-import 'package:Ezio/user/settings/widget/activities/re-posts.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/wallets.dart';
 import 'package:Ezio/user/settings/widget/success_screens/succesfully_uploaded_feed.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/view_posts.dart';
 import 'package:Ezio/utils/error_loader.dart';
 import 'package:Ezio/utils/loader.dart';
-import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 import '../widget/action_screens/upload_post_page.dart';
 
@@ -107,10 +101,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 stream: profileController.userSnapshot(),  //snapshotStream,
                 builder: (context, snapshot) {
                   if(snapshot.connectionState == ConnectionState.waiting) {
-                    return Loader();
+                    return const Loader();
                   }
                   if (snapshot.hasError) {
-                    return ErrorLoader();
+                    return const ErrorLoader();
                   }
 
                   if (!snapshot.hasData) {
@@ -190,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       width: 50.w,
                                       height: 50.h,
                                       fit: BoxFit.cover,
-                                      placeholder: (context, url) => Loader(),
+                                      placeholder: (context, url) => const Loader(),
                                       errorWidget: (context, url, error) => Icon(
                                         Icons.error,
                                         color: AppTheme().lightestOpacityBlue,
@@ -602,7 +596,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             feedsController.uploadContentToDatbase(file: feedsController.contentFile, context: context)
                                             .then((value) {
                                               setState(() {
-                                                Get.to(() => PostUpdatedSuccessScreen());
+                                                Get.to(() => const PostUpdatedSuccessScreen());
                                                 feedsController.isAnyThingSelected = false;
                                                 feedsController.postTextController.clear();
                                               });
@@ -678,7 +672,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileItem(
                         icon: CupertinoIcons.bell, 
                         onPressed: () {
-                          Get.to(() => NotificationScreenForProfile());
+                          Get.to(() => const NotificationScreenForProfile());
                         }, 
                         title: 'Notifications',
                       ),
@@ -686,7 +680,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileItem(
                         icon: CupertinoIcons.viewfinder, 
                         onPressed: () {
-                          Get.to(() => ViewPostsScreen());
+                          Get.to(() => const ViewPostsScreen());
                         }, 
                         title: 'Activities',
                       ),
@@ -694,7 +688,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileItem(
                         icon: CupertinoIcons.creditcard, 
                         onPressed: () {
-                          Get.to(() => WalletScreen());
+                          Get.to(() => const WalletScreen());
                         }, 
                         title: 'Wallet', //will imlement in the feature
                       ),
@@ -702,7 +696,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileItem(
                         icon: CupertinoIcons.graph_square, 
                         onPressed: () {
-                          Get.to(() => InsightScreen());
+                          Get.to(() => const InsightScreen());
                         }, 
                         title: 'Insights',
                       ),
@@ -718,7 +712,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileItem(
                         icon: CupertinoIcons.person_crop_circle, 
                         onPressed: () {
-                          Get.to(() => AboutUsScreen());
+                          Get.to(() => const AboutUsScreen());
                         }, 
                         title: 'About us',
                       ),

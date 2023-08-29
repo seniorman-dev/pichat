@@ -1,9 +1,6 @@
 import 'dart:io';
 
 import 'package:Ezio/utils/snackbar.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,9 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:Ezio/theme/app_theme.dart';
 import 'package:Ezio/user/group_chat/controller/group_chat_controller.dart';
-import 'package:Ezio/user/group_chat/widget/search_textfield.dart';
 import 'package:Ezio/utils/elevated_button.dart';
-import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 import 'successful_group_creation_screen.dart';
 
@@ -205,7 +200,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               //height: 68.h, //
               //width: 100.w,
               child: TextFormField(
-                 spellCheckConfiguration: SpellCheckConfiguration(),
+                 spellCheckConfiguration: const SpellCheckConfiguration(),
                 autovalidateMode: AutovalidateMode.onUserInteraction,          
                 scrollPhysics: const BouncingScrollPhysics(),
                 scrollController: ScrollController(),  //groupChatController.createGroupScrollController, //ScrollController(),
@@ -258,7 +253,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     setState(() {
                       groupChatController.isAnyImageSelected = false;
                     });
-                    Get.to(() => GroupCreatedSuccessScreen());
+                    Get.to(() => const GroupCreatedSuccessScreen());
                   });
                 }
                 else {

@@ -14,7 +14,6 @@ import 'package:Ezio/theme/app_theme.dart';
 import 'package:Ezio/user/settings/controller/profile_controller.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/upload_photo_bottom_sheet.dart';
 import 'package:Ezio/utils/loader.dart';
-import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 import '../success_screens/successful_profile_update_screen.dart';
 
@@ -28,7 +27,7 @@ import '../success_screens/successful_profile_update_screen.dart';
 
 
 class EditProfileScreen extends StatefulWidget {
-  EditProfileScreen({super.key, required this.isProfileUpdated, required this.name, required this.email, required this.photo, required this.dateOfBirth, required this.bio, required this.link, required this.selectedCountry, required this.selectedGender,});
+  const EditProfileScreen({super.key, required this.isProfileUpdated, required this.name, required this.email, required this.photo, required this.dateOfBirth, required this.bio, required this.link, required this.selectedCountry, required this.selectedGender,});
   final String name;
   final String email;
   final String photo;
@@ -60,7 +59,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           centerTitle: true,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new_rounded),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
             color: AppTheme().blackColor,
             onPressed: () {
               Get.back();
@@ -146,7 +145,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               width: 90.w,
                               height: 90.h,
                               fit: BoxFit.cover,
-                              placeholder: (context, url) => Loader(),
+                              placeholder: (context, url) => const Loader(),
                               errorWidget: (context, url, error) => Icon(
                                 Icons.error,
                                 color: AppTheme().lightestOpacityBlue,
@@ -221,7 +220,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 alignment: Alignment.centerLeft,
                 height: 70.h, //70.h,
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 //width: 100.w,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -264,7 +263,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 alignment: Alignment.centerLeft,
                 height: 70.h, //70.h,
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 //width: 100.w,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -499,7 +498,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     )
                   ),
                   initialValue: widget.bio,
-                  spellCheckConfiguration: SpellCheckConfiguration(),      
+                  spellCheckConfiguration: const SpellCheckConfiguration(),      
                   scrollPhysics: const BouncingScrollPhysics(),
                   //scrollController: profileController.scrollController,
                   textCapitalization: TextCapitalization.sentences,
@@ -574,7 +573,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     )
                   ),
                   initialValue: widget.link,
-                  spellCheckConfiguration: SpellCheckConfiguration(),        
+                  spellCheckConfiguration: const SpellCheckConfiguration(),        
                   scrollPhysics: const BouncingScrollPhysics(),
                   //scrollController: profileController.scrollController,
                   textInputAction: TextInputAction.done,
@@ -674,7 +673,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   alignment: Alignment.centerLeft,
                   height: 70.h, //65.h,
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   //width: 100.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -715,7 +714,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         gender: controller.gender!,
                         isProfileUpdated: true, 
                         context: context
-                      ).then((value) => Get.to(() => ProfileUpdatedSuccessScreen()));
+                      ).then((value) => Get.to(() => const ProfileUpdatedSuccessScreen()));
                     }
                     else {
                       customGetXSnackBar(title: 'Uh-Oh', subtitle: 'Invalid Credentials');

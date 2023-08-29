@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Ezio/theme/app_theme.dart';
 import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
-import 'package:Ezio/user/chat/widget/buttons.dart';
 import 'package:Ezio/user/chat/widget/search_textfield.dart';
 import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
 import 'package:Ezio/utils/error_loader.dart';
@@ -261,7 +260,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                             width: 50.w,
                                             height: 50.h,
                                             fit: BoxFit.cover,
-                                            placeholder: (context, url) => Loader(),
+                                            placeholder: (context, url) => const Loader(),
                                             errorWidget: (context, url, error) => Icon(
                                               Icons.error,
                                               color: AppTheme().lightestOpacityBlue,

@@ -1,7 +1,6 @@
 import 'package:Ezio/user/settings/widget/activities/connects.dart';
 import 'package:Ezio/user/settings/widget/activities/posts.dart';
 import 'package:Ezio/user/settings/widget/activities/re-posts.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -40,7 +39,7 @@ class _ViewPostsScreenState extends State<ViewPostsScreen> with TickerProviderSt
           centerTitle: true,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new_rounded),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
             color: AppTheme().blackColor,
             onPressed: () {
               Get.back();

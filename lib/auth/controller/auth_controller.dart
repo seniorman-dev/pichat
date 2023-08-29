@@ -13,7 +13,6 @@ import 'package:Ezio/auth/screen/successful_registration_screen.dart';
 import 'package:Ezio/main_page/screen/main_page.dart';
 import 'package:Ezio/utils/extract_firstname.dart';
 import 'package:Ezio/utils/snackbar.dart';
-import 'package:Ezio/utils/toast.dart';
 
 
 
@@ -249,7 +248,7 @@ class AuthController extends ChangeNotifier{
 
       await firestore.collection('users').doc(userID).update({"isOnline": false});
       await firebase.signOut()
-      .then((value) => Get.offAll(() => LoginScreen()))
+      .then((value) => Get.offAll(() => const LoginScreen()))
       .then((value) {
         //API().showFLNP(title: 'Registration Successful', body: "Welcome onboard ${getFirstName(fullName: registerNameController.text)}", fln: fln);
         API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: token!, title: 'Exit Successful', content: "User logged out");
@@ -319,7 +318,7 @@ class AuthController extends ChangeNotifier{
         });  
       } 
       else{
-        Get.to(() => MainPage());
+        Get.to(() => const MainPage());
       }
     } else {
       customGetXSnackBar(title: 'Uh-Oh', subtitle: 'User does not exit');

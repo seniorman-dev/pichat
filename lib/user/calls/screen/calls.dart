@@ -226,7 +226,7 @@ class CallScreen extends StatelessWidget {
                                           width: 45.w,
                                           height: 45.h,
                                           fit: BoxFit.cover,
-                                          placeholder: (context, url) => Loader(),
+                                          placeholder: (context, url) => const Loader(),
                                           errorWidget: (context, url, error) => Icon(
                                             Icons.error,
                                             color: AppTheme().lightestOpacityBlue,

@@ -124,7 +124,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                       width: 40.w,
                       height: 40.h,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Loader(),
+                      placeholder: (context, url) => const Loader(),
                       errorWidget: (context, url, error) => Icon(
                         Icons.error,
                         color: AppTheme().lightestOpacityBlue,
@@ -256,17 +256,17 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                         width: 65.w,
                         height: 80.h,
                       ) 
-                      :SizedBox(), //show content as video
+                      :const SizedBox(), //show content as video
                     ),
                   ),
                 ),
               )
-              : SizedBox(),
+              : const SizedBox(),
               
               chatServiceController.isRecording ?
               Center(
                 child: StreamBuilder<RecordingDisposition>(
-                  stream: chatServiceController.recorder!.onProgress,
+                  stream: chatServiceController.recorder.onProgress,
                   builder: (context, snapshot) {
                     final duration = snapshot.hasData ? snapshot.data!.duration : Duration.zero;
                     String twoDigits (int n) => n.toString().padLeft(2, '0');
@@ -307,7 +307,7 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                     );
                   }
                 ),
-              ) : SizedBox(),
+              ) : const SizedBox(),
               //bottom textfield
               Padding(
                 padding: EdgeInsets.only(

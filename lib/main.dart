@@ -38,7 +38,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNo
 //Top level non-anonymous function for FCM push notifications for background mode
 Future<void> backgroundHandler(RemoteMessage message) async {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  AndroidNotificationChannel channel = AndroidNotificationChannel(
+  AndroidNotificationChannel channel = const AndroidNotificationChannel(
     'high_importance_channel', //id
     'High Importance Notification', //title
     importance: Importance.high
@@ -172,7 +172,7 @@ class _MyAppState extends State<MyApp> {
           notification.body, 
           NotificationDetails(
             android: androidNotificationDetails,
-            iOS: DarwinNotificationDetails()
+            iOS: const DarwinNotificationDetails()
           )
         );
       }
@@ -190,7 +190,7 @@ class _MyAppState extends State<MyApp> {
       builder: (_, child) {
         return child!;
       },
-      child: GetMaterialApp(
+      child: const GetMaterialApp(
         transitionDuration: Duration(milliseconds: 100),
         debugShowCheckedModeBanner: false,
         home: FirebaseCheck()  //MainPage()

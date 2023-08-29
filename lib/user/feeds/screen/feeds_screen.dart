@@ -1,6 +1,5 @@
 import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -229,7 +228,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                           width: 40.w,
                                           height: 40.h,
                                           fit: BoxFit.cover,
-                                          placeholder: (context, url) => Loader(),
+                                          placeholder: (context, url) => const Loader(),
                                           errorWidget: (context, url, error) => Icon(
                                             Icons.error,
                                             color: AppTheme().lightestOpacityBlue,
@@ -298,7 +297,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                   color: AppTheme().blackColor,
                                   fontSize: 13.sp,
                                   //fontWeight: FontWeight.w500,
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     overflow: TextOverflow.visible
                                   )
                                 ),
@@ -322,7 +321,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                     //width: 50.w,
                                     //height: 50.h,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) => Loader(),
+                                    placeholder: (context, url) => const Loader(),
                                     errorWidget: (context, url, error) => Icon(
                                       Icons.error,
                                       color: AppTheme().lightestOpacityBlue,
@@ -350,7 +349,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                   ),
                                 ),
                               ): SizedBox(),*/
-                              SizedBox(height: 5,),
+                              const SizedBox(height: 5,),
 
                               //start your icons here with a row (likes, comments and repost icons are here)
                               Padding(
@@ -638,7 +637,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                                 color: AppTheme().blackColor,
                                                 fontSize: 12.sp,
                                                 //fontWeight: FontWeight.w500,
-                                                textStyle: TextStyle(
+                                                textStyle: const TextStyle(
                                                   overflow: TextOverflow.ellipsis
                                                 )
                                               ),

@@ -2,7 +2,6 @@ import 'package:Ezio/auth/controller/auth_controller.dart';
 import 'package:Ezio/theme/app_theme.dart';
 import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -186,7 +185,7 @@ class _AddUserToGroupState extends State<AddUserToGroup> {
                                     width: 42.w,
                                     height: 42.h,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) => Loader(),
+                                    placeholder: (context, url) => const Loader(),
                                     errorWidget: (context, url, error) => Icon(
                                       Icons.error,
                                       color: AppTheme().lightestOpacityBlue,

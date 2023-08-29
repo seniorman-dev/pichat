@@ -192,7 +192,7 @@ class _MyPostsState extends State<MyPosts> {
                                       width: 30.w,
                                       height: 30.h,
                                       fit: BoxFit.cover,
-                                      placeholder: (context, url) => Loader(),
+                                      placeholder: (context, url) => const Loader(),
                                       errorWidget: (context, url, error) => Icon(
                                         Icons.error,
                                         color: AppTheme().lightestOpacityBlue,
@@ -222,7 +222,7 @@ class _MyPostsState extends State<MyPosts> {
                                           backgroundColor: AppTheme().lightGreyColor,
                                           radius: 20.r,
                                           child: IconButton(
-                                            icon: Icon(
+                                            icon: const Icon(
                                               Icons.cancel_rounded //.more_horiz_rounded,
                                             ),
                                             color: AppTheme().blackColor,
@@ -283,7 +283,7 @@ class _MyPostsState extends State<MyPosts> {
                                 //width: 50.w,
                                 //height: 50.h,
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => Loader(),
+                                placeholder: (context, url) => const Loader(),
                                 errorWidget: (context, url, error) => Icon(
                                   Icons.error,
                                   color: AppTheme().lightestOpacityBlue,
@@ -485,7 +485,7 @@ class _MyPostsState extends State<MyPosts> {
                                             color: AppTheme().blackColor,
                                             fontSize: 12.sp,
                                             //fontWeight: FontWeight.w500,
-                                            textStyle: TextStyle(
+                                            textStyle: const TextStyle(
                                               overflow: TextOverflow.ellipsis
                                             )
                                           ),

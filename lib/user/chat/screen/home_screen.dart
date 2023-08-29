@@ -41,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
   final auth = FirebaseAuth.instance;
   
   //check if logged in user is online
-  bool _isOnline = false;
+  final bool _isOnline = false;
 
 
   @override
@@ -161,7 +161,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
                                 //SizedBox(height: 20.h),
 
                                 //check if user has updated their profile (so that it can ginger them to update their profile)
-                                data['isProfileUpdated'] ? SizedBox() :
+                                data['isProfileUpdated'] ? const SizedBox() :
                                 Center(
                                   child: Container(
                                     height: 30.h,
@@ -337,7 +337,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
               SizedBox(height: 20.h,),
 
               //list of friends & add friend/connect button
-              FriendsList(),
+              const FriendsList(),
 
               SizedBox(height: 10.h,), //20.h
 
@@ -370,7 +370,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver{
               //SizedBox(height: 10.h,), //20.h
 
               //recent chats stream
-              RecentChats(),
+              const RecentChats(),
 
               SizedBox(height: 10.h,),
             ]

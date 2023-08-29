@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Get.to(() => ForgotPasswordScreen());
+                      Get.to(() => const ForgotPasswordScreen());
                     },
                     child: Text(
                       'forgot password?',

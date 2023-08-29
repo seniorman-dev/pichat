@@ -10,7 +10,6 @@ import 'package:Ezio/auth/widget/textfield.dart';
 import 'package:Ezio/theme/app_theme.dart';
 import 'package:Ezio/utils/elevated_button.dart';
 import 'package:Ezio/utils/loader.dart';
-import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 
 
@@ -105,7 +104,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   }
                   else {
                     controller.resetPassword()
-                    .then((value) => SuccessfulResetScreen());
+                    .then((value) => const SuccessfulResetScreen());
                   }
                 },
               ),

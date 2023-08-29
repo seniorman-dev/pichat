@@ -13,7 +13,6 @@ import 'package:Ezio/utils/error_loader.dart';
 import 'package:Ezio/utils/firestore_timestamp_formatter.dart';
 import 'package:Ezio/utils/loader.dart';
 import 'package:provider/provider.dart';
-import 'search_textfield.dart';
 
 
 
@@ -237,7 +236,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
                                         width: 40.w,
                                         height: 40.h,
                                         fit: BoxFit.cover,
-                                        placeholder: (context, url) => Loader(),
+                                        placeholder: (context, url) => const Loader(),
                                         errorWidget: (context, url, error) => Icon(
                                           Icons.error,
                                           color: AppTheme().lightestOpacityBlue,
@@ -313,7 +312,7 @@ class _RecentChatsState extends State<RecentChats> with WidgetsBindingObserver {
 
                                 SizedBox(width: 8.w,),
                                 data2['sentBy'] == chatServiceController.auth.currentUser!.uid
-                                ? SizedBox()
+                                ? const SizedBox()
                                 //find a way to show this status bar when your chat partner sends you a message
                                 :CircleAvatar(
                                   backgroundColor: AppTheme().mainColor,

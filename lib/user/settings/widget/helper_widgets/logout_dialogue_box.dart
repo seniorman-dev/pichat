@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -28,7 +27,7 @@ import 'package:Ezio/utils/snackbar.dart';
     try {
       await firestore.collection('users').doc(userID).update({"isOnline": false});
       await firebase.signOut()
-      .whenComplete(() => Get.offAll(() => LoginScreen()));
+      .whenComplete(() => Get.offAll(() => const LoginScreen()));
     } on FirebaseAuthException catch (e) {
       customGetXSnackBar(title: 'Uh-Oh!', subtitle: "${e.message}");
     }

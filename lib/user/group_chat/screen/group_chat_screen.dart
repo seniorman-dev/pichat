@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -60,7 +59,7 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -98,7 +97,7 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
             
                   InkWell(
                     onTap: () {
-                      Get.to(() => CreateGroupScreen());
+                      Get.to(() => const CreateGroupScreen());
                     },
                     child: Container(
                       height: 65.h,
@@ -184,7 +183,7 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
                 return SizedBox(
                   height: 250.h,
                   child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),//const BouncingScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),//const BouncingScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     //separatorBuilder: (context, index) => SizedBox(height: 0.h,), 
@@ -305,7 +304,7 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
                                               width: 42.w,
                                               height: 42.h,
                                               fit: BoxFit.cover,
-                                              placeholder: (context, url) => Loader(),
+                                              placeholder: (context, url) => const Loader(),
                                               errorWidget: (context, url, error) => Icon(
                                                 Icons.error,
                                                 color: AppTheme().lightestOpacityBlue,
@@ -365,7 +364,7 @@ class _GroupChatMessagesState extends State<GroupChatMessages> {
                                       ),
                                       SizedBox(width: 8.w,),
                                       data['sentBy'] == groupChatController.auth.currentUser!.uid
-                                      ? SizedBox()
+                                      ? const SizedBox()
                                       //find a way to show this status bar when your chat partner sends you a message
                                       :CircleAvatar(
                                         backgroundColor: AppTheme().mainColor,

@@ -12,7 +12,6 @@ import 'package:Ezio/utils/error_loader.dart';
 import 'package:Ezio/utils/extract_firstname.dart';
 import 'package:Ezio/utils/firestore_timestamp_formatter.dart';
 import 'package:Ezio/utils/loader.dart';
-import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 
 
@@ -179,7 +178,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
         
                     return ListView.separated(
                       scrollDirection: Axis.vertical,
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                       shrinkWrap: true,
                       itemCount: snapshot.data!.docs.length,
@@ -300,7 +299,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                               width: 50.w,
                                               height: 50.h,
                                               fit: BoxFit.cover,
-                                              placeholder: (context, url) => Loader(),
+                                              placeholder: (context, url) => const Loader(),
                                               errorWidget: (context, url, error) => Icon(
                                                 Icons.error,
                                                 color: AppTheme().lightestOpacityBlue,
@@ -327,7 +326,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                                     color: AppTheme().blackColor,
                                                     fontSize: 14.sp,
                                                     fontWeight: FontWeight.w500,
-                                                    textStyle: TextStyle(
+                                                    textStyle: const TextStyle(
                                                       overflow: TextOverflow.ellipsis
                                                     )
                                                   ),
@@ -339,7 +338,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                                     color: AppTheme().greyColor,
                                                     fontSize: 11.sp,
                                                     fontWeight: FontWeight.normal,
-                                                    textStyle: TextStyle(
+                                                    textStyle: const TextStyle(
                                                       overflow: TextOverflow.ellipsis
                                                     )
                                                   ),
@@ -354,7 +353,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                                 color: AppTheme().greyColor,
                                                 fontSize: 13.sp,
                                                 fontWeight: FontWeight.w500,
-                                                textStyle: TextStyle(
+                                                textStyle: const TextStyle(
                                                   overflow: TextOverflow.visible //ellipsis
                                                 )
                                               ),
@@ -434,7 +433,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                                                     color: AppTheme().opacityBlue,
                                                     fontSize: 13.sp,
                                                     fontWeight: FontWeight.w500,
-                                                    textStyle: TextStyle(
+                                                    textStyle: const TextStyle(
                                                       overflow: TextOverflow.ellipsis
                                                     )
                                                   ),
@@ -497,7 +496,7 @@ class _CommentsScreenState extends State<CommentsScreen> with WidgetsBindingObse
                 child: TextFormField(
                   //autofocus: true,
                   controller: feedsController.commentTextController,
-                  spellCheckConfiguration: SpellCheckConfiguration(),
+                  spellCheckConfiguration: const SpellCheckConfiguration(),
                   scrollPadding: EdgeInsets.symmetric(
                     horizontal: 10.h,
                     vertical: 5.h

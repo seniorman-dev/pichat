@@ -89,7 +89,7 @@ class SuccessfulResetScreen extends StatelessWidget {
           CustomElevatedButton(
             text: 'Go To Login', 
             onPressed: () {
-              Get.offAll(() => LoginScreen());
+              Get.offAll(() => const LoginScreen());
             }
           )
         ]

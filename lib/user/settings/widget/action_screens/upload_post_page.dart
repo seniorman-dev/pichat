@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:Ezio/utils/snackbar.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:Ezio/theme/app_theme.dart';
 import 'package:Ezio/user/feeds/controller/feeds_controller.dart';
 import 'package:Ezio/user/settings/controller/profile_controller.dart';
-import 'package:Ezio/utils/toast.dart';
 import 'package:provider/provider.dart';
 
 
@@ -38,13 +36,13 @@ class _UploadPostPageState extends State<UploadPostPage> {
           centerTitle: true,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new_rounded),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
             color: AppTheme().blackColor,
             onPressed: () {
               Get.back();
             },
           ),
-          title: Text(
+          title: const Text(
             'Upload Post'
           ),
           titleSpacing: 2,
@@ -120,7 +118,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
                 ), //show content as video
               ),
             )
-            : SizedBox(),
+            : const SizedBox(),
             SizedBox(height: 30.h,),   
 
             //textfield
@@ -162,7 +160,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
                       child: TextFormField(
                         //autofocus: true,
                         controller: feedsController.postTextController,
-                        spellCheckConfiguration: SpellCheckConfiguration(),
+                        spellCheckConfiguration: const SpellCheckConfiguration(),
                         scrollPadding: EdgeInsets.symmetric(
                           horizontal: 10.h,
                           vertical: 5.h

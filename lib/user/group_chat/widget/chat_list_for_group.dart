@@ -49,7 +49,7 @@ class _GroupChatListState extends State<GroupChatList> {
 
     var groupChatController = Provider.of<GroupChatController>(context);
     var authController = Provider.of<AuthController>(context);
-    bool _shouldAutoScroll = true;
+    bool shouldAutoScroll = true;
     
     return Expanded(
       child: StreamBuilder(
@@ -238,7 +238,7 @@ class _GroupChatListState extends State<GroupChatList> {
                           child: Column(
                             children: [
                               //name of the sender
-                              data['senderId'] == authController.userID ? SizedBox()
+                              data['senderId'] == authController.userID ? const SizedBox()
                               :Row(
                                 mainAxisAlignment: data['senderId'] == authController.userID ? MainAxisAlignment.start : MainAxisAlignment.start,
                                 children: [
@@ -255,7 +255,7 @@ class _GroupChatListState extends State<GroupChatList> {
                                         color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.bold,
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           overflow: TextOverflow.visible
                                         )
                                       ),
@@ -267,7 +267,7 @@ class _GroupChatListState extends State<GroupChatList> {
                                       color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
                                       fontSize: 15.sp,
                                       fontWeight: FontWeight.bold,
-                                      textStyle: TextStyle(
+                                      textStyle: const TextStyle(
                                         overflow: TextOverflow.visible
                                       )
                                     ),
@@ -284,7 +284,7 @@ class _GroupChatListState extends State<GroupChatList> {
                                     color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
                                     fontSize: 13.sp, //15.sp,
                                     fontWeight: FontWeight.w500,
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                       overflow: TextOverflow.visible
                                     )
                                   ),
@@ -307,7 +307,7 @@ class _GroupChatListState extends State<GroupChatList> {
                                     //width: 50.w,
                                     //height: 50.h,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) => Loader(),
+                                    placeholder: (context, url) => const Loader(),
                                     errorWidget: (context, url, error) => Icon(
                                       Icons.error,
                                       color: AppTheme().lightestOpacityBlue,
@@ -335,13 +335,13 @@ class _GroupChatListState extends State<GroupChatList> {
                                     color: data['senderId'] == authController.userID ? AppTheme().whiteColor : AppTheme().blackColor,  //tweak this instead to suit the chatters
                                     fontSize: 15.sp,
                                     fontWeight: FontWeight.w500,
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                       overflow: TextOverflow.visible
                                     )
                                   ),
                                 ),
                               )
-                              : SizedBox()
+                              : const SizedBox()
                             ],
                           )  
                         ),
