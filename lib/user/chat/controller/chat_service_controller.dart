@@ -8,6 +8,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:Ezio/api/api.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:Ezio/user/settings/widget/helper_widgets/logout_dialogue_box.dart';
+import 'package:uuid/uuid.dart';
 
 
 
@@ -275,6 +276,8 @@ class ChatServiceController extends ChangeNotifier {
   
   //(to be placed inside "sendDirectMessages" function)//
   Future<void> addUserToRecentChats({required String receiverId, required String receiverName, required String receiverPhoto, required String receiverFCMToken, required String lastMessage, required Timestamp timestamp, required String sentBy}) async{
+    
+    
     //do this if you want to get any logged in user property 
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
     .collection('users')
@@ -286,6 +289,7 @@ class ChatServiceController extends ChangeNotifier {
     String userPhoto = snapshot.get('photo');
     //bool userOnline = snapshot.get('isOnline');
     //////////////////////////////////
+    var roomId = "${userId}_$receiverId";
     
     //add receiver of the text message to my recent chats stream
     await firestore.collection('users')
@@ -293,6 +297,7 @@ class ChatServiceController extends ChangeNotifier {
     .collection('recent_chats')
     .doc(receiverId)
     .set({
+      'roomId': roomId,
       'name': receiverName,
       'id': receiverId,
       'photo': receiverPhoto,
@@ -308,6 +313,7 @@ class ChatServiceController extends ChangeNotifier {
     .collection('recent_chats')
     .doc(auth.currentUser!.uid)
     .set({
+      'roomId': roomId,
       'name': userName,
       'id': userId,
       'photo': userPhoto,

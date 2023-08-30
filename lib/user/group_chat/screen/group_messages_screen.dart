@@ -240,7 +240,7 @@ class _GroupMessagingScreenState extends State<GroupMessagingScreen> with Widget
                 size: 24.r,
               ),
               onPressed: () async{
-                Get.to(() => ChatVideoCallGroup(groupName: widget.groupName, groupProfilePic: widget.groupPhoto,));
+                Get.to(() => ChatVideoCallGroup(groupName: widget.groupName, groupProfilePic: widget.groupPhoto, groupId: widget.groupId,));
               },
             ),
             /*IconButton(

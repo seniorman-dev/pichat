@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Ezio/theme/app_theme.dart';
 //import 'package:Ezio/user/chat/agora/audio/audio_call.dart';
-import 'package:Ezio/user/chat/agora/const/video/video_call.dart';
+import 'package:Ezio/user/chat/agora/video/video_call.dart';
 import 'package:Ezio/user/chat/controller/chat_service_controller.dart';
 import 'package:Ezio/user/chat/widget/bottom_engine.dart';
 import 'package:Ezio/user/chat/widget/chat_list.dart';
@@ -179,7 +179,13 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                 .get();
                 String name = senderSnapshot.get('name');
                 String userEmail = senderSnapshot.get('email');
-                Get.to(() => ChatVideoCall(receiverName: widget.receiverName, receiverProfilePic: widget.receiverProfilePic, receiverId: widget.receiverID,));
+                String userId = senderSnapshot.get('id');
+                Get.to(() => ChatVideoCall(
+                  receiverName: widget.receiverName, 
+                  receiverProfilePic: widget.receiverProfilePic, 
+                  receiverId: widget.receiverID,
+                  roomId: "${userId}_${widget.receiverID}",
+                ));
                 API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: 'Video Call', content: 'Incoming video call from ${getFirstName(fullName: name)} 📲');
               },
             ),
@@ -196,7 +202,14 @@ class _DMScreenState extends State<DMScreen> with WidgetsBindingObserver{
                 .get();
                 String name = senderSnapshot.get('name');
                 String userEmail = senderSnapshot.get('email');
-                Get.to(() => ChatAudioCall(receiverName: widget.receiverName, receiverProfilePic: widget.receiverProfilePic, receiverId: widget.receiverID,));
+                String userId = senderSnapshot.get('id');
+                Get.to(() => ChatAudioCall(
+                  receiverName: widget.receiverName, 
+                  receiverProfilePic: 
+                  widget.receiverProfilePic, 
+                  receiverId: widget.receiverID, 
+                  roomId: "${userId}_${widget.receiverID}",
+                ));
                 API().sendPushNotificationWithFirebaseAPI(receiverFCMToken: widget.receiverFCMToken, title: 'Voice Call', content: 'Incoming voice call from ${getFirstName(fullName: name)} 📲');
               },
             ),

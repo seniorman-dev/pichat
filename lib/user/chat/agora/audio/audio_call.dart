@@ -17,10 +17,11 @@ import 'package:provider/provider.dart';
 
 
 class ChatAudioCall extends StatefulWidget {
-  const ChatAudioCall({Key? key, required this.receiverName, required this.receiverProfilePic, required this.receiverId}) : super(key: key);
+  const ChatAudioCall({Key? key, required this.receiverName, required this.receiverProfilePic, required this.receiverId, required this.roomId}) : super(key: key);
   final String receiverName;
   final String receiverId;
   final String receiverProfilePic;
+  final String roomId;
 
   @override
   State<ChatAudioCall> createState() => _ChatAudioCallState();
@@ -28,43 +29,51 @@ class ChatAudioCall extends StatefulWidget {
 
 class _ChatAudioCallState extends State<ChatAudioCall> {
   final RtcEngine engine = createAgoraRtcEngine();
-  final AgoraClient client = AgoraClient(
-    enabledPermission: [
-      Permission.audio,
-      Permission.bluetoothConnect,
-      Permission.bluetoothScan,
-      Permission.camera,
-      Permission.accessNotificationPolicy,
-      Permission.microphone,
-      Permission.sensors,
-      Permission.videos
-    ],
-    agoraEventHandlers: AgoraRtcEventHandlers(
-      onLeaveChannel: (connection, stats) {
-        debugPrint("$connection $stats");
-      },
-      onJoinChannelSuccess: (connection, elapsed) {
-        debugPrint("$connection $elapsed");
-      },
-    ),
-    agoraConnectionData: AgoraConnectionData(
-      screenSharingEnabled: true,
-      uid: 0,
-      appId: agora_app_id,
-      channelName: sessionIdAudio,
-      username: "me",
-      tokenUrl: "https://agora-token-server-5ta9.onrender.com/rtc/jetify/1/uid/1/?expiry=45",
-      //tempToken: "007eJxTYGj8+q1/l1reLP6JHWdUvv7/eLsjbuK/G3/Wz7Mo3xbX/mqnAkOiqYF5ckqyoZG5uYGJcXKyZWqqoYWRcZqBsZlJWlKahUPN45SGQEaGV11LmRkZIBDE52HISizISC2JT0ksy0xhYAAADi4n9A==",
-    ),
-  );
+  
+  late AgoraClient client;
+  
 
   @override
   void initState() {
     super.initState();
     initAgora();
-  }
+  } 
 
   void initAgora() async {
+    final AgoraClient clientDeets = AgoraClient(
+      enabledPermission: [
+        Permission.audio,
+        Permission.bluetoothConnect,
+        Permission.bluetoothScan,
+        Permission.camera,
+        Permission.accessNotificationPolicy,
+        Permission.microphone,
+        Permission.sensors,
+        Permission.videos
+      ],
+      agoraEventHandlers: AgoraRtcEventHandlers(
+        onLeaveChannel: (connection, stats) {
+          debugPrint("$connection $stats");
+        },
+        onJoinChannelSuccess: (connection, elapsed) {
+          debugPrint("$connection $elapsed");
+        },
+      ),
+      agoraConnectionData: AgoraConnectionData(
+        screenSharingEnabled: true,
+        uid: 0,
+        appId: agora_app_id,
+        channelName: widget.roomId,
+        username: "me",
+        tokenUrl: "https://agora-token-server-5ta9.onrender.com/rtc/jetify/1/uid/1/?expiry=45",
+        //tempToken: "007eJxTYGj8+q1/l1reLP6JHWdUvv7/eLsjbuK/G3/Wz7Mo3xbX/mqnAkOiqYF5ckqyoZG5uYGJcXKyZWqqoYWRcZqBsZlJWlKahUPN45SGQEaGV11LmRkZIBDE52HISizISC2JT0ksy0xhYAAADi4n9A==",
+      )
+    );
+
+    setState(() {
+      client = clientDeets;
+    });
+
     await client.initialize();
   }
 
