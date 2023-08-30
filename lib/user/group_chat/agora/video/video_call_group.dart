@@ -65,7 +65,7 @@ class _ChatVideoCallGroupState extends State<ChatVideoCallGroup> {
         appId: agora_app_id,
         channelName: widget.groupId,
         username: "me",
-        tokenUrl: "https://agora-token-server-5ta9.onrender.com/rtc/jetify/1/uid/1/?expiry=45",
+        tokenUrl: "https://agora-token-server-5ta9.onrender.com/rtc/${widget.groupId}/1/uid/0/?expiry=45",
         //tempToken: "007eJxTYGj8+q1/l1reLP6JHWdUvv7/eLsjbuK/G3/Wz7Mo3xbX/mqnAkOiqYF5ckqyoZG5uYGJcXKyZWqqoYWRcZqBsZlJWlKahUPN45SGQEaGV11LmRkZIBDE52HISizISC2JT0ksy0xhYAAADi4n9A==",
       )
     );

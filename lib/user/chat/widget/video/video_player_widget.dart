@@ -68,11 +68,13 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
         aspectRatio: 16/9,
         child: BetterPlayer.network(
           widget.videoUrl,
-          betterPlayerConfiguration: BetterPlayerConfiguration(
+          betterPlayerConfiguration: const BetterPlayerConfiguration(
             aspectRatio: 16 / 9,
             autoPlay: true,
             allowedScreenSleep: true,
             fullScreenByDefault: false,
+            deviceOrientationsOnFullScreen: [],
+            subtitlesConfiguration: BetterPlayerSubtitlesConfiguration()
           ),
         ),
         /*Stack(
